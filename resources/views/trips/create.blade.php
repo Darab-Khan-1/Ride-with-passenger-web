@@ -34,7 +34,7 @@
                     </div>
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
-                    <h3>Create Load</h3>
+                    <h3>Create Trip</h3>
                 </div>
                 <form action="{{ url('trip/create') }}" method="POST">
                     @csrf
@@ -116,7 +116,7 @@
                         <input type="hidden" name="drop_lat" id="drop_lat">
                         <input type="hidden" name="drop_long" id="drop_long">
                         <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                        <button type="reset" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <a href="{{ URL::previous() }}"  class="btn btn-secondary" data-dismiss="modal">Cancel</a>
                     </div>
                 </form>
             </div>
@@ -174,7 +174,7 @@
 @include('includes/footer')
 
 <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA59lcD4AG3YPeY98yiUcSlkZOLEEqXUHQ&libraries=places&callback=initMap"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBs57rOv-nggi-hZnH2kLlyGxaHu242Oo&libraries=places&callback=initMap"
     defer></script>
 
 <script>
@@ -254,128 +254,7 @@
         autocomplete.setTypes(['geocode']);
     }
 
-    // function calculateRoute(start, destination, stops) {
-    //     var waypoints = [];
-    //     var stops_array = [];
-    //     // Convert stop addresses to waypoints
-    //     stops.forEach(function(stop) {
-    //         stops_array.push(stop);
-    //         // console.log(stop);
-    //         waypoints.push({
-    //             location: stop
-    //         });
-    //     });
-    //     // var stops_array = stops_array.join(", ");
-    //     stops_array = JSON.stringify(stops_array);
-    //     $("#stops_array").val(stops_array)
-
-    //     // Create request for directions service
-    //     var request = {
-    //         origin: start,
-    //         destination: destination,
-    //         waypoints: waypoints,
-    //         optimizeWaypoints: true,
-    //         travelMode: 'DRIVING'
-    //     };
-
-    //     // Send request to directions service
-    //     directionsService.route(request, function(result, status) {
-    //         if (status === 'OK') {
-    //             // Display route on the map
-    //             directionsRenderer.setDirections(result);
-
-    //             // Clear existing markers
-    //             markers.forEach(function(marker) {
-    //                 marker.setMap(null);
-    //             });
-    //             markers = [];
-
-    //             // Add marker for start
-    //             var startMarker = new google.maps.Marker({
-    //                 position: result.routes[0].legs[0].start_location,
-    //                 map: map
-    //             });
-    //             markers.push(startMarker);
-    //             addPopup(startMarker, '<span class="badge badge-warning bg-warning mr-2 p-2">Start</span>');
-
-    //             // Add markers for stops
-    //             for (var i = 0; i < result.routes[0].legs.length - 1; i++) {
-    //                 var stopMarker = new google.maps.Marker({
-    //                     position: result.routes[0].legs[i].end_location,
-    //                     map: map
-    //                 });
-    //                 markers.push(stopMarker);
-
-    //                 // Add popup for marker
-    //                 addPopup(stopMarker, '<span class="badge badge-danger bg-danger mr-2 p-2">Stop ' + (i + 1) +
-    //                     "</span>");
-    //             }
-
-    //             // Add marker for destination
-    //             var destinationMarker = new google.maps.Marker({
-    //                 position: result.routes[0].legs[result.routes[0].legs.length - 1].end_location,
-    //                 map: map
-    //             });
-    //             markers.push(destinationMarker);
-
-    //             // Add popup for destination marker
-    //             addPopup(destinationMarker,
-    //                 '<span class="badge badge-success bg-success mr-2 p-2">Destination</span>');
-
-
-    //             totalDistance = result.routes[0].legs.reduce(function(acc, leg) {
-    //                 return acc + leg.distance.value;
-    //             }, 0);
-    //             totalDuration = result.routes[0].legs.reduce(function(acc, leg) {
-    //                 return acc + leg.duration.value;
-    //             }, 0);
-
-    //             // Convert total distance and duration to desired formats
-    //             var formattedDistance = (totalDistance / 1000).toFixed(2); // Convert meters to kilometers
-    //             var formattedDuration = convertSecondsToHMS(
-    //                 totalDuration); // Convert seconds to HH:MM:SS format
-
-    //             // Display the total distance and duration
-    //             var totalInfo = document.getElementById('map-overlay');
-    //             totalInfo.innerHTML = 'Distance: ' + formattedDistance + ' km<br>Duration: ' +
-    //                 formattedDuration;
-
-    //             document.getElementById('estimated_distance').value = formattedDistance;
-    //             document.getElementById('estimated_time').value = formattedDuration;
-    //             document.getElementById('pickup_location').value = start;
-    //             document.getElementById('delivery_location').value = destination;
-    //         }
-    //     });
-
-    //     function addPopup(marker, content) {
-    //         // console.log(content);
-    //         var infowindow = new google.maps.InfoWindow({
-    //             content: content
-    //         });
-
-    //         marker.addListener('click', function() {
-    //             infowindow.open(map, marker);
-    //         });
-    //     }
-
-    //     function convertSecondsToHMS(seconds) {
-    //         seconds = seconds * 1.5
-    //         var hours = Math.floor(seconds / 3600);
-    //         var minutes = Math.floor((seconds % 3600) / 60);
-    //         var secs = Math.floor(seconds % 60);
-
-    //         var formattedTime = '';
-    //         if (hours > 0) {
-    //             formattedTime += hours.toString().padStart(2, '0') + ':';
-    //         }
-    //         formattedTime += minutes.toString().padStart(2, '0') + ':';
-    //         formattedTime += secs.toString().padStart(2, '0');
-
-    //         return formattedTime;
-    //     }
-
-    // }
-
+  
     function calculateRoute(start, destination, stops) {
         var waypoints = [];
         var stops_array = [];

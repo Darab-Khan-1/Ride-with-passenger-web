@@ -5,19 +5,7 @@ namespace App\Http\Requests;
 
 class ValidationRules
 {
-    public function driverSignupAuthenticationValidationRules(): array
-    {
-        return [
-            'name' => 'required',
-            'phone' => 'required',
-            'email' => 'required|unique:users,email',
-            'license_no' => 'required',
-            // 'license_expiry' => 'required',
-            'password' => 'required',
-            'avatar' => 'required',
-        ];
-    }
-    
+   
     public function driverLoginAuthenticationValidationRules(): array
     {
         return [
@@ -43,6 +31,21 @@ class ValidationRules
         return [
             'old_password' => 'required',
             'new_password' => 'required',
+        ];
+    }
+
+    public function startTripValidationRules(): array
+    {
+        return [
+            'trip_id' => 'required|exists:trips,id',
+        ];
+    }
+
+    public function stopTripValidationRules(): array
+    {
+        return [
+            'stop_id' => 'required|exists:stops,id',
+            'trip_id' => 'required|exists:trips,id',
         ];
     }
 }

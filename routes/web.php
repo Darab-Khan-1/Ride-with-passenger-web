@@ -49,7 +49,8 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('trips', [TripsController::class, 'index']);
     Route::get('new/trip', [TripsController::class, 'new']);
     Route::post('trip/create', [TripsController::class, 'create']);
-    Route::get('edit/trip', [TripsController::class, 'edit']);
+    Route::get('edit/trip/{id}', [TripsController::class, 'edit']);
+    Route::post('trip/update', [TripsController::class, 'update']);
     Route::get('delete/trip/{id}', [TripsController::class, 'delete']);
     // Route::get('all/trips/{from}/{to}', [TripsController::class, 'trips']);
     

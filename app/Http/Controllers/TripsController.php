@@ -8,8 +8,27 @@ use App\Models\Trip;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
+
+use Google_Client;
+use Google_Service_Calendar;
+use Google_Service_Calendar_Event;
+
+
 class TripsController extends Controller
 {
+    private $client;
+
+    // public function __construct()
+    // {
+    //     $this->middleware(function ($request, $next) {
+    //         $this->client = new Google_Client();
+    //         $this->client->setAuthConfig(env('GOOGLE_CALENDAR_CREDENTIALS_JSON_PATH'));
+    //         $this->client->addScope(Google_Service_Calendar::CALENDAR);
+
+    //         return $next($request);
+    //     });
+    // }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -81,6 +100,45 @@ class TripsController extends Controller
         return redirect('trips')->with('success','Trip added successfully');
     }
 
+    public function edit($id){
+        $trip = Trip::where('id',$id)->with('stops')->first();
+        $drivers = Driver::where('id', '>', 0)->with('user')->get();
+        // dd($trip);
+        return view('trips.edit',compact('trip','drivers'));
+    }
+
+    public function update(Request $request)
+    {
+        // dd($request->all());
+        $decodedJson = html_entity_decode($request->stops);
+        $stops = json_decode($decodedJson, true);
+        // dd($stops);
+        $trip = Trip::find($request->trip_id);
+        $trip->user_id = $request->user_id;
+        $trip->pickup_date = $request->pickup_date;
+        $trip->delivery_date = $request->delivery_date;
+        $trip->pickup_location = $request->pickup_location;
+        $trip->delivery_location = $request->delivery_location;
+        $trip->estimated_distance = $request->estimated_distance;
+        $trip->estimated_time = $request->estimated_time;
+        $trip->customer_name = $request->customer_name;
+        $trip->customer_phone = $request->customer_phone;
+        $trip->lat = $request->lat;
+        $trip->long = $request->long;
+        $trip->drop_lat = $request->drop_lat;
+        $trip->drop_long = $request->drop_long;
+        $trip->save();
+        Stop::where('trip_id',$request->trip_id)->delete();
+        foreach($stops as $value){
+            $stop = new Stop();
+            $stop->location = $value['stop'];
+            $stop->trip_id = $request->trip_id;
+            $stop->lat = $value['lat'];
+            $stop->long = $value['lng'];
+            $stop->save();
+        }
+        return redirect('trips')->with('success','Trip updated successfully');
+    }
     public function delete($id){
         Trip::find($id)->delete();
         Stop::where('trip_id',$id)->delete();

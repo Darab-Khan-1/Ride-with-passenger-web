@@ -29,6 +29,10 @@ Route::middleware('auth:api')->group(function () {
 
 
     Route::get('/all/trips', [TripController::class, 'all']);
+    Route::get('/completed/trips', [TripController::class, 'completed']);
     Route::get('/ongoing/trip', [TripController::class, 'ongoing']);
+    Route::post('/start/trip', [TripController::class, 'start']);
+    Route::post('/end/trip', [TripController::class, 'end']);
+    Route::post('/stop/trip', [TripController::class, 'stop']);
     
 });
