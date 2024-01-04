@@ -173,9 +173,8 @@
 <!--end::Content-->
 @include('includes/footer')
 
-<script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBs57rOv-nggi-hZnH2kLlyGxaHu242Oo&libraries=places&callback=initMap"
-    defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initMap" defer></script>
+
 
 <script>
     document.querySelector('.start-end-location').addEventListener('click', function() {
