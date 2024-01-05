@@ -121,9 +121,10 @@
                         <input type="hidden" name="long" id="long" value="{{ $trip->long }}">
                         <input type="hidden" name="drop_lat" id="drop_lat" value="{{ $trip->drop_lat }}">
                         <input type="hidden" name="drop_long" id="drop_long" value="{{ $trip->drop_long }}">
-                        <input type="hidden" name="trip_id"  value="{{ $trip->id }}">
+                        <input type="hidden" name="trip_id" value="{{ $trip->id }}">
+                        {{-- <input type="hidden" name="event_id" value="{{ $trip->event_id }}"> --}}
                         <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                        <a href="{{ URL::previous() }}"  class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+                        <a href="{{ URL::previous() }}" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
                     </div>
                 </form>
             </div>
@@ -150,15 +151,18 @@
                         <div class="mb-3">
                             <div id="stopsContainer">
                                 @foreach ($trip->stops as $item)
-                                    <div class="row my-1">
-                                        <label for="stop" class="col-md-1" style="margin-top: 5px;">Stop:</label>
-                                        <input type="text" class="stop col-md-8 form-control mx-3"
-                                            value="{{ $item->location }}" placeholder="Enter stop location"
-                                            name="stops[]" required>
-                                        <button type="button"
-                                            class="removeStop btn btn-danger btn-sm col-md-2">Remove
-                                            Stop</button>
-                                    </div>
+                                    @if ($item->type == 'stop')
+                                        <div class="row my-1">
+                                            <label for="stop" class="col-md-1"
+                                                style="margin-top: 5px;">Stop:</label>
+                                            <input type="text" class="stop col-md-8 form-control mx-3"
+                                                value="{{ $item->location }}" placeholder="Enter stop location"
+                                                name="stops[]" required>
+                                            <button type="button"
+                                                class="removeStop btn btn-danger btn-sm col-md-2">Remove
+                                                Stop</button>
+                                        </div>
+                                    @endif
                                 @endforeach
                             </div>
                         </div>
@@ -184,7 +188,9 @@
 <!--end::Content-->
 @include('includes/footer')
 
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initMap" defer></script>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initMap"
+    defer></script>
 
 <script>
     $(document).ready(function() {
@@ -402,7 +408,6 @@
         }
 
         function convertSecondsToHMS(seconds) {
-            seconds = seconds * 1.5
             var hours = Math.floor(seconds / 3600);
             var minutes = Math.floor((seconds % 3600) / 60);
             var secs = Math.floor(seconds % 60);
