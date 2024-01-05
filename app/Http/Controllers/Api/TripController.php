@@ -75,8 +75,30 @@ class TripController extends Controller
             $data->long = $trip->long;
             $data->drop_lat = $trip->drop_lat;
             $data->drop_long = $trip->drop_long;
+            $data->status = (($trip->status == "pickup" || stripos($trip->status, 'stop') !== false) ? 'stopped' : $trip->status);
             $data->stops = $trip->stops;
-            if (count($trip->stops) > 0) {
+            $data->current_stop = 0;
+            if ($trip->status == 'pickup') {
+                // dd($trip->stops[0]->id);
+                $data->current_stop = $trip->stops[0]->id;
+            } elseif (stripos($trip->status, 'stop') !== false) {
+                foreach ($trip->stops as $key => $value) {
+                    if ($value->datetime != null && $value->exit_time == null) {
+                        $data->current_stop = $value->id;
+
+                        break;
+                    }
+                }
+            }
+            if ($trip->status == 'started') {
+                $array['stop'] = 1;
+                $array['stop_id'] = 0;
+                $array['type'] = "pickup";
+                $array['lat'] = $trip->lat;
+                $array['long'] = $trip->long;
+                $array['address'] = $trip->pickup_location;
+                $data->next_stop = $array;
+            } else if (count($trip->stops) > 2) {
                 $array['stop'] = 1;
                 $array['stop_id'] = 0;
                 $array['type'] = "destination";
@@ -88,7 +110,7 @@ class TripController extends Controller
                     if ($value->datetime == null) {
                         $array['stop'] = $key + 1;
                         $array['stop_id'] = $value->id;
-                        $array['type'] = "stop";
+                        $array['type'] = $value->type;
                         $array['lat'] = $value->lat;
                         $array['long'] = $value->long;
                         $array['address'] = $value->location;
@@ -184,7 +206,7 @@ class TripController extends Controller
                 return $this->apiJsonResponse(400, "You have an ongoing trip. Please end it first", '', "");
             }
             $trip = Trip::find($request->trip_id);
-            if($trip->status != 'available'){
+            if ($trip->status != 'available') {
                 return $this->apiJsonResponse(400, "This trip cannot be started", '', "");
             }
             $trip->started_at = date('Y-m-d H:i:s', strtotime('now'));
@@ -196,6 +218,35 @@ class TripController extends Controller
         }
     }
 
+
+    public function pickup(Request $request, Validate $validate)
+    {
+        $validationErrors = $validate->validate($request, $this->rules->startTripValidationRules(), $this->validationMessages->startTripValidationMessages());
+        if ($validationErrors) {
+            return (new ErrorResource($validationErrors))->response()->setStatusCode(400);
+        }
+        try {
+            // $trip = Trip::where('user_id', $request->user()->id)->whereNotNull('started_at')->whereNull('completed_at')->first();
+            // if ($trip != null) {
+            //     return $this->apiJsonResponse(400, "You have an ongoing trip. Please end it first", '', "");
+            // }
+            $trip = Trip::find($request->trip_id);
+            if ($trip->status != 'started') {
+                return $this->apiJsonResponse(400, "This trip cannot be updated", '', "");
+            }
+            // $trip->started_at = date('Y-m-d H:i:s', strtotime('now'));
+            $trip->status = 'pickup';
+            $trip->save();
+            $stop = Stop::where('type', 'pickup')->where('trip_id', $request->trip_id)->first();
+            $stop->datetime = date('Y-m-d H:i:s', strtotime('now'));
+            $stop->save();
+            return $this->apiJsonResponse(200, "Trip status updated!", '', "");
+        } catch (\Throwable $e) {
+            return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
+        }
+    }
+
+
     public function stop(Request $request, Validate $validate)
     {
         $validationErrors = $validate->validate($request, $this->rules->stopTripValidationRules(), $this->validationMessages->stopTripValidationMessages());
@@ -203,21 +254,25 @@ class TripController extends Controller
             return (new ErrorResource($validationErrors))->response()->setStatusCode(400);
         }
         try {
-            $stop = Stop::where('id',$request->stop_id)->where('trip_id',$request->trip_id)->first();
-            if($stop == null){
+            $stop = Stop::where('id', $request->stop_id)->where('trip_id', $request->trip_id)->first();
+            if ($stop == null) {
                 return $this->apiJsonResponse(400, "Trip not found", '', "");
             }
-            if($stop->datetime != null){
+            if ($stop->datetime != null) {
                 return $this->apiJsonResponse(400, "Status already updated for this stop", '', "");
             }
-            $trip = Trip::where('id',$request->trip_id)->with('stops')->first();
-            if($trip->user_id != $request->user()->id || $trip->status == 'available'){
+            $trip = Trip::where('id', $request->trip_id)->with('stops')->first();
+            if ($trip->user_id != $request->user()->id || $trip->status == 'available') {
                 return $this->apiJsonResponse(404, "This trip status cannot be updated", '', "");
             }
             // $allStops = Stop::where('trip_id', $stop->trip_id)->get();
             foreach ($trip->stops as $key => $value) {
                 if ($request->stop_id == $value->id) {
-                    $trip->status = 'stop ' . ($key + 1);
+                    if (($key + 1) ==  count($trip->stops)) {
+                        $trip->status = 'destination';
+                    } else {
+                        $trip->status = 'stop ' . ($key + 1);
+                    }
                     $trip->save();
                     break;
                 }
@@ -229,6 +284,41 @@ class TripController extends Controller
             return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
         }
     }
+
+    public function exit(Request $request, Validate $validate)
+    {
+        $validationErrors = $validate->validate($request, $this->rules->stopTripValidationRules(), $this->validationMessages->stopTripValidationMessages());
+        if ($validationErrors) {
+            return (new ErrorResource($validationErrors))->response()->setStatusCode(400);
+        }
+        try {
+            $stop = Stop::where('id', $request->stop_id)->where('trip_id', $request->trip_id)->first();
+            if ($stop == null) {
+                return $this->apiJsonResponse(400, "Stop not found", '', "");
+            }
+            if ($stop->exit_time != null) {
+                return $this->apiJsonResponse(400, "Status already updated for this stop", '', "");
+            }
+            $trip = Trip::where('id', $request->trip_id)->with('stops')->first();
+            if ($trip->user_id != $request->user()->id || $trip->status == 'available') {
+                return $this->apiJsonResponse(404, "This trip status cannot be updated", '', "");
+            }
+            // $allStops = Stop::where('trip_id', $stop->trip_id)->get();
+            foreach ($trip->stops as $key => $value) {
+                if ($request->stop_id == $value->id) {
+                    $trip->status = "in-transit";
+                    $trip->save();
+                    break;
+                }
+            }
+            $stop->exit_time = date('Y-m-d H:i:s', strtotime('now'));
+            $stop->save();
+            return $this->apiJsonResponse(200, "Status updated!", '', "");
+        } catch (\Throwable $e) {
+            return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
+        }
+    }
+
 
     public function end(Request $request, Validate $validate)
     {
@@ -244,6 +334,9 @@ class TripController extends Controller
             $trip->completed_at = date('Y-m-d H:i:s', strtotime('now'));
             $trip->status = 'completed';
             $trip->save();
+            $stop = Stop::where('trip_id', $request->trip_id)->where('type', 'destination')->first();
+            $stop->exit_time =  date('Y-m-d H:i:s', strtotime('now'));
+            $stop->save();
             return $this->apiJsonResponse(200, "Trip ended!", '', "");
         } catch (\Throwable $e) {
             return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
