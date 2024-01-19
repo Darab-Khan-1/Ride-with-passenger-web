@@ -17,63 +17,54 @@ use Google_Service_Calendar_Event;
 
 class TripsController extends Controller
 {
-    private $client;
+    private $url;
 
-    // public function __construct()
+    // public function __construct(Request $r)
     // {
-    //     $this->middleware(function ($request, $next) {
-    //         $this->client = new Google_Client();
-    //         $this->client->setAuthConfig(public_path('/credentials.json'));
-    //         $this->client->setRedirectUri(url('google/auth/callback'));
-    //         $this->client->addScope(Google_Service_Calendar::CALENDAR);
-    //         return $next($request);
-    //     });
+    //     // dd($request->url());
+    //     $this->url = $r->url();
+    //     // $this->middleware(function ($request, $next) {
+    //     //     $this->client = new Google_Client();
+    //     //     $this->client->setAuthConfig(public_path('/credentials.json'));
+    //     //     $this->client->setRedirectUri(url('google/auth/callback'));
+    //     //     $this->client->addScope(Google_Service_Calendar::CALENDAR);
+    //     //     return $next($request);
+    //     // });
     // }
 
 
-    // public function showAuthorizationForm()
-    // {
-    //     $client = $this->getClient();
-    //     $authUrl = $client->createAuthUrl();
+    public function showAuthorizationForm()
+    {
+        $client = $this->getClient();
+        $authUrl = $client->createAuthUrl();
 
-    //     return view('google.auth', compact('authUrl'));
-    // }
-
-
-    // private function getClient()
-    // {
-    //     $client = new Google_Client();
-    //     $client->setAuthConfig(public_path('/credentials.json')); // Path to your credentials file
-    //     $client->setRedirectUri(url('google/auth/callback'));
-    //     $client->setScopes([
-    //         Google_Service_Calendar::CALENDAR,
-    //     ]);
-
-    //     return $client;
-    // }
-
-    // public function generateAuthorizationLink()
-    // {
-    //     $client = $this->getClient();
-    //     $authUrl = $client->createAuthUrl();
-
-    //     return view('google.authorization-link', compact('authUrl'));
-    // }
+        return view('google.auth', compact('authUrl'));
+    }
 
 
-    // public function handleAuthorizationCallback(Request $request)
-    // {
-    //     $client = $this->getClient();
-    //     $accessToken = $client->fetchAccessTokenWithAuthCode($request->get('code'));
+    private function getClient()
+    {
+        $client = new Google_Client();
+        $client->setAuthConfig(public_path('/credentials.json')); // Path to your credentials file
+        $client->setRedirectUri(url('google/auth/callback'));
+        $client->setScopes([
+            Google_Service_Calendar::CALENDAR,
+        ]);
 
-    //     // For testing purposes, we'll use User::find(1) to simulate an authenticated user
-    //     $user = User::where('type', 'superadmin')->first();
+        return $client;
+    }
 
-    //     // dd($accessToken);
-    //     $user->access_token = $accessToken['access_token'];
-    //     $user->save();
-    //     return redirect()->route('google.events.index')->with('success', 'Authorization successful!');
-    // }
+    public function handleAuthorizationCallback(Request $request)
+    {
+        $client = $this->getClient();
+        // dd($request->url);
+        $accessToken = $client->fetchAccessTokenWithAuthCode($request->get('code'));
+        $user = User::where('type', 'superadmin')->first();
+        // dd($accessToken);
+        $user->access_token = $accessToken['access_token'];
+        $user->save();
+        return redirect('/trips');
+    }
 
     // public function showEvents()
     // {
@@ -91,39 +82,191 @@ class TripsController extends Controller
 
     public function index(Request $request)
     {
+        $user = User::where('type', 'superadmin')->first();
+        $accessToken = $user->access_token;
+        $client = $this->getClient();
+        $client->setAccessToken($accessToken);
+        $service = new Google_Service_Calendar($client);
         if ($request->ajax()) {
-            // $trips = Trip::where('id', '>', 0)->get();
+            $trips = Trip::where('id', '>', 0)->get();
+            $calendarId = 'rw.passengers@gmail.com';
+            foreach ($trips as $key => $value) {
+                $eventId = $value->event_id;
+                $event = $service->events->get($calendarId, $eventId);
+                // dd("HI");
+                $startTime = $event->start->dateTime;
+                $endTime = $event->end->dateTime;
+                $startTime = str_replace('T', " ", $startTime);
+                $startTime = str_replace('Z', "", $startTime);
+                $endTime = str_replace('T', " ", $endTime);
+                $endTime = str_replace('Z', "", $endTime);
 
-            // $user = User::where('type', 'superadmin')->first();
-            // $accessToken = $user->access_token;
-            // $client = $this->getClient();
-            // $client->setAccessToken($accessToken);
-            // $service = new Google_Service_Calendar($client);
-            // $calendarId = 'rw.passengers@gmail.com';
-            // foreach ($trips as $key => $value) {
-            //     $eventId = $value->event_id;
-            //     $event = $service->events->get($calendarId, $eventId);
-            //     $startTime = $event->start->dateTime; // Returns null if the event is an all-day event
-            //     $endTime = $event->end->dateTime; // Returns null if the event is an all-day event
-            //     $startTime = str_replace('T', " ", $startTime);
-            //     $startTime = str_replace('Z', "", $startTime);
-            //     $endTime = str_replace('T', " ", $endTime);
-            //     $endTime = str_replace('Z', "", $endTime);
-            //     if ($startTime != $value->pickup_date || $endTime != $value->delivery_date) {
-            //         Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime]);
-            //     }
-            // }
+                $event_name = $event->getSummary();
+                $description = $event->getDescription();
+                if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
+                    Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
+                }
+            }
 
-            $trips = Trip::where('id', '>', 0)->with('stops', 'driver')->get();
+            $trips = Trip::latest()->where('status','available')->orWhereNull('status')->with('stops', 'driver')->get();
             return DataTables::of($trips)->make(true);
         }
-        $total = Trip::count();
+        try {
+            $events = $service->events->listEvents('rw.passengers@gmail.com');
+            // dd($events);
+            // dd($events->getItems(3)[0]->getId());
+            foreach ($events->getItems() as $key => $event) {
+                $trip = Trip::where('event_id', $event->getId())->first();
+                if ($trip == null) {
+                    $last = Trip::latest()->first();
+                    if ($last == null) {
+                        $unique = "GO-00001";
+                    } else {
+                        $last = $last->unique_id;
+                        $numericPart = substr($last, 3);
+                        $nextNumericPart = str_pad((int)$numericPart + 1, strlen($numericPart), '0', STR_PAD_LEFT);
+                        $unique = 'GO-' . $nextNumericPart;
+                    }
+                    $startTime = str_replace('T', " ", $event->getStart()->getDateTime());
+                    $startTime = str_replace('Z', "", $startTime);
+                    $endTime = str_replace('T', " ", $event->getEnd()->getDateTime());
+                    $endTime = str_replace('Z', "", $endTime);
+                    $new = new Trip();
+                    $new->unique_id = $unique;
+                    $new->event_id = $event->getId();
+                    $new->pickup_date = $startTime;
+                    $new->delivery_date = $endTime;
+                    $new->event_name = $event->getSummary();
+                    $new->description = $event->getDescription();
+                    $new->save();
+                }
+            }
+        } catch (\Exception $e) {
+            // dd($e->getMessage());
+            $error = json_decode($e->getMessage(), true);
+            $url  = $client->createAuthUrl();
+            return redirect($url);
+            exit;
+            // if ($error['error']['code'] == 401) {
+            // }
+        }
+        $total = Trip::whereIn('status',['available',null])->count();
         return view('trips.trips', compact('total'));
     }
+
+    public function active(Request $request)
+    {
+        $user = User::where('type', 'superadmin')->first();
+        $accessToken = $user->access_token;
+        $client = $this->getClient();
+        $client->setAccessToken($accessToken);
+        $service = new Google_Service_Calendar($client);
+        if ($request->ajax()) {
+            $trips = Trip::where('id', '>', 0)->get();
+            $calendarId = 'rw.passengers@gmail.com';
+            foreach ($trips as $key => $value) {
+                $eventId = $value->event_id;
+                $event = $service->events->get($calendarId, $eventId);
+                // dd("HI");
+                $startTime = $event->start->dateTime;
+                $endTime = $event->end->dateTime;
+                $startTime = str_replace('T', " ", $startTime);
+                $startTime = str_replace('Z', "", $startTime);
+                $endTime = str_replace('T', " ", $endTime);
+                $endTime = str_replace('Z', "", $endTime);
+
+                $event_name = $event->getSummary();
+                $description = $event->getDescription();
+                if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
+                    Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
+                }
+            }
+
+            $trips = Trip::latest()->whereNotIn('status',['available','completed'])->whereNotNull('status')->with('stops', 'driver')->get();
+            return DataTables::of($trips)->make(true);
+        }
+        try {
+            $events = $service->events->listEvents('rw.passengers@gmail.com');
+            // dd($events->getItems(3)[0]->getId());
+        } catch (\Exception $e) {
+            $error = json_decode($e->getMessage(), true);
+            // dd($e->getMessage());
+            if ($error['error']['code'] == 401) {
+                $url  = $client->createAuthUrl();
+                return redirect($url);
+                exit;
+            }
+        }
+        $total = Trip::whereNotIn('status',['available','completed'])->whereNotNull('status')->count();
+        return view('trips.active', compact('total'));
+    }
+
+    public function completed(Request $request)
+    {
+        $user = User::where('type', 'superadmin')->first();
+        $accessToken = $user->access_token;
+        $client = $this->getClient();
+        $client->setAccessToken($accessToken);
+        $service = new Google_Service_Calendar($client);
+        if ($request->ajax()) {
+            $trips = Trip::where('id', '>', 0)->get();
+            $calendarId = 'rw.passengers@gmail.com';
+            foreach ($trips as $key => $value) {
+                $eventId = $value->event_id;
+                $event = $service->events->get($calendarId, $eventId);
+                // dd("HI");
+                $startTime = $event->start->dateTime;
+                $endTime = $event->end->dateTime;
+                $startTime = str_replace('T', " ", $startTime);
+                $startTime = str_replace('Z', "", $startTime);
+                $endTime = str_replace('T', " ", $endTime);
+                $endTime = str_replace('Z', "", $endTime);
+
+                $event_name = $event->getSummary();
+                $description = $event->getDescription();
+                if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
+                    Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
+                }
+            }
+
+            $trips = Trip::latest()->where('status','completed')->with('stops', 'driver')->get();
+            return DataTables::of($trips)->make(true);
+        }
+        try {
+            $events = $service->events->listEvents('rw.passengers@gmail.com');
+        } catch (\Exception $e) {
+            $error = json_decode($e->getMessage(), true);
+            // dd($e->getMessage());
+            if ($error['error']['code'] == 401) {
+                $url  = $client->createAuthUrl();
+                return redirect($url);
+                exit;
+            }
+        }
+        $total = Trip::where('status','completed')->count();
+        return view('trips.completed', compact('total'));
+    }
+
 
 
     public function new()
     {
+        try {
+            $user = User::where('type', 'superadmin')->first();
+            $accessToken = $user->access_token;
+            $client = $this->getClient();
+            $client->setAccessToken($accessToken);
+            $service = new Google_Service_Calendar($client);
+            $events = $service->events->listEvents('rw.passengers@gmail.com');
+        } catch (\Exception $e) {
+            $error = json_decode($e->getMessage(), true);
+            // dd($e->getMessage());
+            if ($error['error']['code'] == 401) {
+                $url  = $client->createAuthUrl();
+                return redirect($url);
+                exit;
+            }
+        }
         $drivers = Driver::where('id', '>', 0)->with('user')->get();
         return view('trips.create', compact('drivers'));
     }
@@ -133,6 +276,7 @@ class TripsController extends Controller
         // dd($request->all());
         $decodedJson = html_entity_decode($request->stops);
         $stops = json_decode($decodedJson, true);
+        $stops_descriptions = json_decode($request->stop_descriptions, true);
         // dd($stops);
         $last = Trip::latest()->first();
         if ($last == null) {
@@ -159,11 +303,11 @@ class TripsController extends Controller
         $trip->long = $request->long;
         $trip->drop_lat = $request->drop_lat;
         $trip->drop_long = $request->drop_long;
+        $trip->event_name = $request->event_name;
+        $trip->description = $request->description;
+        $trip->status = 'available';
         $trip->save();
-        $description = 'Pickup :' . $request->pickup_location;
-        $description .= '<br> Delivery:' . $request->delivery_location;
-        $description .= '<br> Customer Name:' . $request->customer_name;
-        $description .= '<br> Customer Phone:' . $request->customer_phone;
+        $description = $request->description;
 
         $stop = new Stop();
         $stop->location = $request->pickup_location;
@@ -171,16 +315,17 @@ class TripsController extends Controller
         $stop->trip_id = $trip->id;
         $stop->lat = $request->lat;
         $stop->long = $request->long;
+        $stop->description = $request->start_description;
         $stop->save();
 
         foreach ($stops as $key => $value) {
-            $description .= '<br> Stop ' . ($key + 1) . ': ' . $value['stop'];
             $stop = new Stop();
             $stop->location = $value['stop'];
             $stop->type = 'stop';
             $stop->trip_id = $trip->id;
             $stop->lat = $value['lat'];
             $stop->long = $value['lng'];
+            $stop->description = $stops_descriptions[$key];
             $stop->save();
         }
 
@@ -190,36 +335,37 @@ class TripsController extends Controller
         $stop->trip_id = $trip->id;
         $stop->lat = $request->drop_lat;
         $stop->long = $request->drop_long;
+        $stop->description = $request->end_description;
         $stop->save();
 
-        // $user = User::where('type', 'superadmin')->first();
-        // $accessToken = $user->access_token;
-        // $client = $this->getClient();
-        // $client->setAccessToken($accessToken);
-        // $service = new Google_Service_Calendar($client);
-        // $pickupDateTime = new DateTime($trip->pickup_date);
-        // $formattedPickupDateTime = $pickupDateTime->format('Y-m-d\TH:i:s\Z');
-        // $deliveryDateTime = new DateTime($trip->delivery_date);
-        // $formattedDeliveryDateTime = $deliveryDateTime->format('Y-m-d\TH:i:s\Z');
+        $user = User::where('type', 'superadmin')->first();
+        $accessToken = $user->access_token;
+        $client = $this->getClient();
+        $client->setAccessToken($accessToken);
+        $service = new Google_Service_Calendar($client);
+        $pickupDateTime = new DateTime($trip->pickup_date);
+        $formattedPickupDateTime = $pickupDateTime->format('Y-m-d\TH:i:s\Z');
+        $deliveryDateTime = new DateTime($trip->delivery_date);
+        $formattedDeliveryDateTime = $deliveryDateTime->format('Y-m-d\TH:i:s\Z');
 
-        // $event = new Google_Service_Calendar_Event([
-        //     'summary' => $unique,
-        //     'description' => $description,
-        //     'start' => [
-        //         'dateTime' => $formattedPickupDateTime,
-        //         'timeZone' => 'UTC', // Adjust as needed
-        //     ],
-        //     'end' => [
-        //         'dateTime' => $formattedDeliveryDateTime,
-        //         'timeZone' => 'UTC', // Adjust as needed
-        //     ],
-        // ]);
-        // $calendarId = 'rw.passengers@gmail.com';
-        // // $calendarId = 'primary';
-        // $event = $service->events->insert($calendarId, $event);
-        // $event_id = $event->getId();
+        $event = new Google_Service_Calendar_Event([
+            'summary' => $request->event_name,
+            'description' => $description,
+            'start' => [
+                'dateTime' => $formattedPickupDateTime,
+                'timeZone' => 'UTC', // Adjust as needed
+            ],
+            'end' => [
+                'dateTime' => $formattedDeliveryDateTime,
+                'timeZone' => 'UTC', // Adjust as needed
+            ],
+        ]);
+        $calendarId = 'rw.passengers@gmail.com';
+        // $calendarId = 'primary';
+        $event = $service->events->insert($calendarId, $event);
+        $event_id = $event->getId();
 
-        // $trip->event_id = $event_id;
+        $trip->event_id = $event_id;
         $trip->save();
         return redirect('trips')->with('success', 'Trip added successfully');
     }
@@ -233,8 +379,11 @@ class TripsController extends Controller
 
     public function update(Request $request)
     {
+        // dd($request->all());
         $decodedJson = html_entity_decode($request->stops);
         $stops = json_decode($decodedJson, true);
+        $stops_descriptions = json_decode($request->stop_descriptions, true);
+
         $trip = Trip::find($request->trip_id);
         $trip->user_id = $request->user_id;
         $trip->pickup_date = $request->pickup_date;
@@ -249,13 +398,15 @@ class TripsController extends Controller
         $trip->long = $request->long;
         $trip->drop_lat = $request->drop_lat;
         $trip->drop_long = $request->drop_long;
+        $trip->event_name = $request->event_name;
+        $trip->description = $request->description;
+        if ($trip->status == null) {
+            $trip->status = 'available';
+        }
         $trip->save();
         Stop::where('trip_id', $request->trip_id)->delete();
 
-        $description = 'Pickup :' . $request->pickup_location;
-        $description .= '<br> Delivery:' . $request->delivery_location;
-        $description .= '<br> Customer Name:' . $request->customer_name;
-        $description .= '<br> Customer Phone:' . $request->customer_phone;
+        $description = $request->description;
 
 
         $stop = new Stop();
@@ -264,17 +415,18 @@ class TripsController extends Controller
         $stop->trip_id = $request->trip_id;
         $stop->lat = $request->lat;
         $stop->long = $request->long;
+        $stop->description = $request->start_description;
         $stop->save();
 
 
         foreach ($stops as $key => $value) {
-            $description .= '<br> Stop ' . ($key + 1) . ': ' . $value['stop'];
             $stop = new Stop();
             $stop->location = $value['stop'];
             $stop->type = 'stop';
             $stop->trip_id = $request->trip_id;
             $stop->lat = $value['lat'];
             $stop->long = $value['lng'];
+            $stop->description = $stops_descriptions[$key];
             $stop->save();
         }
 
@@ -284,25 +436,26 @@ class TripsController extends Controller
         $stop->trip_id = $request->trip_id;
         $stop->lat = $request->drop_lat;
         $stop->long = $request->drop_long;
+        $stop->description = $request->end_description;
         $stop->save();
 
 
-        // $user = User::where('type', 'superadmin')->first();
-        // $accessToken = $user->access_token;
-        // $client = $this->getClient();
-        // $client->setAccessToken($accessToken);
-        // $service = new Google_Service_Calendar($client);
-        // $pickupDateTime = new DateTime($trip->pickup_date);
-        // $formattedPickupDateTime = $pickupDateTime->format('Y-m-d\TH:i:s\Z');
-        // $deliveryDateTime = new DateTime($trip->delivery_date);
-        // $formattedDeliveryDateTime = $pickupDateTime->format('Y-m-d\TH:i:s\Z');
+        $user = User::where('type', 'superadmin')->first();
+        $accessToken = $user->access_token;
+        $client = $this->getClient();
+        $client->setAccessToken($accessToken);
+        $service = new Google_Service_Calendar($client);
+        $pickupDateTime = new DateTime($trip->pickup_date);
+        $formattedPickupDateTime = $pickupDateTime->format('Y-m-d\TH:i:s\Z');
+        $deliveryDateTime = new DateTime($trip->delivery_date);
+        $formattedDeliveryDateTime = $deliveryDateTime->format('Y-m-d\TH:i:s\Z');
 
-        // $event = $service->events->get('rw.passengers@gmail.com', $request->event_id);
-        // $event->setSummary($trip->unique_id);
-        // $event->setDescription($description);
-        // $event->setStart(new \Google_Service_Calendar_EventDateTime(['dateTime' => $formattedPickupDateTime]));
-        // $event->setEnd(new \Google_Service_Calendar_EventDateTime(['dateTime' => $formattedDeliveryDateTime]));
-        // $service->events->update('rw.passengers@gmail.com', $request->event_id, $event);
+        $event = $service->events->get('rw.passengers@gmail.com', $request->event_id);
+        $event->setSummary($trip->event_name);
+        $event->setDescription($description);
+        $event->setStart(new \Google_Service_Calendar_EventDateTime(['dateTime' => $formattedPickupDateTime]));
+        $event->setEnd(new \Google_Service_Calendar_EventDateTime(['dateTime' => $formattedDeliveryDateTime]));
+        $service->events->update('rw.passengers@gmail.com', $request->event_id, $event);
 
 
         return redirect('trips')->with('success', 'Trip updated successfully');
@@ -310,13 +463,13 @@ class TripsController extends Controller
     public function delete($id)
     {
         $trip = Trip::find($id);
-        // $user = User::where('type', 'superadmin')->first();
-        // $accessToken = $user->access_token;
-        // $client = $this->getClient();
-        // $client->setAccessToken($accessToken);
-        // $service = new Google_Service_Calendar($client);
-        // $service->events->delete('rw.passengers@gmail.com', $trip->event_id);
-        // Stop::where('trip_id', $id)->delete();
+        $user = User::where('type', 'superadmin')->first();
+        $accessToken = $user->access_token;
+        $client = $this->getClient();
+        $client->setAccessToken($accessToken);
+        $service = new Google_Service_Calendar($client);
+        $service->events->delete('rw.passengers@gmail.com', $trip->event_id);
+        Stop::where('trip_id', $id)->delete();
         $trip->delete();
         return redirect('trips')->with('success', 'Trip deleted successfully');
     }

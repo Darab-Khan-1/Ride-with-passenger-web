@@ -41,7 +41,7 @@
                                     </div>
                                     <a href="#"
                                         class="text-muted text-hover-primary font-weight-bold font-size-lg mt-1">Total
-                                        Trips</a>
+                                        Active</a>
                                 </div>
                             </div>
                             <!--end::Tiles Widget 12-->
@@ -90,7 +90,7 @@
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
-                        <h3 class="card-label">Available Trips ({{ $total }})
+                        <h3 class="card-label">Active Trips ({{ $total }})
                             {{-- <span class="d-block text-muted pt-2 font-size-sm">Companies made easy</span> --}}
                         </h3>
                     </div>
@@ -129,33 +129,12 @@
     <!--end::Entry-->
 </div>
 
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Delete Trip</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i aria-hidden="true" class="ki ki-close"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure to delete this trip?</p>
-            </div>
-            <div class="modal-footer">
-                <a id="deleteUrl" class="btn btn-primary font-weight-bold">Yes</a>
-                <button type="button" class="btn btn-light-primary font-weight-bold"
-                    data-dismiss="modal">No</button>
-            </div>
-        </div>
-    </div>
-</div>
 <!--end::Content-->
 @include('includes/footer')
 
 <script type="text/javascript">
     $(".trips-nav").click()
-    $(".trips-nav").addClass("menu-item-active");
+    $(".active-trips-nav").addClass("menu-item-active");
 
 
     var table
@@ -168,11 +147,10 @@
             serverSide: false,
 
             ajax: {
-                url: "{{ url('/trips') }}"
+                url: "{{ url('/active/trips') }}"
             },
 
-            columns: [
-                {
+            columns: [{
                     data: 'unique_id',
                     title: 'Trip&nbsp;ID',
                     width: '150px',
@@ -206,17 +184,18 @@
                     title: 'Pickup&nbsp;Details',
                     width: "250px",
                     render: function(data, type, row) {
-                        let no_data = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
+                        let no_data =
+                            '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
                         let html = ''
                         if (row.pickup_location != null) {
-                            html += "<b>Location:</b> " + row.pickup_location 
+                            html += "<b>Location:</b> " + row.pickup_location
                         } else {
-                            html += "<b>Location:</b> " + no_data 
+                            html += "<b>Location:</b> " + no_data
                         }
-                        if(data != null){
-                            html +=   "<br><b>Date/Time:</b>" + data
-                        }else{
-                            html +=   "<br><b>Date/Time:</b>" + no_data
+                        if (data != null) {
+                            html += "<br><b>Date/Time:</b>" + data
+                        } else {
+                            html += "<br><b>Date/Time:</b>" + no_data
                         }
                         return html
                     }
@@ -226,17 +205,18 @@
                     title: 'Delivery&nbsp; Details',
                     width: "250px",
                     render: function(data, tye, row) {
-                        let no_data = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
+                        let no_data =
+                            '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
                         let html = ''
                         if (row.delivery_location != null) {
                             html += "<b>Location:</b> " + row.delivery_location
                         } else {
                             html += "<b>Location:</b> " + no_data
                         }
-                        if(data != null){
-                            html +=   "<br><b>Date/Time:</b>" + data
-                        }else{
-                            html +=   "<br><b>Date/Time:</b>" + no_data
+                        if (data != null) {
+                            html += "<br><b>Date/Time:</b>" + data
+                        } else {
+                            html += "<br><b>Date/Time:</b>" + no_data
                         }
                         return html
                     }
@@ -246,7 +226,7 @@
                     title: 'Details',
                     width: "250px",
                     render: function(data, tye, row) {
-                        if(data != null){
+                        if (data != null) {
                             return "<b>Estimated&nbsp;Distance:</b>" + data +
                                 " km<br><b>Estimated&nbsp;Time:</b>" + row.estimated_time
                         }
@@ -258,9 +238,11 @@
                     title: 'Customer',
                     width: "250px",
                     render: function(data, tye, row) {
-                        let html = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
-                        if(data != null){
-                            html =  "<b>Name:</b>" + data + "<br><b>Phone:</b>" + row.customer_phone
+                        let html =
+                            '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
+                        if (data != null) {
+                            html = "<b>Name:</b>" + data + "<br><b>Phone:</b>" + row
+                                .customer_phone
                         }
                         return html
                     }
@@ -271,16 +253,17 @@
                     width: "250px",
                     render: function(data, tye, row) {
                         let html = "";
-                        if(data.length > 0){
-                            data.forEach((element,index) => {
-                                html += '<b>Stop ' + (index + 1) + ':<b> ' + element.location + '<br>'
+                        if (data.length > 0) {
+                            data.forEach((element, index) => {
+                                html += '<b>Stop ' + (index + 1) + ':<b> ' + element
+                                    .location + '<br>'
                             });
-                        }else{
+                        } else {
                             html += "<b>NO&nbsp;STOP<b>"
                         }
                         return html
                     }
-                }, 
+                },
                 {
                     data: 'description',
                     title: 'Description',
@@ -292,10 +275,10 @@
                     data: 'status',
                     title: 'Status',
                     render: function(data, type, row) {
-                        let html = '<span class="font-weight-bold text-danger">INCOMPLETE</span>'
-                        if(data != null){
-                            html =  data.toUpperCase()
-                        }
+                        let html = '<span class="font-weight-bold text-warning">ACTIVE</span>'
+                        // if(data != null){
+                        //     html =  data.toUpperCase()
+                        // }
                         return html
                     }
                 },
@@ -306,13 +289,16 @@
                     render: function(data, type, row) {
                         let url = "{{ url('edit/trip') }}" + "/" + data
                         let html = ''
-                        html += '<a href="' + url +
-                            '" class="edit-load btn btn-sm btn-clean btn-icon mr-2" title="Edit details"><span class="svg-icon svg-icon-md"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><path d="M8,17.9148182 L8,5.96685884 C8,5.56391781 8.16211443,5.17792052 8.44982609,4.89581508 L10.965708,2.42895648 C11.5426798,1.86322723 12.4640974,1.85620921 13.0496196,2.41308426 L15.5337377,4.77566479 C15.8314604,5.0588212 16,5.45170806 16,5.86258077 L16,17.9148182 C16,18.7432453 15.3284271,19.4148182 14.5,19.4148182 L9.5,19.4148182 C8.67157288,19.4148182 8,18.7432453 8,17.9148182 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000000, 10.707409) rotate(-135.000000) translate(-12.000000, -10.707409) "></path><rect fill="#000000" opacity="0.3" x="5" y="20" width="15" height="2" rx="1"></rect></g></svg></span></a>'
-                        if(row.status == 'available' || row.status == null )
-                        html += '<a href="javascript:void(0);" trip_id="' + data +
-                            '" class="delete-trip btn btn-sm btn-clean btn-icon" title="Delete">	                            <span class="svg-icon svg-icon-md">	                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">	                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">	                                        <rect x="0" y="0" width="24" height="24"></rect>	                                        <path d="M6,8 L6,20.5 C6,21.3284271 6.67157288,22 7.5,22 L16.5,22 C17.3284271,22 18,21.3284271 18,20.5 L18,8 L6,8 Z" fill="#000000" fill-rule="nonzero"></path>	                                        <path d="M14,4.5 L14,4 C14,3.44771525 13.5522847,3 13,3 L11,3 C10.4477153,3 10,3.44771525 10,4 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"></path>	                                    </g>	                                </svg>	                            </span>	                        </a>'
-
-
+                        // html += '<a href="' + url +
+                        //     '" class="edit-load btn btn-sm btn-clean btn-icon mr-2" title="Edit details"><span class="svg-icon svg-icon-md"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><path d="M8,17.9148182 L8,5.96685884 C8,5.56391781 8.16211443,5.17792052 8.44982609,4.89581508 L10.965708,2.42895648 C11.5426798,1.86322723 12.4640974,1.85620921 13.0496196,2.41308426 L15.5337377,4.77566479 C15.8314604,5.0588212 16,5.45170806 16,5.86258077 L16,17.9148182 C16,18.7432453 15.3284271,19.4148182 14.5,19.4148182 L9.5,19.4148182 C8.67157288,19.4148182 8,18.7432453 8,17.9148182 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000000, 10.707409) rotate(-135.000000) translate(-12.000000, -10.707409) "></path><rect fill="#000000" opacity="0.3" x="5" y="20" width="15" height="2" rx="1"></rect></g></svg></span></a>'
+                        if (row.driver != null) {
+                            html += `<a href="` + "{{ url('live/location') }}" + "/" + row.driver.device_id + `"><span class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\Map\Marker1.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <rect x="0" y="0" width="24" height="24"/>
+                                        <path d="M5,10.5 C5,6 8,3 12.5,3 C17,3 20,6.75 20,10.5 C20,12.8325623 17.8236613,16.03566 13.470984,20.1092932 C12.9154018,20.6292577 12.0585054,20.6508331 11.4774555,20.1594925 C7.15915182,16.5078313 5,13.2880005 5,10.5 Z M12.5,12 C13.8807119,12 15,10.8807119 15,9.5 C15,8.11928813 13.8807119,7 12.5,7 C11.1192881,7 10,8.11928813 10,9.5 C10,10.8807119 11.1192881,12 12.5,12 Z" fill="#000000" fill-rule="nonzero"/>
+                                    </g>
+                                </svg><!--end::Svg Icon--></span></a>`
+                        }
                         return html;
                     }
                 }
@@ -378,15 +364,4 @@
             ]
         });
     });
-
-    $(document).on('click', '.delete-trip', function() {
-        let trip = $(this).attr('trip_id');
-        $("#deleteUrl").attr('href', "{{ url('/delete/trip') }}" + "/" + trip);
-        $("#deleteModal").modal('show');
-    });
-
-    function getReport() {
-        let newUrl = "{{ url('all/trips') }}" + "/" + $("#from").val() + "/" + $("#to").val()
-        table.ajax.url(newUrl).load();
-    }
 </script>

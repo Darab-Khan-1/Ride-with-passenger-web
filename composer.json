@@ -13,6 +13,7 @@
         "laravel/passport": "^11.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "spatie/laravel-permission": "^6.3",
         "yajra/laravel-datatables-oracle": "^10.11"
     },
     "require-dev": {

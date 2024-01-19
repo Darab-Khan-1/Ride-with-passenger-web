@@ -59,7 +59,8 @@ License: You must have a valid license purchased only from themeforest(the above
 								<form class="form" novalidate="novalidate" id="kt_login_signin_form">
 									<!--begin::Title-->
 									<div class="text-center pb-8">
-										<h2 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg">Sign In</h2>
+										<img alt="Logo" src="{{ asset('assets/ridewithpassngers.png') }}" class="max-h-180px" style="border-radius: 0.82rem" />
+										<h2 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg mt-5">Sign In</h2>
 									</div>
 									<!--end::Title-->
 									<!--begin::Form group-->

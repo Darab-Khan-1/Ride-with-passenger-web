@@ -28,6 +28,8 @@ class RegistrationController extends Controller
             if ($user->type == 'superadmin') {
                 $this->adminLogin();
                 return response()->json(['result' => 'superadmin']);
+            } else if($user->type == 'employee') {
+                return response()->json(['result' => 'employee']);
             } else {
                 return response()->json(['result' => 'invalid']);
             }

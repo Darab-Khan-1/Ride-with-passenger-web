@@ -212,15 +212,27 @@ class DriversController extends Controller
             // }else{
             //     $timeDifference = 6;
             // }
-            $position = $this->DeviceService->live($id);
+            $data['driver'] = Driver::where('device_id',$id)->first();
+            $data['position'] = $position = $this->DeviceService->live($id);
             // dd($position);
             if (isset($position[0])) {
                 $position[0]->serverTime = date('h:i A d M, Y', strtotime($position[0]->serverTime));
-                return $position[0];
+                $data['position'] = $position[0];
             }
-            return [];
+            return $data;
         }
         $drivers = Driver::all();
+        $positions = $this->DeviceService->allLive();
+        // dd($positions);
+        foreach($drivers as &$driver){
+            $driver->address = "N/A";
+            foreach($positions as $value){
+                if($value->deviceId == $driver->device_id){
+                    $driver->address = $value->address != null ? $value->address : "N/A";
+                }
+            }
+        }
+        // dd($drivers);
         return view('live', compact('drivers', 'id'));
     }
 

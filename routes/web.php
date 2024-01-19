@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\TripController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\DashboardController;
 
 use App\Http\Controllers\DriversController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TripsController;
 
 
@@ -35,7 +38,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('profile/password/update', [RegistrationController::class, 'updatePassword']);
     Route::get('logout', [RegistrationController::class, 'logout']);
     Route::get('dashboard', [DashboardController::class, 'index']);
-    
+
     //Drivers
     Route::get('drivers', [DriversController::class, 'index']);
     Route::post('register/driver', [DriversController::class, 'create']);
@@ -47,13 +50,15 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Trips
     Route::get('trips', [TripsController::class, 'index']);
+    Route::get('active/trips', [TripsController::class, 'active']);
+    Route::get('completed/trips', [TripsController::class, 'completed']);
     Route::get('new/trip', [TripsController::class, 'new']);
     Route::post('trip/create', [TripsController::class, 'create']);
     Route::get('edit/trip/{id}', [TripsController::class, 'edit']);
     Route::post('trip/update', [TripsController::class, 'update']);
     Route::get('delete/trip/{id}', [TripsController::class, 'delete']);
     // Route::get('all/trips/{from}/{to}', [TripsController::class, 'trips']);
-    
+
     //Tracking
     // Route::get('live', [DriversController::class, 'liveIndex']);
     Route::get('live/location/{device_id}', [DriversController::class, 'live']);
@@ -62,5 +67,29 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('playback/index/{service_id}', [DriversController::class, 'playbackIndex']);
     Route::get('playback/history/{id}/{from}/{to}', [DriversController::class, 'playback']);
 
+    //Roles
+    Route::get('/give/all/permissions', [RoleController::class, 'assignAllPermissionsToUser']);
+    Route::get('create/permissions', [RoleController::class, 'createPermission']);
+    Route::get('roles', [RoleController::class, 'index']);
+    Route::post('register/role', [RoleController::class, 'create']);
+    Route::get('get/role/{id}', [RoleController::class, 'get']);
+    Route::get('delete/role/{id}', [RoleController::class, 'delete']);
+    Route::post('update/role', [RoleController::class, 'update']);
 
+    //Employees
+    Route::get('employees', [EmployeeController::class, 'index']);
+    Route::post('register/employee', [EmployeeController::class, 'create']);
+    Route::get('get/employee/{id}', [EmployeeController::class, 'get']);
+    Route::get('delete/employee/{id}', [EmployeeController::class, 'delete']);
+    Route::post('update/employee', [EmployeeController::class, 'update']);
+
+    //Google Calender
+    Route::get('/google/auth', [TripsController::class, 'showAuthorizationForm'])->name('google.auth');
+    Route::get('/google/auth/callback', [TripsController::class, 'handleAuthorizationCallback'])->name('google.auth.callback');
+    Route::get('/google/events', [TripsController::class, 'showEvents'])->name('google.events.index');
+    Route::post('/google/events/add', [TripsController::class, 'addEvent'])->name('google.events.add');
+
+
+    // Route::post('/google/events/update/{eventId}', [TripsController::class, 'updateEvent'])->name('google.events.update');
+    // Route::delete('/google/events/delete/{eventId}', [TripsController::class, 'deleteEvent'])->name('google.events.delete');
 });

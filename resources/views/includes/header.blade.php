@@ -24,11 +24,13 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
     <!--end::Fonts-->
     <!--begin::Page Vendors Styles(used by this page)-->
-    <link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css?v=7.0.5') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css?v=7.0.5') }}" rel="stylesheet"
+        type="text/css" />
     <!--end::Page Vendors Styles-->
     <!--begin::Global Theme Styles(used by all pages)-->
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css?v=7.0.5') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/plugins/custom/prismjs/prismjs.bundle.css?v=7.0.5') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/plugins/custom/prismjs/prismjs.bundle.css?v=7.0.5') }}" rel="stylesheet"
+        type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css?v=7.0.5') }}" rel="stylesheet" type="text/css" />
     <!--end::Global Theme Styles-->
     <!--begin::Layout Themes(used by all pages)-->
@@ -44,7 +46,8 @@ License: You must have a valid license purchased only from themeforest(the above
     <div id="kt_header_mobile" class="header-mobile bg-primary header-mobile-fixed">
         <!--begin::Logo-->
         <a href="index.html">
-            <img alt="Logo" src="{{ asset('assets/ridewithpassngers.png') }}" class="max-h-60px" />
+            <img alt="Logo" src="{{ asset('assets/ridewithpassngers.png') }}" class="max-h-50px"
+                style="border-radius: 0.82rem" />
         </a>
         <!--end::Logo-->
         <!--begin::Toolbar-->
@@ -88,31 +91,40 @@ License: You must have a valid license purchased only from themeforest(the above
                             <!--begin::Left-->
                             <div class="d-none d-lg-flex align-items-center mr-3">
                                 <!--begin::Logo-->
-                                <a href="index.html" class="mr-20">
-                                    <img alt="Logo" src="{{ asset('assets/ridewithpassngers.png') }}" class="max-h-60px" />
+                                <a href="{{ url('dashboard') }}" class="mr-20">
+                                    <img alt="Logo" src="{{ asset('assets/ridewithpassngers.png') }}"
+                                        class="max-h-60px" style="border-radius: 0.82rem" />
                                 </a>
                                 <!--end::Logo-->
                                 <!--begin::Tab Navs(for desktop mode)-->
                                 <ul class="header-tabs nav align-self-end font-size-lg" role="tablist">
                                     <!--begin::Item-->
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link py-4 px-6 home-nav"  data-toggle="tab"
+                                        <a href="#" class="nav-link py-4 px-6 home-nav" data-toggle="tab"
                                             data-target="#kt_header_tab_1" role="tab">Home</a>
                                     </li>
                                     <!--end::Item-->
                                     <!--begin::Item-->
-                                    <li class="nav-item mr-3">
-                                        <a href="#" class="nav-link py-4 px-6 users-nav" data-toggle="tab"
-                                            data-target="#kt_header_tab_2" role="tab">Users Management</a>
-                                    </li>
-                                    <li class="nav-item mr-3">
-                                        <a href="#" class="nav-link py-4 px-6 trips-nav" data-toggle="tab"
-                                            data-target="#kt_header_tab_3" role="tab">Trips Management</a>
-                                    </li>
-                                    <li class="nav-item mr-3">
-                                        <a href="#" class="nav-link py-4 px-6 map-nav" data-toggle="tab"
-                                            data-target="#kt_header_tab_4" role="tab">Map</a>
-                                    </li>
+
+                                    @canany(['view_driver', 'view_employee', 'view_role'])
+                                        <li class="nav-item mr-3">
+                                            <a href="#" class="nav-link py-4 px-6 users-nav" data-toggle="tab"
+                                                data-target="#kt_header_tab_2" role="tab">Users Management</a>
+                                        </li>
+                                    @endcanany
+
+                                    @canany(['view_trip', 'create_trip'])
+                                        <li class="nav-item mr-3">
+                                            <a href="#" class="nav-link py-4 px-6 trips-nav" data-toggle="tab"
+                                                data-target="#kt_header_tab_3" role="tab">Trips Management</a>
+                                        </li>
+                                    @endcanany
+                                    @canany(['live_tracking', 'playback'])
+                                        <li class="nav-item mr-3">
+                                            <a href="#" class="nav-link py-4 px-6 map-nav" data-toggle="tab"
+                                                data-target="#kt_header_tab_4" role="tab">Map</a>
+                                        </li>
+                                    @endcanany
 
                                     <!--end::Item-->
                                 </ul>
@@ -162,18 +174,26 @@ License: You must have a valid license purchased only from themeforest(the above
                                     </li>
                                     <!--end::Item-->
                                     <!--begin::Item-->
-                                    <li class="nav-item mr-2">
-                                        <a href="#" class="nav-link btn btn-clean users-nav" data-toggle="tab"
-                                            data-target="#kt_header_tab_2" role="tab">User Management</a>
-                                    </li>
-                                    <li class="nav-item mr-2">
-                                        <a href="#" class="nav-link btn btn-clean trips-nav" data-toggle="tab"
-                                            data-target="#kt_header_tab_3" role="tab">Trips Management</a>
-                                    </li>
-                                    <li class="nav-item mr-2">
-                                        <a href="#" class="nav-link btn btn-clean map-nav" data-toggle="tab"
-                                            data-target="#kt_header_tab_4" role="tab">Map</a>
-                                    </li>
+                                    @canany(['view_driver', 'view_employee', 'view_role'])
+                                        <li class="nav-item mr-2">
+                                            <a href="#" class="nav-link btn btn-clean users-nav" data-toggle="tab"
+                                                data-target="#kt_header_tab_2" role="tab">User Management</a>
+                                        </li>
+                                    @endcanany
+
+                                    @canany(['view_trip', 'create_trip'])
+                                        <li class="nav-item mr-2">
+                                            <a href="#" class="nav-link btn btn-clean trips-nav" data-toggle="tab"
+                                                data-target="#kt_header_tab_3" role="tab">Trips Management</a>
+                                        </li>
+                                    @endcanany
+
+                                    @canany(['live_tracking', 'playback'])
+                                        <li class="nav-item mr-2">
+                                            <a href="#" class="nav-link btn btn-clean map-nav" data-toggle="tab"
+                                                data-target="#kt_header_tab_4" role="tab">Map</a>
+                                        </li>
+                                    @endcanany
                                     <!--end::Item-->
                                 </ul>
                                 <!--begin::Tab Navs-->
@@ -186,8 +206,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                             class="header-menu header-menu-mobile header-menu-layout-default">
                                             <!--begin::Nav-->
                                             <ul class="menu-nav">
-                                                <li class="menu-item menu-item-active" aria-haspopup="true">
-                                                    <a href="index.html" class="menu-link">
+                                                <li class="menu-item dashboard-nav" aria-haspopup="true">
+                                                    <a href="{{ url('dashboard') }}" class="menu-link">
                                                         <span class="menu-text">Dashboard</span>
                                                     </a>
                                                 </li>
@@ -201,12 +221,30 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="tab-pane p-5 p-lg-0 justify-content-between" id="kt_header_tab_2">
                                         <div class="header-menu header-menu-mobile header-menu-layout-default">
                                             <!--begin::Actions-->
+
                                             <ul class="menu-nav">
-                                                <li class="menu-item menu-item-active" aria-haspopup="true">
-                                                    <a href="{{ url('drivers') }}" class="menu-link">
-                                                        <span class="menu-text">Drivers</span>
-                                                    </a>
-                                                </li>
+                                                @can('view_role')
+                                                    <li class="menu-item roles-nav" aria-haspopup="true">
+                                                        <a href="{{ url('roles') }}" class="menu-link">
+                                                            <span class="menu-text">Roles</span>
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                                @can('view_employee')
+                                                    <li class="menu-item employees-nav" aria-haspopup="true">
+                                                        <a href="{{ url('employees') }}" class="menu-link">
+                                                            <span class="menu-text">Employees</span>
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                                @can('view_driver')
+                                                    <li class="menu-item drivers-nav" aria-haspopup="true">
+                                                        <a href="{{ url('drivers') }}" class="menu-link">
+                                                            <span class="menu-text">Drivers</span>
+                                                        </a>
+                                                    </li>
+                                                @endcan
+
                                             </ul>
                                         </div>
                                     </div>
@@ -214,11 +252,30 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <div class="header-menu header-menu-mobile header-menu-layout-default">
                                             <!--begin::Actions-->
                                             <ul class="menu-nav">
-                                                <li class="menu-item menu-item-active" aria-haspopup="true">
-                                                    <a href="{{ url('trips') }}" class="menu-link">
-                                                        <span class="menu-text">Trips</span>
-                                                    </a>
-                                                </li>
+                                                @can('create_trip')
+                                                    <li class="menu-item new-trip-nav" aria-haspopup="true">
+                                                        <a href="{{ url('new/trip') }}" class="menu-link">
+                                                            <span class="menu-text">+ New Trip</span>
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                                @can('view_trip')
+                                                    <li class="menu-item trips-nav" aria-haspopup="true">
+                                                        <a href="{{ url('trips') }}" class="menu-link">
+                                                            <span class="menu-text">Available</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="menu-item active-trips-nav" aria-haspopup="true">
+                                                        <a href="{{ url('active/trips') }}" class="menu-link">
+                                                            <span class="menu-text">Active</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="menu-item completed-trips-nav" aria-haspopup="true">
+                                                        <a href="{{ url('completed/trips') }}" class="menu-link">
+                                                            <span class="menu-text">Completed</span>
+                                                        </a>
+                                                    </li>
+                                                @endcan
                                             </ul>
                                         </div>
                                     </div>
@@ -226,16 +283,20 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <div class="header-menu header-menu-mobile header-menu-layout-default">
                                             <!--begin::Actions-->
                                             <ul class="menu-nav">
-                                                <li class="menu-item menu-item-active" aria-haspopup="true">
-                                                    <a href="{{ url('live/location/0') }}" class="menu-link">
-                                                        <span class="menu-text">Live Tracking</span>
-                                                    </a>
-                                                </li>
-                                                <li class="menu-item " aria-haspopup="true">
-                                                    <a href="{{ url('playback/index/0') }}" class="menu-link">
-                                                        <span class="menu-text">Playback</span>
-                                                    </a>
-                                                </li>
+                                                @can('live_tracking')
+                                                    <li class="menu-item live-nav" aria-haspopup="true">
+                                                        <a href="{{ url('live/location/0') }}" class="menu-link">
+                                                            <span class="menu-text">Live Tracking</span>
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                                @can('playback')
+                                                    <li class="menu-item playback-nav" aria-haspopup="true">
+                                                        <a href="{{ url('playback/index/0') }}" class="menu-link">
+                                                            <span class="menu-text">Playback</span>
+                                                        </a>
+                                                    </li>
+                                                @endcan
                                             </ul>
                                         </div>
                                     </div>

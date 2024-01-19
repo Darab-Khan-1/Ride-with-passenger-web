@@ -11,8 +11,10 @@ class DashboardController extends Controller
     public function index(){
         $data['drivers'] = Driver::count();
         $data['trips'] = Trip::count();
-        $data['active'] = Trip::where('completed_at',null)->count();
-        $data['completed'] = Trip::where('completed_at','!=',null)->count();
+        $data['available'] = Trip::whereNull('status')->count();
+        $data['active'] = Trip::whereNotIn('status',['available','completed'])->whereNotNull('status')->count();
+        $data['completed'] = Trip::where('status','completed')->count();
+        $data['incomplete'] = Trip::where('status',null)->count();
         return view('dashboard',compact('data'));
     }
 }

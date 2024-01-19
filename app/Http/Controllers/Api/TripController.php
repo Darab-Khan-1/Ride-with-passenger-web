@@ -97,6 +97,7 @@ class TripController extends Controller
                 $array['lat'] = $trip->lat;
                 $array['long'] = $trip->long;
                 $array['address'] = $trip->pickup_location;
+                $array['description'] = $trip->stops[0]->description;
                 $data->next_stop = $array;
             } else if (count($trip->stops) > 2) {
                 $array['stop'] = 1;
@@ -105,6 +106,7 @@ class TripController extends Controller
                 $array['lat'] = $trip->drop_lat;
                 $array['long'] = $trip->drop_long;
                 $array['address'] = $trip->delivery_location;
+                $array['description'] = $trip->stops[count($trip->stops) - 1]->description;
                 $data->next_stop = $array;
                 foreach ($trip->stops as $key => $value) {
                     if ($value->datetime == null) {
@@ -114,6 +116,7 @@ class TripController extends Controller
                         $array['lat'] = $value->lat;
                         $array['long'] = $value->long;
                         $array['address'] = $value->location;
+                        $array['description'] = $value->description;
                         $data->next_stop = $array;
                         break;
                     }
@@ -125,6 +128,7 @@ class TripController extends Controller
                 $array['lat'] = $trip->drop_lat;
                 $array['long'] = $trip->drop_long;
                 $array['address'] = $trip->delivery_location;
+                $array['description'] = $trip->stops[count($trip->stops) - 1]->description;
                 $data->next_stop = $array;
             }
             return $this->apiJsonResponse(200, "Trip found!", $data, "");

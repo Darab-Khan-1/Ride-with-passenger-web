@@ -17,7 +17,7 @@ class Admin
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            if (strtolower(Auth::user()->type) == 'superadmin') {
+            if (strtolower(Auth::user()->type) == 'superadmin' || strtolower(Auth::user()->type) == 'employee') {
                 return $next($request);
             } else {
                 return redirect()->back();
