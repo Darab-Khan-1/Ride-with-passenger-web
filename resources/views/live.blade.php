@@ -132,7 +132,7 @@
                                             @foreach ($drivers as $value)
                                                 <li id="{{ 'USER' . $value->device_id }}" class="user-item"
                                                     data-name="{{ $value->name }}" device_id="{{ $value->device_id }}"
-                                                    data-phone="{{ $value->phone }}">
+                                                    data-phone="{{ $value->address }}">
                                                     <div class="user-profile">
                                                         {{-- <span
                                                             class="status-dot {{ $value->online === 1 ? 'online' : 'offline' }}"></span> --}}
@@ -141,7 +141,7 @@
                                                     </div>
                                                     <div class="user-details">
                                                         <p class="user-name">{{ $value->name }}</p>
-                                                        <p class="user-number">{{ $value->phone }}</p>
+                                                        <p class="user-number">{{ $value->address }}</p>
                                                     </div>
                                                 </li>
                                             @endforeach
@@ -155,7 +155,8 @@
                         </div>
                     </div>
                     <div class="col-md-9">
-                        <div class="card card-custom" id="infoCard" style="display:none;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                        <div class="card card-custom" id="infoCard"
+                            style="display:none;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                             <div class="card-body p-5">
                                 <div class="row">
                                     <div class="col-xl-4" style="margin-bottom: -25px;">
@@ -223,7 +224,7 @@
 
 <script>
     $(".map-nav").click()
-    $("#live_nav").addClass("menu-item-active");
+    $(".live-nav").addClass("menu-item-active");
 
 
     let googleMap;
@@ -384,7 +385,8 @@
         $.ajax({
             url: "{{ url('/live/location/') }}" + "/" + driver,
             method: "GET",
-            success: function(data) {
+            success: function(response) {
+                let data = response['position']
                 if (data && data.latitude && data.longitude) {
 
                     var positionInfoDiv = document.getElementById("position_info");
@@ -559,18 +561,56 @@
                             infowindow.setContent(popupContent);
                         } else {
                             // Create a new marker for the driver
+                            // const marker = new google.maps.Marker({
+                            //     position: {
+                            //         lat: data.latitude,
+                            //         lng: data.longitude
+                            //     },
+                            //     icon: {
+                            //         url: 'data:image/svg+xml,' + encodeURIComponent(
+                            //             svgContent),
+                            //         size: new google.maps.Size(24, 24)
+                            //     },
+                            //     map: googleMap,
+                            // });
+                            var userImageURL = data.avatar;
+
+                            // Create a custom marker with a circular image
                             const marker = new google.maps.Marker({
                                 position: {
                                     lat: data.latitude,
                                     lng: data.longitude
                                 },
-                                icon: {
-                                    url: 'data:image/svg+xml,' + encodeURIComponent(
-                                        svgContent),
-                                    size: new google.maps.Size(24, 24)
-                                },
                                 map: googleMap,
+                                // icon: {
+                                //     url: userImageURL,
+                                //     scaledSize: new google.maps.Size(40,
+                                //     40), // Adjust the size of the circular image
+                                //     origin: new google.maps.Point(0, 0),
+                                //     anchor: new google.maps.Point(20,
+                                //     20), // Center the image as the marker
+                                //     shape: {
+                                //         coords: [40, 40, 40], // Circular shape
+                                //         type: 'circle',
+                                //     },
+                                // },
+                                // icon: {
+                                //     url: 'data:image/svg+xml;charset=UTF-8,' +
+                                //         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">' +
+                                //         '<circle cx="12" cy="12" r="11" fill="black" />' +
+                                //         '</svg>',
+                                //     scaledSize: new google.maps.Size(40, 40),
+                                //     anchor: new google.maps.Point(20, 20),
+                                // },
+                                icon: {
+                                    url: userImageURL, // Use the direct URL for the user's circular image
+                                    scaledSize: new google.maps.Size(40, 40),
+                                    anchor: new google.maps.Point(20, 20),
+                                },
+                                title: 'User Marker', // Set a title for the marker
                             });
+
+
 
                             // Add the new marker to the map
                             driverMarkersMap.set(data.device_id, marker);

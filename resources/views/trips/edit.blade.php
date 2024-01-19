@@ -36,11 +36,25 @@
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <h3>Edit Trip</h3>
                 </div>
-                <form action="{{ url('trip/update') }}" method="POST">
+                <form action="{{ url('trip/update') }}" method="POST" onsubmit="return validateForm()">
                     @csrf
                     <div class="card-body p-5" style="overflow: auto;">
                         <div class="row">
 
+                            <div class="form-group col-md-6">
+                                <label>Customer Name:</label>
+                                <input type="text" name="customer_name" id="customer_name" required
+                                    class="form-control "
+                                    value="{{ old('customer_name') ? old('customer_name') : $trip->customer_name }}"
+                                    placeholder="Enter value here" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Customer Phone:</label>
+                                <input type="text" name="customer_phone" id="customer_phone" required
+                                    class="form-control "
+                                    value="{{ old('customer_phone') ? old('customer_phone') : $trip->customer_phone }}"
+                                    placeholder="Enter value here" />
+                            </div>
                             <div class="form-group col-md-6">
                                 <label>Pickup Date:
                                 </label>
@@ -86,23 +100,9 @@
                                     placeholder="Enter value here" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Customer Name:</label>
-                                <input type="text" name="customer_name" id="customer_name" required
-                                    class="form-control "
-                                    value="{{ old('customer_name') ? old('customer_name') : $trip->customer_name }}"
-                                    placeholder="Enter value here" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>Customer Phone:</label>
-                                <input type="text" name="customer_phone" id="customer_phone" required
-                                    class="form-control "
-                                    value="{{ old('customer_phone') ? old('customer_phone') : $trip->customer_phone }}"
-                                    placeholder="Enter value here" />
-                            </div>
-                            <div class="form-group col-md-6">
                                 <label>Assign Driver:</label>
-                                <select class="form-control " name="user_id" required>
-                                    <option value="" selected>--Select Driver--</option>
+                                <select class="form-control " name="user_id">
+                                    <option value="" selected>--No Driver Attached--</option>
                                     @foreach ($drivers as $value)
                                         <option value="{{ $value->user_id }}"
                                             @if ($trip->user_id == $value->user_id) selected @endif>{{ $value->name }}
@@ -110,6 +110,17 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label>Event Name:</label>
+                                <input type="text" name="event_name" id="event_name" required class="form-control "
+                                    value="{{ old('event_name') ? old('event_name') : $trip->event_name }}"
+                                    placeholder="Enter value here" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Event Description:</label>
+                                <textarea class="form-control " required name="description" cols="30" rows="5">{{ $trip->description }}</textarea>
+                            </div>
+
 
 
                         </div>
@@ -117,12 +128,15 @@
                     <div class="card-footer">
                         <input type="hidden" name="stops" id="stops_array"
                             value="{{ old('stops') ? old('stops') : json_encode($trip->stops) }}">
+                        <input type="hidden" name="stop_descriptions" id="stop_descriptions" value="{{ old('stop_descriptions') }}">
+                        <input type="hidden" name="start_description" id="s_description" >
+                        <input type="hidden" name="end_description" id="e_description">
                         <input type="hidden" name="lat" id="lat" value="{{ $trip->lat }}">
                         <input type="hidden" name="long" id="long" value="{{ $trip->long }}">
                         <input type="hidden" name="drop_lat" id="drop_lat" value="{{ $trip->drop_lat }}">
                         <input type="hidden" name="drop_long" id="drop_long" value="{{ $trip->drop_long }}">
                         <input type="hidden" name="trip_id" value="{{ $trip->id }}">
-                        {{-- <input type="hidden" name="event_id" value="{{ $trip->event_id }}"> --}}
+                        <input type="hidden" name="event_id" value="{{ $trip->event_id }}">
                         <button type="submit" class="btn btn-primary mr-2">Submit</button>
                         <a href="{{ URL::previous() }}" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
                     </div>
@@ -149,10 +163,14 @@
                                 value="{{ $trip->pickup_location }}" placeholder="Enter start location">
                         </div>
                         <div class="mb-3">
+                            <label for="start" class="form-label">Start Point Description:</label>
+                            <textarea name="start_description" id="start_description" cols="30" rows="1" class="form-control " placeholder="Enter start description">{{ $trip->stops[0]->description }}</textarea>
+                        </div>
+                        <div class="mb-3">
                             <div id="stopsContainer">
                                 @foreach ($trip->stops as $item)
                                     @if ($item->type == 'stop')
-                                        <div class="row my-1">
+                                        <div class="row my-3">
                                             <label for="stop" class="col-md-1"
                                                 style="margin-top: 5px;">Stop:</label>
                                             <input type="text" class="stop col-md-8 form-control mx-3"
@@ -161,6 +179,7 @@
                                             <button type="button"
                                                 class="removeStop btn btn-danger btn-sm col-md-2">Remove
                                                 Stop</button>
+                                                <label class="col-md-1" ></label><label for="description" class="col-md-2" style="margin-top: 20px;">Description:</label><textarea name="descriptions[]" cols="30" rows="2" class="stop_description form-control col-md-8  mt-2 ml-6" placeholder="Enter description">{{ $item->description }}</textarea>
                                         </div>
                                     @endif
                                 @endforeach
@@ -170,6 +189,10 @@
                             <label for="end" class="form-label">End Location:</label>
                             <input type="text" id="end" class="form-control"
                                 value="{{ $trip->delivery_location }}" placeholder="Enter end location">
+                        </div>
+                        <div class="mb-3">
+                            <label for="start" class="form-label">End Point Description:</label>
+                            <textarea name="end_description" id="end_description" cols="30" rows="1" class="form-control " placeholder="Enter end description">{{ $trip->stops[count($trip->stops) - 1]->description }}</textarea>
                         </div>
                         <button type="button" id="addStop" class="btn btn-primary my-3">Add Stop</button>
                         <button id="calculate-route" class="btn btn-primary m-2">Calculate Route</button>
@@ -197,8 +220,22 @@
         $('#calculate-route').click();
     })
 
+    function validateForm() {
+        var fieldValue = document.getElementById('pickup_location').value;
+
+        if (!fieldValue) {
+            toastr.warning('Pickup Location is required!');
+            return false;
+        }
+        return true;
+    }
+
     document.querySelector('.start-end-location').addEventListener('click', function() {
         $('#formModal').modal('show');
+    });
+
+    $('#formModal').on('hidden.bs.modal',function(){
+        $('#calculate-route').click();
     });
     var map;
     var directionsService;
@@ -238,7 +275,7 @@
         // Add event listener to add stop button
         $('#addStop').on('click', function() {
             var stopInput = $(
-                '<div class="row my-1"><label for="stop" class="col-md-1" style="margin-top: 5px;">Stop:</label><input type="text"  placeholder="Enter stop location" class="stop col-md-8 form-control mx-3" name="stops[]" required><button type="button" class="removeStop btn btn-danger btn-sm col-md-2">Remove Stop</button></div>'
+                '<div class="row my-3"><label for="stop" class="col-md-1" style="margin-top: 5px;">Stop:</label><input type="text"  placeholder="Enter stop location" class="stop col-md-8 form-control mx-3" name="stops[]" required><button type="button" class="removeStop btn btn-danger btn-sm col-md-2">Remove Stop</button><label class="col-md-1" ></label><label for="description" class="col-md-2" style="margin-top: 20px;">Description:</label><textarea name="descriptions[]" cols="30" rows="2" class="stop_description form-control col-md-8  mt-2 ml-6" placeholder="Enter description"></textarea></div>'
             );
             $('#stopsContainer').append(stopInput);
             // Enable autocomplete for the new stop input
@@ -256,11 +293,21 @@
 
             var start = $('#start').val();
             var destination = $('#end').val();
-            var stops = [];
+            var stops = [],stop_descriptions=[];
 
             $('.stop').each(function() {
                 stops.push($(this).val());
             });
+
+            $('.stop_description').each(function() {
+                // console.log($(this).val())
+                stop_descriptions.push($(this).val());
+            });
+
+            $("#stop_descriptions").val(JSON.stringify(stop_descriptions))
+            $("#s_description").val($("#start_description").val())
+            $("#e_description").val($("#end_description").val())
+
 
             calculateRoute(start, destination, stops);
         });

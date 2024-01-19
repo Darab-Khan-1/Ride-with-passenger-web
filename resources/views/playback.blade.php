@@ -238,7 +238,7 @@
 
 <script>
     $(".map-nav").click()
-    $("#playback_nav").addClass("menu-item-active");
+    $(".playback-nav").addClass("menu-item-active");
 
     var service = null
     $(document).ready(function() {

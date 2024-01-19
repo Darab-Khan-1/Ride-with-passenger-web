@@ -114,8 +114,8 @@ var KTLogin = function() {
 							}
 							if(data.result == "superadmin"){
 								window.location.href  =  "dashboard";
-							}else if(data.result == "admin"){
-								window.location.href  =  "/dashboard";
+							}else if(data.result == "employee"){
+								window.location.href  = "dashboard";
 							}else if(data.result == "manager"){
 								window.location.href  =  "/dashboard";
 							}

@@ -77,7 +77,7 @@
 @include('includes/footer')
 <script>
     $(".home-nav").click()
-    $("#dashboard_nav").addClass("menu-item-active");
+    $(".dashboard-nav").addClass("menu-item-active");
 
     var data = {!! json_encode($data) !!}
     console.log(data);
@@ -105,30 +105,34 @@
     // });
     // driverChart.render();
 
-    // var tripChart = new ApexCharts(document.querySelector("#tripChart"), {
-    //     series: [data.active, data.completed],
-    //     chart: {
-    //         width: 510,
-    //         height: 240,
-    //         type: "donut",
-    //     },
-    //     colors: ["#FFA800", "#1BC5BD"],
+    var tripChart = new ApexCharts(document.querySelector("#tripChart"), {
+        series: [data.incomplete,data.available,data.active, data.completed],
+        chart: {
+            width: 510,
+            height: 240,
+            type: "donut",
+        },
+        colors: ["#F64E60",'#3699FF',"#FFA800", "#1BC5BD"],
 
-    //     labels: [
-    //         '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.active +
-    //         ' Active</span></div>',
-    //         '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data
-    //         .completed +
-    //         ' Completed</span></div>',
-    //     ],
-    //     tooltip: {
-    //         // your tooltip options here
-    //     },
-    //     legend: {
-    //         show: true,
-    //     }
-    // });
-    // tripChart.render();
+        labels: [
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.incomplete +
+            ' Incomplete</span></div>',
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.available +
+            ' Available</span></div>',
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.active +
+            ' Active</span></div>',
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data
+            .completed +
+            ' Completed</span></div>',
+        ],
+        tooltip: {
+            // your tooltip options here
+        },
+        legend: {
+            show: true,
+        }
+    });
+    tripChart.render();
     // getStatus();
     // setInterval(getStatus, 5000);
 </script>

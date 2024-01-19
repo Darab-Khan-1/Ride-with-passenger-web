@@ -42,6 +42,18 @@
                         <div class="row">
 
                             <div class="form-group col-md-6">
+                                <label>Customer Name:</label>
+                                <input type="text" name="customer_name" id="customer_name" required
+                                    class="form-control " value="{{ old('customer_name') }}"
+                                    placeholder="Enter value here" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Customer Phone:</label>
+                                <input type="text" name="customer_phone" id="customer_phone" required
+                                    class="form-control " value="{{ old('customer_phone') }}"
+                                    placeholder="Enter value here" />
+                            </div>
+                            <div class="form-group col-md-6">
                                 <label>Pickup Date:
                                 </label>
                                 <input type="datetime-local" name="pickup_date" id="pickup_date" required
@@ -83,21 +95,9 @@
                                     placeholder="Enter value here" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Customer Name:</label>
-                                <input type="text" name="customer_name" id="customer_name" required
-                                    class="form-control " value="{{ old('customer_name') }}"
-                                    placeholder="Enter value here" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>Customer Phone:</label>
-                                <input type="text" name="customer_phone" id="customer_phone" required
-                                    class="form-control " value="{{ old('customer_phone') }}"
-                                    placeholder="Enter value here" />
-                            </div>
-                            <div class="form-group col-md-6">
                                 <label>Assign Driver:</label>
-                                <select class="form-control " name="user_id" required>
-                                    <option value=""  selected>--Select Driver--</option>
+                                <select class="form-control " name="user_id">
+                                    <option value="" selected>--Select Driver--</option>
                                     @foreach ($drivers as $value)
                                         <option value="{{ $value->user_id }}"
                                             @if (old('user_id') == $value->user_id) selected @endif>{{ $value->name }}
@@ -105,18 +105,30 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label>Event Name:</label>
+                                <input type="text" name="event_name" id="event_name" required class="form-control "
+                                    value="{{ old('event_name') }}" placeholder="Enter value here" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Event Description:</label>
+                                <textarea class="form-control " required name="description" cols="30" rows="5"></textarea>
+                            </div>
 
-                           
+
                         </div>
                     </div>
                     <div class="card-footer">
                         <input type="hidden" name="stops" id="stops_array" value="{{ old('stops') }}">
+                        <input type="hidden" name="stop_descriptions" id="stop_descriptions" value="{{ old('stop_descriptions') }}">
+                        <input type="hidden" name="start_description" id="s_description">
+                        <input type="hidden" name="end_description" id="e_description">
                         <input type="hidden" name="lat" id="lat">
                         <input type="hidden" name="long" id="long">
                         <input type="hidden" name="drop_lat" id="drop_lat">
                         <input type="hidden" name="drop_long" id="drop_long">
                         <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                        <a href="{{ URL::previous() }}"  class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+                        <a href="{{ URL::previous() }}" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
                     </div>
                 </form>
             </div>
@@ -141,13 +153,18 @@
                                 placeholder="Enter start location">
                         </div>
                         <div class="mb-3">
+                            <label for="start" class="form-label">Start Point Description:</label>
+                            <textarea name="start_description" id="start_description" cols="30" rows="1" class="form-control " placeholder="Enter start description"></textarea>
+                        </div>
+                        <div class="mb-3">
                             <div id="stopsContainer">
-                                <div class="row my-1">
+                                <div class="row my-3">
                                     <label for="stop" class="col-md-1" style="margin-top: 5px;">Stop:</label>
                                     <input type="text" class="stop col-md-8 form-control mx-3"
                                         placeholder="Enter stop location" name="stops[]" required>
                                     <button type="button" class="removeStop btn btn-danger btn-sm col-md-2">Remove
                                         Stop</button>
+                                        <label class="col-md-1" ></label><label for="description" class="col-md-2" style="margin-top: 20px;">Description:</label><textarea name="descriptions[]" cols="30" rows="2" class="stop_description form-control col-md-8  mt-2 ml-6" placeholder="Enter description"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -156,8 +173,12 @@
                             <input type="text" id="end" class="form-control"
                                 placeholder="Enter end location">
                         </div>
-                        <button type="button" id="addStop" class="btn btn-primary my-3">Add Stop</button>
-                        <button id="calculate-route" class="btn btn-primary m-2">Calculate Route</button>
+                        <div class="mb-3">
+                            <label for="start" class="form-label">End Point Description:</label>
+                            <textarea name="end_description" id="end_description" cols="30" rows="1" class="form-control " placeholder="Enter end description"></textarea>
+                        </div>
+                        <button type="button" id="addStop" class="btn btn-secondary my-3">Add Stop</button>
+                        <button id="calculate-route" class="btn btn-success m-2">Calculate Route</button>
                         <div class="mb-3" id="map-overlay">Distance:
                             <br>
                             Duration:
@@ -173,10 +194,15 @@
 <!--end::Content-->
 @include('includes/footer')
 
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initMap" defer></script>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initMap"
+    defer></script>
 
 
 <script>
+    $(".trips-nav").click()
+    $(".new-trip-nav").addClass("menu-item-active");
+
     document.querySelector('.start-end-location').addEventListener('click', function() {
         $('#formModal').modal('show');
     });
@@ -218,7 +244,7 @@
         // Add event listener to add stop button
         $('#addStop').on('click', function() {
             var stopInput = $(
-                '<div class="row my-1"><label for="stop" class="col-md-1" style="margin-top: 5px;">Stop:</label><input type="text"  placeholder="Enter stop location" class="stop col-md-8 form-control mx-3" name="stops[]" required><button type="button" class="removeStop btn btn-danger btn-sm col-md-2">Remove Stop</button></div>'
+                '<div class="row my-3"><label for="stop" class="col-md-1" style="margin-top: 5px;">Stop:</label><input type="text"  placeholder="Enter stop location" class="stop col-md-8 form-control mx-3" name="stops[]" required><button type="button" class="removeStop btn btn-danger btn-sm col-md-2">Remove Stop</button><label class="col-md-1" ></label><label for="description" class="col-md-2" style="margin-top: 20px;">Description:</label><textarea name="descriptions[]" cols="30" rows="2" class="stop_description form-control col-md-8  mt-2 ml-6" placeholder="Enter description"></textarea></div>'
             );
             $('#stopsContainer').append(stopInput);
             // Enable autocomplete for the new stop input
@@ -236,11 +262,20 @@
 
             var start = $('#start').val();
             var destination = $('#end').val();
-            var stops = [];
+            var stops = [],stop_descriptions=[];
 
             $('.stop').each(function() {
                 stops.push($(this).val());
             });
+
+            $('.stop_description').each(function() {
+                // console.log($(this).val())
+                stop_descriptions.push($(this).val());
+            });
+
+            $("#stop_descriptions").val(JSON.stringify(stop_descriptions))
+            $("#s_description").val($("#start_description").val())
+            $("#e_description").val($("#end_description").val())
 
             calculateRoute(start, destination, stops);
         });
@@ -253,7 +288,7 @@
         autocomplete.setTypes(['geocode']);
     }
 
-  
+
     function calculateRoute(start, destination, stops) {
         var waypoints = [];
         var stops_array = [];
@@ -343,8 +378,7 @@
 
                 // Add popup for destination marker with lat/lng information
                 addPopup(destinationMarker,
-                    '<span class="badge badge-success bg-success mr-2 p-2">Destination</span><br>Lat: ' +
-                    destinationLat + '<br>Lng: ' + destinationLng);
+                    '<span class="badge badge-success bg-success mr-2 p-2">Destination</span>');
 
                 totalDistance = result.routes[0].legs.reduce(function(acc, leg) {
                     return acc + leg.distance.value;
@@ -388,7 +422,6 @@
         }
 
         function convertSecondsToHMS(seconds) {
-            seconds = seconds * 1.5
             var hours = Math.floor(seconds / 3600);
             var minutes = Math.floor((seconds % 3600) / 60);
             var secs = Math.floor(seconds % 60);
