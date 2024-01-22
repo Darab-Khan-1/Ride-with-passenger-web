@@ -140,11 +140,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                             id="kt_quick_user_toggle">
                                             <div class="d-flex flex-column text-right pr-3">
                                                 <span
-                                                    class="text-white opacity-50 font-weight-bold font-size-sm d-none d-md-inline">Admin</span>
+                                                    class="text-white opacity-50 font-weight-bold font-size-sm d-none d-md-inline">{{ explode(' ',Auth::user()->name)[-] }}</span>
                                             </div>
                                             <span class="symbol symbol-35">
                                                 <span
-                                                    class="symbol-label font-size-h5 font-weight-bold text-white bg-white-o-30">A</span>
+                                                    class="symbol-label font-size-h5 font-weight-bold text-white bg-white-o-30">{{ substr(Auth::user()->name, 0, 1) }}</span>
                                             </span>
                                         </div>
                                     </a>
