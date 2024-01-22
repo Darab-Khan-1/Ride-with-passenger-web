@@ -21,6 +21,7 @@ Route::get('/no-token', [RegistrationController::class, 'noTokenFound']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/logout', [RegistrationController::class, 'logout']);
 
+    Route::post('/save/fcm', [RegistrationController::class, 'fcm']);
     Route::get('/status', [RegistrationController::class, 'status']);
 
     Route::get('/profile', [RegistrationController::class, 'profile']);

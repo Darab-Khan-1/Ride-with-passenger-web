@@ -16,6 +16,13 @@ class ValidationMessages
         ]);
     }
 
+    public function fcmTokenValidationMessages(): array
+    {
+        return ([
+            'fcm.required' => "fcm is required",
+        ]);
+    }
+
     public function driverProfileUpdateValidationMessages(): array
     {
         return ([
