@@ -253,10 +253,10 @@
                     width: "250px",
                     render: function(data, tye, row) {
                         let html = "";
-                        if (data.length > 0) {
-                            data.forEach((element, index) => {
-                                html += '<b>Stop ' + (index + 1) + ':<b> ' + element
-                                    .location + '<br>'
+                        if(data.length > 2){
+                            data.forEach((element,index) => {
+                                if(index > 0 && index < index.length - 1)
+                                html += '<b>Stop ' + (index - 1) + ':<b> ' + element.location + "<small>(" + element.description + ")</small>+ '<br>'
                             });
                         } else {
                             html += "<b>NO&nbsp;STOP<b>"
