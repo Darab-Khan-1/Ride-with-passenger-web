@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Config;
 use App\Helpers\Curl;
+use App\Models\Employee;
 
 class RegistrationController extends Controller
 {
@@ -27,8 +28,11 @@ class RegistrationController extends Controller
         if (Auth::attempt(['email' => $request->username, 'password' => $request->password])) {
             if ($user->type == 'superadmin') {
                 $this->adminLogin();
+                session(['name' => 'Admin' ]);
                 return response()->json(['result' => 'superadmin']);
             } else if($user->type == 'employee') {
+                $name = Employee::where('user_id',$user->id)->pluck('name');
+                session(['name' => $name[0] ]);
                 return response()->json(['result' => 'employee']);
             } else {
                 return response()->json(['result' => 'invalid']);
