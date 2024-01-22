@@ -158,7 +158,7 @@ class DriversController extends Controller
         $user = User::find($request->user_id);
         $user->password = Hash::make($request->password);
         $user->save();
-        return redirect('drivers')->with('success', 'Password changed');
+        return redirect()->back()->with('success', 'Password changed');
     }
     public function delete($id)
     {
