@@ -90,8 +90,9 @@
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
-                        <h3 class="card-label">Available Trips ({{ $total }})
-                            {{-- <span class="d-block text-muted pt-2 font-size-sm">Companies made easy</span> --}}
+                        <h3 class="card-label text-success">Available Trips ({{ $data['available'] }})
+                        </h3>
+                        <h3 class="card-label text-danger">&nbsp;Incomplete Trips ({{ $data['incomplete'] }})
                         </h3>
                     </div>
                     <div class="card-toolbar">
@@ -271,9 +272,10 @@
                     width: "250px",
                     render: function(data, tye, row) {
                         let html = "";
-                        if(data.length > 0){
+                        if(data.length > 2){
                             data.forEach((element,index) => {
-                                html += '<b>Stop ' + (index + 1) + ':<b> ' + element.location + '<br>'
+                                if(index > 0 && index < index.length - 1)
+                                html += '<b>Stop ' + (index - 1) + ':<b> ' + element.location + "<small>(" + element.description + ")</small>+ '<br>'
                             });
                         }else{
                             html += "<b>NO&nbsp;STOP<b>"

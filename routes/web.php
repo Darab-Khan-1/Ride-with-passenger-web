@@ -49,7 +49,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('change/password', [DriversController::class, 'changePassword']);
 
     // Trips
-    Route::get('trips', [TripsController::class, 'index']);
+    Route::get('trips', [TripsController::class, 'available']);
     Route::get('active/trips', [TripsController::class, 'active']);
     Route::get('completed/trips', [TripsController::class, 'completed']);
     Route::get('new/trip', [TripsController::class, 'new']);
