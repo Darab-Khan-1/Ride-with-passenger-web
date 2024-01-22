@@ -185,7 +185,7 @@ class TripsController extends Controller
             }
         }
         $data['available'] = Trip::whereIn('status', ['available'])->count();
-        $data['incomplete'] = Trip::whereIn('status', ['available'])->count();
+        $data['incomplete'] = Trip::whereNull('status')->count();
         return view('trips.trips', compact('data'));
     }
 
