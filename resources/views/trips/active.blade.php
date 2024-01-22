@@ -256,7 +256,7 @@
                         if(data.length > 2){
                             data.forEach((element,index) => {
                                 if(index > 0 && index < index.length - 1)
-                                html += '<b>Stop ' + (index - 1) + ':<b> ' + element.location + "<small>(" + element.description + ")</small>+ '<br>'
+                                html += '<b>Stop ' + (index - 1) + ':<b> ' + element.location + "<small>(" + element.description + ")</small>" + '<br>'
                             });
                         } else {
                             html += "<b>NO&nbsp;STOP<b>"
