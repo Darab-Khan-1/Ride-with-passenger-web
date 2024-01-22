@@ -170,10 +170,10 @@
 
                                     <label for="" style="margin-top: 12px;">From</label>
                                     <input type="datetime-local" class="col-md-3 m-1 form-control" id="from"
-                                        value="{{ isset($service->id) ? date('Y-m-d H:i:s', strtotime($service->service_in)) : date('Y-m-d H:i:s', strtotime('-12 hours')) }}">
+                                        value="{{ isset($service->id) ? date('Y-m-d H:i:s', strtotime($service->started_at)) : date('Y-m-d H:i:s', strtotime('-12 hours')) }}">
                                     <label for="" style="margin-top: 12px;">To</label>
                                     <input type="datetime-local" class="col-md-3 m-1 form-control" id="to"
-                                        value="{{ isset($service->id) ? date('Y-m-d H:i:s', strtotime($service->service_out)) : date('Y-m-d H:i:s', strtotime('now')) }}">
+                                        value="{{ isset($service->id) ? date('Y-m-d H:i:s', strtotime($service->completed_at)) : date('Y-m-d H:i:s', strtotime('now')) }}">
 
                                     <button class="m-1 btn btn-primary text-light" id="fetchAndPlayButton"
                                         style="width: 130px;" onclick="fetchPositionsAndPlay()">&nbsp;Search</button>

@@ -164,7 +164,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="start" class="form-label">Start Point Description:</label>
-                            <textarea name="start_description" id="start_description" cols="30" rows="1" class="form-control " placeholder="Enter start description">{{ $trip->stops[0]->description }}</textarea>
+                            <textarea name="start_description" id="start_description" cols="30" rows="1" class="form-control " placeholder="Enter start description">{{ $trip->status != null ?  $trip->stops[0]->description : '' }}</textarea>
                         </div>
                         <div class="mb-3">
                             <div id="stopsContainer">
@@ -192,7 +192,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="start" class="form-label">End Point Description:</label>
-                            <textarea name="end_description" id="end_description" cols="30" rows="1" class="form-control " placeholder="Enter end description">{{ $trip->stops[count($trip->stops) - 1]->description }}</textarea>
+                            <textarea name="end_description" id="end_description" cols="30" rows="1" class="form-control " placeholder="Enter end description">{{  $trip->status != null ?  $trip->stops[count($trip->stops) - 1]->description : '' }}</textarea>
                         </div>
                         <button type="button" id="addStop" class="btn btn-secondary my-3">Add Stop</button>
                         <button id="calculate-route" class="btn btn-success m-2">Calculate Route</button>
