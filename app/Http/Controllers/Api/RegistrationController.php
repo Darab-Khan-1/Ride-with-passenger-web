@@ -88,6 +88,23 @@ class RegistrationController extends Controller
         }
     }
 
+
+    public function fcm(Request $request, Validate $validate)
+    {
+        $validationErrors = $validate->validate($request, $this->rules->fcmTokenValidationRules(), $this->validationMessages->fcmTokenValidationMessages());
+        if ($validationErrors) {
+            return (new ErrorResource($validationErrors))->response()->setStatusCode(400);
+        }
+        try {
+            $user = User::find($request->user()->id);
+            $user->fcm_token = $request->fcm;
+            $user->save();
+            return $this->apiJsonResponse(200, "Success", '', "Token saved successfully");
+        } catch (\Throwable $e) {
+            return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
+        }
+    }
+
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();

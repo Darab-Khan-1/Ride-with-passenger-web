@@ -15,6 +15,13 @@ class ValidationRules
     }
     
     
+    public function fcmTokenValidationRules(): array
+    {
+        return [
+            'fcm' => 'required',
+        ];
+    }
+    
     public function driverProfileUpdateValidationRules(): array
     {
         return [
