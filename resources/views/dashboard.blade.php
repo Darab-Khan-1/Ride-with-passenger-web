@@ -30,40 +30,58 @@
                     </div>
                 </div>
 
-                <div class="card-body flex-wrap border-0 pt-6 pb-0 ">
+                <div class="card-body flex-wrap border-0 pt-6 pb-0 "
+                    style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
 
-                <div class="row gy-5 g-xl-10">
-                    {{-- <div class="col-xl-5 mb-xl-10">
-                        <div class="card mb-12 h-md-100" dir="ltr" style="height: 450px;">
-                            <div class="card-body d-flex flex-column flex-center">
-                                <div class="mb-2">
-                                    <p class="m-5" style="font-weight: bold;font-size: 17px;">
-                                        Driver Status</p>
-                                    <div class="py-18 text-left">
-                                        <div id="driverChart"></div>
-                                        <h3>Total Drivers: {{ $data['drivers'] }}</h3>
+                    <div class="row gy-5 g-xl-10">
+                        <div class="col-xl-5 mb-xl-10">
+                            <div class="card mb-12 h-md-100" dir="ltr"
+                                style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                                <div class="card-body d-flex flex-column flex-center">
+                                    <div class="mb-2">
+                                        <p class="m-5" style="font-weight: bold;font-size: 17px;">
+                                            Users</p>
+                                        <div class="py-18 text-left">
+                                            <div id="driverChart"></div>
+                                            <h3>Total Users: {{ $data['drivers'] }}</h3>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div> --}}
-                    <div class="col-xl-5 mb-xl-10">
-                        <div class="card mb-12 h-md-100" dir="ltr" style="height: 450px;">
-                            <div class="card-body d-flex flex-column flex-center">
-                                <div class="mb-2">
-                                    <p class="m-5" style="font-weight: bold;font-size: 17px;">
-                                        Trips Status</p>
-                                    <div class="py-18 text-left">
-                                        <div id="tripChart"></div>
-                                        <h3>Total Trips: {{ $data['trips'] }}</h3>
+                        <div class="col-xl-5 mb-xl-10">
+                            <div class="card mb-12 h-md-100" dir="ltr"
+                                style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                                <div class="card-body d-flex flex-column flex-center">
+                                    <div class="mb-2">
+                                        <p class="m-5" style="font-weight: bold;font-size: 17px;">
+                                            Trips Status</p>
+                                        <div class="py-18 text-left">
+                                            <div id="tripChart"></div>
+                                            <h3>Total Trips: {{ $data['trips'] }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-5 mb-xl-10">
+                            <div class="card mb-12 h-md-100" dir="ltr"
+                                style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                                <div class="card-body d-flex flex-column flex-center">
+                                    <div class="mb-2">
+                                        <p class="m-5" style="font-weight: bold;font-size: 17px;">
+                                            Roles</p>
+                                        <div class="py-18 text-left">
+                                            <div id="roleChart"></div>
+                                            <h3>Total Roles: {{ count($data['roles']) }}</h3>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-                
+
                 {{-- <div class="card-footer">
                 </div> --}}
             </div>
@@ -81,43 +99,46 @@
 
     var data = {!! json_encode($data) !!}
     console.log(data);
-    // var driverChart = new ApexCharts(document.querySelector("#driverChart"), {
-    //     series: [data.offline, data.online],
-    //     chart: {
-    //         width: 510,
-    //         height: 240,
-    //         type: "donut",
-    //     },
-    //     colors: ["#ff0000", "#00ff00"],
-
-    //     labels: [
-    //         '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.offline +
-    //         ' Offline</span></div>',
-    //         '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.online +
-    //         ' Online</span></div>',
-    //     ],
-    //     tooltip: {
-    //         // your tooltip options here
-    //     },
-    //     legend: {
-    //         show: true,
-    //     }
-    // });
-    // driverChart.render();
-
-    var tripChart = new ApexCharts(document.querySelector("#tripChart"), {
-        series: [data.incomplete,data.available,data.active, data.completed],
+    var driverChart = new ApexCharts(document.querySelector("#driverChart"), {
+        series: [data.drivers, data.employees],
         chart: {
             width: 510,
             height: 240,
             type: "donut",
         },
-        colors: ["#F64E60",'#3699FF',"#FFA800", "#1BC5BD"],
+        colors: ['#3699FF', "#FFA800"],
 
         labels: [
-            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.incomplete +
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.drivers +
+            ' Drivers</span></div>',
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data
+            .employees +
+            ' Employees</span></div>',
+        ],
+        tooltip: {
+            // your tooltip options here
+        },
+        legend: {
+            show: true,
+        }
+    });
+    driverChart.render();
+
+    var tripChart = new ApexCharts(document.querySelector("#tripChart"), {
+        series: [data.incomplete, data.available, data.active, data.completed],
+        chart: {
+            width: 510,
+            height: 240,
+            type: "donut",
+        },
+        colors: ["#F64E60", '#3699FF', "#FFA800", "#1BC5BD"],
+
+        labels: [
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data
+            .incomplete +
             ' Incomplete</span></div>',
-            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.available +
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data
+            .available +
             ' Available</span></div>',
             '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.active +
             ' Active</span></div>',
@@ -133,6 +154,46 @@
         }
     });
     tripChart.render();
-    // getStatus();
-    // setInterval(getStatus, 5000);
+
+
+
+
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+
+    var series = []
+    var labels = []
+    var colors = []
+    data.roles.forEach(element => {
+        series.push(element.employee_count)
+        colors.push(getRandomColor())
+        labels.push('<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + element
+            .name + ' </span></div>')
+    });
+
+    var roleChart = new ApexCharts(document.querySelector("#roleChart"), {
+        series: series,
+        chart: {
+            width: 510,
+            height: 240,
+            type: "donut",
+        },
+        colors: colors,
+
+        labels: labels,
+        tooltip: {
+            // your tooltip options here
+        },
+        legend: {
+            show: true,
+        }
+    });
+    roleChart.render();
 </script>
