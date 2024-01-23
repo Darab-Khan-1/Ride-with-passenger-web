@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Config;
 use App\Helpers\Curl;
 use App\Models\Employee;
-
+use Session;
 class RegistrationController extends Controller
 {
     use curl;
@@ -26,6 +26,7 @@ class RegistrationController extends Controller
             return response()->json(['result' => 'invalid']);
         }
         if (Auth::attempt(['email' => $request->username, 'password' => $request->password])) {
+            Session::put('token',0);
             if ($user->type == 'superadmin') {
                 $this->adminLogin();
                 session(['name' => 'Admin' ]);
@@ -41,7 +42,22 @@ class RegistrationController extends Controller
             return response()->json(['result' => 'invalid']);
         }
     }
+    public function saveToken(Request $request){
+       
+        $admin_data=User::where('id','=',$request->admin_id)->first();
+        Session::put('token',1);
+        if($admin_data){  
+            if($admin_data->fcm_token!=$request->token || $admin_data->fcm_token==null){
+            
+                $admin_data->fcm_token=$request->token;
+                $admin_data->save();
+                return response()->json('token saved');
+            }
+        }
+        
+        return response()->json('token already saved');
 
+    }
 
     public function profile()
     {

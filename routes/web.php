@@ -33,7 +33,7 @@ Route::post('/login', [RegistrationController::class, 'login']);
 Route::get('/web', [RegistrationController::class, 'web']);
 
 Route::group(['middleware' => 'admin'], function () {
-
+    Route::post('/save/token', [RegistrationController::class, 'saveToken'])->name('save.token');
     Route::get('/profile/personal', [RegistrationController::class, 'profile']);
     Route::post('profile/password/update', [RegistrationController::class, 'updatePassword']);
     Route::get('logout', [RegistrationController::class, 'logout']);

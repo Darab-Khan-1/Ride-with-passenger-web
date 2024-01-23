@@ -19,6 +19,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <meta charset="utf-8" />
     <title>Ride WITH Passenger | Dashboard</title>
     <meta name="description" content="Updates and statistics" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!--begin::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
@@ -36,6 +37,80 @@ License: You must have a valid license purchased only from themeforest(the above
     <!--begin::Layout Themes(used by all pages)-->
     <!--end::Layout Themes-->
     <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase.js"></script>
+<script>
+  if({{ Session::get('token')}}===0 ? true:false ){
+     const firebaseConfig = {
+            apiKey: "{{ env('API_KEY') }}",
+            authDomain: "{{ env('AUTH_DOMAIN') }}",
+            projectId: "{{ env('PROJECT_ID') }}",
+            storageBucket: "{{ env('STORAGE_BUCKET') }}",
+            messagingSenderId: "{{ env('MESSAGING_SEND_ID') }}",
+            appId: "{{ env('APP_ID') }}",
+            databaseURL: "{{ env('FIREBASE_DATABASE_URL') }}"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const messaging = firebase.messaging();
+ 
+        //Registering Service worker file for FCM messages
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register("{{ asset('firebase-messaging-sw.js') }}").then(function(registration) {
+                     //messaging.useServiceWorker(registration);
+                     retreiveToken(messaging);
+                    
+                    console.log('Service Worker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('Service Worker registration failed: ', err);
+                });
+            });
+            
+        }
+        function retreiveToken(messaging) {
+
+            messaging.requestPermission()
+                .then(function () {
+                    return messaging.getToken()
+                })
+                .then(function(token) {
+                    if (token) {
+                        saveTokenToServer(token);
+                    } else {
+                        alert('You should allow notification!');
+                    }
+                    }).catch(function (err) {
+                        console.log('User Chat Token Error'+ err);
+                });
+
+    
+        }
+         function saveTokenToServer(token) {
+        
+            $.ajax({
+                url: '{{ route("save.token") }}',
+                headers: {
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                data: {
+                    token: token,
+                    admin_id:{{auth()->user()!=null ? auth()->user()->id:'-1'}},
+                
+                },
+                dataType: 'JSON',
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (err) {
+                    console.log('User Chat Token Error'+ err);
+                },
+            });
+        } 
+  }
+</script>
 </head>
 <!--end::Head-->
 <!--begin::Body-->

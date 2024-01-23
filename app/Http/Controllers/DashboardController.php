@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Driver;
+use App\Models\User;
 use App\Models\Employee;
 use App\Models\Trip;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
-
+use App\Services\NotificationService;
 class DashboardController extends Controller
 {
     public function index(){
