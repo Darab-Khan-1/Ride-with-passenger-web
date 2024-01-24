@@ -44,8 +44,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
-  if({{ Session::get('token')}}===0 ? true:false ){
-     const firebaseConfig = {
+    const firebaseConfig = {
             apiKey: "{{ env('API_KEY') }}",
             authDomain: "{{ env('AUTH_DOMAIN') }}",
             projectId: "{{ env('PROJECT_ID') }}",
@@ -55,9 +54,11 @@ License: You must have a valid license purchased only from themeforest(the above
             databaseURL: "{{ env('FIREBASE_DATABASE_URL') }}"
         };
 
-        const app = firebase.initializeApp(firebaseConfig);
-        const messaging = firebase.messaging();
+    const app = firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
  
+  if({{ Session::get('token')}}===0 ? true:false ){
+    
         //Registering Service worker file for FCM messages
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
@@ -117,7 +118,7 @@ License: You must have a valid license purchased only from themeforest(the above
    messaging.onMessage((payload) => {
                 toastr.success('New notification<br>'+payload.data.title+'<br>'+payload.data.body);
                 //audio.play();
-        });
+    });
 </script>
 </head>
 <!--end::Head-->
