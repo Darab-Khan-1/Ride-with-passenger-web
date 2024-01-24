@@ -32,6 +32,16 @@
         background-color: red;
         /* Orange dot for offline status */
     }
+    .custom-text{
+        border-radius: 12px;
+        height: 74px;
+        width: 100%;
+        border-color: #bbc5bb;
+    }
+    .custom-text:focus {
+        outline: none !important;
+        border:1px solid #bbc5bb;
+    }
 </style>
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> --}}
 
@@ -98,6 +108,22 @@
                         </button>
                     </div>
                 @endif
+                @error('notification')
+                    <div class="alert alert-danger m-2">
+                        {{ $message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @enderror
+                @error('title')
+                    <div class="alert alert-danger m-2">
+                        {{ $message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @enderror
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
                         <h3 class="card-label">Drivers
@@ -422,13 +448,20 @@
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary font-weight-bold">Save changes</button>
-            </div>
+            <form action="" id="custom_notification_form" method="post">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label><h3>Title</h3></label>
+                        <input type="text" name="title" id="title" class="form-control form-control-solid"  placeholder="Enter title" />
+                    </div>
+                    <textarea class="custom-text form-control form-control-solid" name="notification" id="notification"  ></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold btn-notification">Send Notifiaction</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -440,6 +473,9 @@
     $(".drivers-nav").addClass("menu-item-active");
 
 
+    function updateUrl(id){
+        $('#custom_notification_form').attr('action',"{{url('/custom/notification')}}/"+id+"");
+    }
     var KTProfile = function() {
         // Elements
         var avatar;
@@ -642,7 +678,7 @@
                                     <path d="M5,10.5 C5,6 8,3 12.5,3 C17,3 20,6.75 20,10.5 C20,12.8325623 17.8236613,16.03566 13.470984,20.1092932 C12.9154018,20.6292577 12.0585054,20.6508331 11.4774555,20.1594925 C7.15915182,16.5078313 5,13.2880005 5,10.5 Z M12.5,12 C13.8807119,12 15,10.8807119 15,9.5 C15,8.11928813 13.8807119,7 12.5,7 C11.1192881,7 10,8.11928813 10,9.5 C10,10.8807119 11.1192881,12 12.5,12 Z" fill="#000000" fill-rule="nonzero"/>
                                 </g>
                             </svg><!--end::Svg Icon--></span></a>@endcan`
-                    html += `<span title='Send Notification' data-toggle="modal" data-target="#notificationModal" style="cursor:pointer" class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo8/dist/../src/media/svg/icons/General/Notifications1.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                    html += `<span title='Send Notification' onclick="updateUrl(this.id)" id="`+data+ `" user_id="`+data+ `" data-toggle="modal" data-target="#notificationModal" style="cursor:pointer" class="icon_notification svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo8/dist/../src/media/svg/icons/General/Notifications1.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <path d="M17,12 L18.5,12 C19.3284271,12 20,12.6715729 20,13.5 C20,14.3284271 19.3284271,15 18.5,15 L5.5,15 C4.67157288,15 4,14.3284271 4,13.5 C4,12.6715729 4.67157288,12 5.5,12 L7,12 L7.5582739,6.97553494 C7.80974924,4.71225688 9.72279394,3 12,3 C14.2772061,3 16.1902508,4.71225688 16.4417261,6.97553494 L17,12 Z" fill="#000000"/>
                             <rect fill="#000000" opacity="0.3" x="10" y="16" width="4" height="4" rx="2"/>

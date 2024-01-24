@@ -14,6 +14,7 @@ use Google_Client;
 use Google_Service_Calendar;
 use Google_Service_Calendar_Event;
 use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 class TripsController extends Controller
 {
@@ -364,6 +365,14 @@ class TripsController extends Controller
         $trip->description = $request->description;
         $trip->status = 'available';
         $trip->save();
+        if($request->user_id!=null || $request->user_id!=""){
+            $data=[
+                'message'=>'You havs assigned a new trip!',
+                'title'=>'New trip'
+            ];
+            $this->sendDriverNotification($request->user_id,$data);
+        }
+        
         $description = $request->description;
 
         $stop = new Stop();
@@ -536,5 +545,19 @@ class TripsController extends Controller
         Stop::where('trip_id', $id)->delete();
         $trip->delete();
         return redirect('trips')->with('success', 'Trip deleted successfully');
+    }
+    private function sendDriverNotification($id,$data)  {
+        $users=User::where('id',$id)->select('fcm_token')->get(); 
+        
+        if($user->fcm_token!=null){
+            (new NotificationService)->sendNotification($user->fcm_token,$data);
+        }
+        Notification::create(['title'=>$data['title'],
+            'notification'=>$data['message'],
+            'type'=>'notification',
+            'user_id'=>$id,
+            'seen'=>0,
+        ]);
+        
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Requests\ValidationMessages;
 use App\Http\Requests\Validate;
 use App\Http\Resources\ErrorResource;
 use App\Models\Trip;
+use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Curl;
 use App\Models\Stop;
@@ -375,11 +376,17 @@ class TripController extends Controller
         }
     }
     private function sendAdminNotification($data)  {
-        $tokens=User::where('type','superadmin')->select('fcm_token')->get(); 
-        foreach ($tokens as $key => $token) {
-            if($token->fcm_token!=null){
-                $this->NotificationService->sendNotification($token->fcm_token,$data);
+        $users=User::where('type','superadmin')->select('fcm_token','id')->get(); 
+        foreach ($users as $key => $user) {
+            if($user->fcm_token!=null){
+                $this->NotificationService->sendNotification($user->fcm_token,$data);
             }
+            Notification::create(['title'=>$data['title'],
+                'notification'=>$data['message'],
+                'type'=>'notification',
+                'user_id'=>$user->id,
+                'seen'=>0,
+            ]);
         }
     }
 }

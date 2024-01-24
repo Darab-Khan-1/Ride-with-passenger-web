@@ -51,7 +51,7 @@ class NotificationService
             $error = curl_error($ch);
         }
         $responseData = json_decode($response, true);
-    
+        return $response;
     }
     
 }

@@ -89,7 +89,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/google/events', [TripsController::class, 'showEvents'])->name('google.events.index');
     Route::post('/google/events/add', [TripsController::class, 'addEvent'])->name('google.events.add');
 
-
+    //Notification
+    Route::post('/custom/notification/{id}', [DriversController::class, 'customNotification'])->name('send.notification');
+    
     // Route::post('/google/events/update/{eventId}', [TripsController::class, 'updateEvent'])->name('google.events.update');
     // Route::delete('/google/events/delete/{eventId}', [TripsController::class, 'deleteEvent'])->name('google.events.delete');
 });

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RegistrationController;
 use App\Http\Controllers\Api\TripController;
+use App\Http\Controllers\Api\NotificationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -37,5 +38,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/end/trip', [TripController::class, 'end']);
     Route::post('/stop/trip', [TripController::class, 'stop']);
     Route::post('/exit/stop', [TripController::class, 'exit']);
-    
+
+    //Notifications
+    Route::get('/all/notifications', [NotificationController::class, 'index']);
+    Route::get('/seen/notifications', [NotificationController::class, 'seenNotification']);
 });
