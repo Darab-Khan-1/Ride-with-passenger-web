@@ -23,7 +23,7 @@ class NotificationService
                         "title" => $notification_data['title'],
                         "body" => $notification_data['message'],
                         'icon'=>'', 
-                        'sound' => 'default',
+                        'sound' => notification_data['sound'],
                         'priority' => 'high',
                         
                 ],
@@ -41,7 +41,7 @@ class NotificationService
                         "title" => $notification_data['title'],
                         "body" => $notification_data['message'],
                         'icon'=>'', 
-                        'sound' => 'notificationfromplatform',
+                        'sound' => notification_data['sound'],
                         'priority' => 'high',
                         
                 ],
