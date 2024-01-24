@@ -547,8 +547,7 @@ class TripsController extends Controller
         return redirect('trips')->with('success', 'Trip deleted successfully');
     }
     private function sendDriverNotification($id,$data)  {
-        $user=User::where('id',$id)->select('fcm_token')->get(); 
-        
+        $user=User::where('id',$id)->first(); 
         if($user->fcm_token!=null){
             (new NotificationService)->sendNotification($user->fcm_token,$data,'admin');
         }
