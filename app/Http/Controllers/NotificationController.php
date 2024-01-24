@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Notification;
 use Illuminate\Http\Request;
-
+use Yajra\DataTables\DataTables;
+use Auth;
 class NotificationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if($request->ajax()){
+            $notifications=Notification::where('user_id',Auth::user()->id)->get();
+            return DataTables::of($notifications)->make(true);
+        }
+        return view('notifications');
         //
     }
 

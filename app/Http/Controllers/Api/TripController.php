@@ -379,7 +379,7 @@ class TripController extends Controller
         $users=User::where('type','superadmin')->select('fcm_token','id')->get(); 
         foreach ($users as $key => $user) {
             if($user->fcm_token!=null){
-                $this->NotificationService->sendNotification($user->fcm_token,$data);
+                $this->NotificationService->sendNotification($user->fcm_token,$data,'driver');
             }
             Notification::create(['title'=>$data['title'],
                 'notification'=>$data['message'],

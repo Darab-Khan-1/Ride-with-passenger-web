@@ -13,5 +13,6 @@ class Notification extends Model
             'type',
             'user_id',
             'seen',
+            'title',
     ];
 }
