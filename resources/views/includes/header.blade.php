@@ -112,11 +112,12 @@ License: You must have a valid license purchased only from themeforest(the above
                 },
             });
         }
-         messaging.onMessage((payload) => {
+        
+  }
+   messaging.onMessage((payload) => {
                 toastr.success('New notification<br>'+payload.data.title+'<br>'+payload.data.body);
                 //audio.play();
         });
-  }
 </script>
 </head>
 <!--end::Head-->
