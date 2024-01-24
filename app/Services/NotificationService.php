@@ -14,24 +14,43 @@ use Config;
 
 class NotificationService
 {
-    public function sendNotification($fcm_token, $notification_data){
-        $data = [
-            "to" => $fcm_token,
-           
-            "notification"=>[
-                
-                    "title" => $notification_data['title'],
-                    "body" => $notification_data['message'],
-                    'icon'=>'', 
-                    'sound' => 'default',
-                    'priority' => 'high',
+    public function sendNotification($fcm_token, $notification_data,$user){
+       if($user=='driver'){
+            $data = [
+                "to" => $fcm_token,
+                "data"=>[
                     
-            ],
-            "delay_while_idle" => false, 
-            "priority" => "high", 
-            "content_available" => true 
-            
-        ];
+                        "title" => $notification_data['title'],
+                        "body" => $notification_data['message'],
+                        'icon'=>'', 
+                        'sound' => 'default',
+                        'priority' => 'high',
+                        
+                ],
+                "delay_while_idle" => false, 
+                "priority" => "high", 
+                "content_available" => true 
+                
+            ];
+       }else{
+            $data = [
+                "to" => $fcm_token,
+                "notification"=>[
+                    
+                        "title" => $notification_data['title'],
+                        "body" => $notification_data['message'],
+                        'icon'=>'', 
+                        'sound' => 'notificationfromplatform',
+                        'priority' => 'high',
+                        
+                ],
+                "delay_while_idle" => false, 
+                "priority" => "high", 
+                "content_available" => true 
+                
+            ];
+       }
+        
         $SERVER_API_KEY=env('FIREBASE_SERVER_API_KEY');
         $dataString = json_encode($data);
         $headers = [

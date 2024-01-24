@@ -267,7 +267,7 @@ class DriversController extends Controller
          ];
          $driver=User::find($driverId);
          if($driver->fcm_token!=null){
-            (new NotificationService)->sendNotification($driver->fcm_token,$data);
+            (new NotificationService)->sendNotification($driver->fcm_token,$data,'admin');
          }
          Notification::create(['title'=>$request->title,
                         'notification'=>$request->notification,

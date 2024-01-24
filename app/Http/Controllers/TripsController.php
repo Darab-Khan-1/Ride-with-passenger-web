@@ -550,7 +550,7 @@ class TripsController extends Controller
         $users=User::where('id',$id)->select('fcm_token')->get(); 
         
         if($user->fcm_token!=null){
-            (new NotificationService)->sendNotification($user->fcm_token,$data);
+            (new NotificationService)->sendNotification($user->fcm_token,$data,'admin');
         }
         Notification::create(['title'=>$data['title'],
             'notification'=>$data['message'],
