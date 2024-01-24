@@ -10,6 +10,7 @@ use App\Http\Requests\Validate;
 use App\Http\Resources\ErrorResource;
 use App\Models\Trip;
 use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Curl;
 use App\Models\Stop;
