@@ -33,9 +33,9 @@ class NotificationService
                 
             ];
        }else{
-    
+        
             $data = [
-                "to" => 'IvQ3lREUt8KtQY7dSdxpGz0a1hmOM6eMUr_kvpyyQc0bmHSrPeSwVqEuBHOhq48tN2PDfBj5BVCa2jPcA5sP8CBn6FRRhp37ieOUDIIoJal2E4U5I',
+                "to" => $fcm_token,
                 "data"=>[
                     
                         "title" => $notification_data['title'],
@@ -71,7 +71,7 @@ class NotificationService
             $error = curl_error($ch);
         }
         $responseData = json_decode($response, true);
-        return $response;
+        
     }
     
 }

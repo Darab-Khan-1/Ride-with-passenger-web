@@ -15,6 +15,7 @@ class NotificationController extends Controller
     {
         if($request->ajax()){
             $notifications=Notification::where('user_id',Auth::user()->id)->get();
+            $notifications=Notification::where('user_id',Auth::user()->id)->update(['seen'=>1]);
             return DataTables::of($notifications)->make(true);
         }
         return view('notifications');
