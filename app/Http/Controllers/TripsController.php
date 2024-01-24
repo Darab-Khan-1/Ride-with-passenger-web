@@ -369,7 +369,8 @@ class TripsController extends Controller
         if($request->user_id!=null || $request->user_id!=""){
             $data=[
                 'message'=>'You havs assigned a new trip!',
-                'title'=>'New trip'
+                'title'=>'New trip',
+                'sound'=>'newtrip.mp3',
             ];
             $this->sendDriverNotification($request->user_id,$data);
         }

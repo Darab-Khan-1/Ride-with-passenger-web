@@ -264,6 +264,7 @@ class DriversController extends Controller
          $data=[
             'title'=>$request->title,
             'message'=>$request->notification,
+            'sound'=>'notificationfromplatform.mp3',
          ];
          $driver=User::find($driverId);
          if($driver->fcm_token!=null){
