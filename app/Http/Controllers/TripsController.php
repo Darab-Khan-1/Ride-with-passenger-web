@@ -8,6 +8,7 @@ use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use App\Models\Notification;
 use DateTime;
 
 use Google_Client;
