@@ -9,10 +9,12 @@ use App\Http\Requests\ValidationMessages;
 use App\Http\Requests\Validate;
 use App\Http\Resources\ErrorResource;
 use App\Models\Trip;
+use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Curl;
 use App\Models\Stop;
 use App\Services\DeviceService;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\Config;
 use stdClass;
 
@@ -23,12 +25,14 @@ class TripController extends Controller
     protected $rules;
     protected $validationMessages;
     protected $DeviceService;
+    protected $NotificationService;
 
-    public function __construct(ValidationRules $rules, ValidationMessages $validationMessages, DeviceService $DeviceService)
+    public function __construct(ValidationRules $rules, ValidationMessages $validationMessages, DeviceService $DeviceService,NotificationService $NotificationService)
     {
         $this->rules = $rules;
         $this->validationMessages = $validationMessages;
         $this->DeviceService = $DeviceService;
+        $this->NotificationService = $NotificationService;
     }
 
     public function apiJsonResponse($code, $message, $data, $error)
@@ -216,6 +220,11 @@ class TripController extends Controller
             $trip->started_at = date('Y-m-d H:i:s', strtotime('now'));
             $trip->status = 'started';
             $trip->save();
+            $data=[
+                'message'=>'Trip has been started',
+                'title'=>'Trip Update',
+            ];
+            $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Trip started!", '', "");
         } catch (\Throwable $e) {
             return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
@@ -244,6 +253,11 @@ class TripController extends Controller
             $stop = Stop::where('type', 'pickup')->where('trip_id', $request->trip_id)->first();
             $stop->datetime = date('Y-m-d H:i:s', strtotime('now'));
             $stop->save();
+            $data=[
+                'message'=>'Passenger picked up!',
+                'title'=>'Trip Update',
+            ];
+            $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Trip status updated!", '', "");
         } catch (\Throwable $e) {
             return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
@@ -283,6 +297,11 @@ class TripController extends Controller
             }
             $stop->datetime = date('Y-m-d H:i:s', strtotime('now'));
             $stop->save();
+            $data=[
+                'message'=>'Enter to stop',
+                'title'=>'Trip Update',
+            ];
+            $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Status updated!", '', "");
         } catch (\Throwable $e) {
             return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
@@ -317,6 +336,11 @@ class TripController extends Controller
             }
             $stop->exit_time = date('Y-m-d H:i:s', strtotime('now'));
             $stop->save();
+            $data=[
+                'message'=>'Exit from stop',
+                'title'=>'Trip Update',
+            ];
+            $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Status updated!", '', "");
         } catch (\Throwable $e) {
             return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
@@ -341,9 +365,28 @@ class TripController extends Controller
             $stop = Stop::where('trip_id', $request->trip_id)->where('type', 'destination')->first();
             $stop->exit_time =  date('Y-m-d H:i:s', strtotime('now'));
             $stop->save();
+            $data=[
+                'message'=>'Trip has been ended',
+                'title'=>'Trip Update',
+            ];
+            $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Trip ended!", '', "");
         } catch (\Throwable $e) {
             return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
+        }
+    }
+    private function sendAdminNotification($data)  {
+        $users=User::where('type','superadmin')->select('fcm_token','id')->get(); 
+        foreach ($users as $key => $user) {
+            if($user->fcm_token!=null){
+                $this->NotificationService->sendNotification($user->fcm_token,$data);
+            }
+            Notification::create(['title'=>$data['title'],
+                'notification'=>$data['message'],
+                'type'=>'notification',
+                'user_id'=>$user->id,
+                'seen'=>0,
+            ]);
         }
     }
 }

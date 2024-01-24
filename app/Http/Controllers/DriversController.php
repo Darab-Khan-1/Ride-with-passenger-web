@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Driver;
 use App\Models\Trip;
 use App\Models\User;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +14,7 @@ use App\Services\DeviceService;
 use Intervention\Image\Facades\Image;
 use App\Helpers\Timezone;
 use GuzzleHttp\RedirectMiddleware;
+use App\Services\NotificationService;
 use PDO;
 use stdClass;
 
@@ -250,5 +252,29 @@ class DriversController extends Controller
     {
         $response = $this->DeviceService->playback($id, $from, $to);
         return $response;
+    }
+    public function customNotification(Request $request,$driverId) {
+        $this->validate($request,[
+            'notification'=>'required',
+            'title'=>'required'
+         ],[
+            'notification.required'=>'Notification message is required',
+            'title.required'=>'Title is required',
+         ]);
+         $data=[
+            'title'=>$request->title,
+            'message'=>$request->notification,
+         ];
+         $driver=User::find($driverId);
+         if($driver->fcm_token!=null){
+            (new NotificationService)->sendNotification($driver->fcm_token,$data);
+         }
+         Notification::create(['title'=>$request->title,
+                        'notification'=>$request->notification,
+                        'type'=>'message',
+                        'user_id'=>$driver->id,
+                        'seen'=>0,
+                        ]);
+         return back()->with(['success'=>'Successfully notification sent!']);
     }
 }
