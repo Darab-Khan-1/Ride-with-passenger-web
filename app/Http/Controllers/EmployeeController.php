@@ -88,7 +88,6 @@ class EmployeeController extends Controller
         $user = User::find($request->user_id);
         $user->email = $request->email;
         $user->save();
-
         $user->removeAllRoles();
 
         $role = Role::find($request->role);

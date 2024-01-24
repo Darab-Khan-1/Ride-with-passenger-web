@@ -18,6 +18,7 @@ class NotificationController extends Controller
             Notification::where('user_id',Auth::user()->id)->where('seen',0)->update(['seen'=>1]);
             return DataTables::of($notifications)->make(true);
         }
+        
         return view('notifications');
         //
     }

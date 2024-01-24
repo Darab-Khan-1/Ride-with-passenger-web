@@ -224,6 +224,7 @@ class TripController extends Controller
             $data=[
                 'message'=>'Trip has been started',
                 'title'=>'Trip Update',
+                'sound'=>'anychange.mp3',
             ];
             $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Trip started!", '', "");
@@ -257,6 +258,7 @@ class TripController extends Controller
             $data=[
                 'message'=>'Passenger picked up!',
                 'title'=>'Trip Update',
+                'sound'=>'anychange.mp3',
             ];
             $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Trip status updated!", '', "");
@@ -301,6 +303,7 @@ class TripController extends Controller
             $data=[
                 'message'=>'Enter to stop',
                 'title'=>'Trip Update',
+                'sound'=>'anychange.mp3',
             ];
             $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Status updated!", '', "");
@@ -340,6 +343,7 @@ class TripController extends Controller
             $data=[
                 'message'=>'Exit from stop',
                 'title'=>'Trip Update',
+                'sound'=>'anychange.mp3',
             ];
             $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Status updated!", '', "");
@@ -369,6 +373,7 @@ class TripController extends Controller
             $data=[
                 'message'=>'Trip has been ended',
                 'title'=>'Trip Update',
+                'sound'=>'anychange.mp3',
             ];
             $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Trip ended!", '', "");
