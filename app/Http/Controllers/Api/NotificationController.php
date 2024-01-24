@@ -20,8 +20,8 @@ class NotificationController extends Controller
 
     public function index(Request $request)
     {
-        $notifications=Notification::where('id',$request->user()->id)->get();
-        if($notifications){
+        $notifications=Notification::where('user_id',$request->user()->id)->get();
+        if($notifications!=null){
             return $this->apiJsonResponse(200, "Data found!", $notifications, "");
         }
         return $this->apiJsonResponse(400, "No data found!", "", "");
@@ -32,7 +32,7 @@ class NotificationController extends Controller
      */
     public function seenNotification(Request $request)
     {
-        $seen=Notification::where('id',$request->user()->id)->update(['seen'=>1]);
+        $seen=Notification::where('user_id',$request->user()->id)->update(['seen'=>1]);
         if($seen){
             return $this->apiJsonResponse(200, "Data found!", "", "");
         }
