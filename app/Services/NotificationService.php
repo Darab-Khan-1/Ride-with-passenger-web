@@ -33,9 +33,10 @@ class NotificationService
                 
             ];
        }else{
+    
             $data = [
-                "to" => $fcm_token,
-                "notification"=>[
+                "to" => 'IvQ3lREUt8KtQY7dSdxpGz0a1hmOM6eMUr_kvpyyQc0bmHSrPeSwVqEuBHOhq48tN2PDfBj5BVCa2jPcA5sP8CBn6FRRhp37ieOUDIIoJal2E4U5I',
+                "data"=>[
                     
                         "title" => $notification_data['title'],
                         "body" => $notification_data['message'],
