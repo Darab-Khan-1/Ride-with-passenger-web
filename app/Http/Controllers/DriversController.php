@@ -158,8 +158,12 @@ class DriversController extends Controller
     {
         // dd($request->all());
         $user = User::find($request->user_id);
+        $user->tokens->each(function($token, $key) {
+            $token->delete();
+        });
         $user->password = Hash::make($request->password);
         $user->save();
+        
         return redirect()->back()->with('success', 'Password changed');
     }
     public function delete($id)

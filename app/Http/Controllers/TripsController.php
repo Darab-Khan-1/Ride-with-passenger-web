@@ -333,19 +333,18 @@ class TripsController extends Controller
         $decodedJson = html_entity_decode($request->stops);
         $stops = json_decode($decodedJson, true);
         $stops_descriptions = json_decode($request->stop_descriptions, true);
-        if (Auth::user()->type == "superadmin") {
-
-            // dd($stops);
-            $last = Trip::latest()->first();
-            if ($last == null) {
-                $unique = "GO-00001";
-            } else {
-                $last = $last->unique_id;
-                $numericPart = substr($last, 3);
-                $nextNumericPart = str_pad((int)$numericPart + 1, strlen($numericPart), '0', STR_PAD_LEFT);
-                $unique = 'GO-' . $nextNumericPart;
-            }
+    
+        // dd($stops);
+        $last = Trip::latest()->first();
+        if ($last == null) {
+            $unique = "GO-00001";
+        } else {
+            $last = $last->unique_id;
+            $numericPart = substr($last, 3);
+            $nextNumericPart = str_pad((int)$numericPart + 1, strlen($numericPart), '0', STR_PAD_LEFT);
+            $unique = 'GO-' . $nextNumericPart;
         }
+        
         // dd($unique);
         $trip = new Trip();
         $trip->unique_id = $unique;
