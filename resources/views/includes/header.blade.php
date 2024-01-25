@@ -116,8 +116,21 @@ License: You must have a valid license purchased only from themeforest(the above
         
   }
    messaging.onMessage((payload) => {
-                toastr.success('New notification<br>'+payload.data.title+'<br>'+payload.data.body);
-                //audio.play();
+       var audio;
+        if(payload.data.sound=="anychange.mp3"){
+            audio=new Audio("../anychange.mp3");
+        }
+        if(payload.data.sound=="newtrip.mp3"){
+            audio=new Audio("../newtrip.mp3");
+        }
+        if(payload.data.sound=="notificationfromplatform.mp3"){
+            audio=new Audio("../notificationfromplatform.mp3");
+        }
+        if(payload.data.sound=="remindertrip.mp3"){
+            audio=new Audio("../remindertrip.mp3");
+        }
+        toastr.success('New notification<br>'+payload.data.title+'<br>'+payload.data.body);
+        audio.play();
     });
 </script>
 </head>
@@ -234,15 +247,21 @@ License: You must have a valid license purchased only from themeforest(the above
                                     </a>
                                     <a class="topbar-item" href="{{ url('/all/notifications') }}">
 
-                                        <div class="btn btn-icon btn-hover-transparent-white w-auto d-flex align-items-center btn-lg px-2"
+                                        <div class="btn btn-icon btn-hover-transparent-white w-auto d-flex align-items-center btn-lg px-2 position-relative"
                                             id="kt_quick_user_toggle">
                                             <div class="d-flex flex-column text-right pr-3">
-                                                <span    style="cursor:pointer" class=" svg-icon svg-icon-warning svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo8/dist/../src/media/svg/icons/General/Notifications1.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                <span    style="cursor:pointer" class=" svg-icon svg-icon-warning svg-icon-2x "><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo8/dist/../src/media/svg/icons/General/Notifications1.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                             <path d="M17,12 L18.5,12 C19.3284271,12 20,12.6715729 20,13.5 C20,14.3284271 19.3284271,15 18.5,15 L5.5,15 C4.67157288,15 4,14.3284271 4,13.5 C4,12.6715729 4.67157288,12 5.5,12 L7,12 L7.5582739,6.97553494 C7.80974924,4.71225688 9.72279394,3 12,3 C14.2772061,3 16.1902508,4.71225688 16.4417261,6.97553494 L17,12 Z" fill="#000000"/>
                                                             <rect fill="#000000" opacity="0.3" x="10" y="16" width="4" height="4" rx="2"/>
                                                         </g>
                                                     </svg>
+                                                    @php
+                                                        $notificationCount = DB::table('notifications')->where('user_id','=',auth()->user()->id)->count();
+                                                    @endphp
+                                                    <span style="position: absolute; top: 0; right: 0; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px;">
+                                                        {{$notificationCount}}
+                                                    </span>
                                                 </span>
                                             </div>
                 
