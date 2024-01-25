@@ -16,7 +16,7 @@ use Google_Service_Calendar;
 use Google_Service_Calendar_Event;
 use Illuminate\Support\Facades\Auth;
 use App\Services\NotificationService;
-
+use Str;
 class TripsController extends Controller
 {
     private $url;
