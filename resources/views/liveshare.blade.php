@@ -1,4 +1,48 @@
-@include('includes/header')
+<!DOCTYPE html>
+<!--
+Template Name: Metronic - Bootstrap 4 HTML, React, Angular 9 & VueJS Admin Dashboard Theme
+Author: KeenThemes
+Website: http://www.keenthemes.com/
+Contact: support@keenthemes.com
+Follow: www.twitter.com/keenthemes
+Dribbble: www.dribbble.com/keenthemes
+Like: www.facebook.com/keenthemes
+Purchase: https://1.envato.market/EA4JP
+Renew Support: https://1.envato.market/EA4JP
+License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
+-->
+<html lang="en">
+<!--begin::Head-->
+
+<head>
+    <base href="">
+    <meta charset="utf-8" />
+    <title>Ride WITH Passenger | Dashboard</title>
+    <meta name="description" content="Updates and statistics" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!--begin::Fonts-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+    <!--end::Fonts-->
+    <!--begin::Page Vendors Styles(used by this page)-->
+    <link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css?v=7.0.5') }}" rel="stylesheet"
+        type="text/css" />
+    <!--end::Page Vendors Styles-->
+    <!--begin::Global Theme Styles(used by all pages)-->
+    <link href="{{ asset('assets/plugins/global/plugins.bundle.css?v=7.0.5') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/plugins/custom/prismjs/prismjs.bundle.css?v=7.0.5') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ asset('assets/css/style.bundle.css?v=7.0.5') }}" rel="stylesheet" type="text/css" />
+    <!--end::Global Theme Styles-->
+    <!--begin::Layout Themes(used by all pages)-->
+    <!--end::Layout Themes-->
+    <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <style>
     .image-wrapper {
         position: relative;
@@ -104,6 +148,12 @@
         /* Set the offline status color */
     }
 </style>
+</head>
+<!--end::Head-->
+<!--begin::Body-->
+
+<body id="kt_body" class="header-fixed header-mobile-fixed page-loading">
+
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> --}}
 
 
@@ -115,46 +165,11 @@
     <!--begin::Entry-->
     <div>
         <!--begin::Container-->
-        <div class="card card-custom m-4">
-            <div class="p-5">
+        
+            
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="card card-custom " style="height:90vh;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                            <div class="card-body py-2">
-                                <div class="row">
-                                    <div class="form-group col-md-12">
-                                        <h3 class="text-center py-2">Drivers</h3>
-                                        <button class="btn btn-primary w-100" onclick="showAllLocations()">Show
-                                            All</button>
-                                        <input type="text" id="searchInput" class="form-control mb-2"
-                                            placeholder="Search by name or phone number" style="border:none">
-                                        <ul class="user-list">
-                                            @foreach ($drivers as $value)
-                                                <li id="{{ 'USER' . $value->device_id }}" class="user-item"
-                                                    data-name="{{ $value->name }}" device_id="{{ $value->device_id }}"
-                                                    data-phone="{{ $value->address }}">
-                                                    <div class="user-profile">
-                                                        {{-- <span
-                                                            class="status-dot {{ $value->online === 1 ? 'online' : 'offline' }}"></span> --}}
-                                                        <img src="{{ $value->avatar }}" alt="Profile Image"
-                                                            class="user-avatar">
-                                                    </div>
-                                                    <div class="user-details">
-                                                        <p class="user-name">{{ $value->name }}</p>
-                                                        <p class="user-number">{{ $value->address }}</p>
-                                                    </div>
-                                                </li>
-                                            @endforeach
-
-
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="col-md-9">
+                    
+                    <div class="col-md-12">
                         <div class="card card-custom" id="infoCard"
                             style="display:none;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                             <div class="card-body p-5">
@@ -181,7 +196,6 @@
                                                 <div class="text-dark font-weight-bolder font-size-h4 mt-3"
                                                     id="position_info">-
                                                 </div>
-                                                
                                                 {{-- <a href="#"
                                                     class="text-muted text-hover-primary font-weight-bold font-size-lg mt-1">Position</a> --}}
                                             </div>
@@ -211,8 +225,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            
+        
         <!--end::Container-->
     </div>
     <!--end::Entry-->
@@ -224,9 +238,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCgMkgjHVW3WL4GD4M6FdLar-tjlIT8aU"></script>
 
 <script>
-    $(".map-nav").click()
-    $(".live-nav").addClass("menu-item-active");
-
+   
 
     let googleMap;
     let marker;
@@ -238,17 +250,7 @@
 
 
     $(document).ready(function() {
-         $(document).on('click', '.share_link_button', function() {
-            let copyGfGText = 
-                document.getElementById("sharedLink");
- 
-            copyGfGText.select();
-            document.execCommand("copy");
-             
-            document.querySelector('#share_link_button').value = 'Linked copied';
 
-         });
-        
         initMap();
         $("#searchInput").on("keyup", function() {
             var searchText = $(this).val().toLowerCase();
@@ -275,10 +277,13 @@
             firstCall = true
             document.getElementById("map").style.height = '60vh'
             document.getElementById("infoCard").style.display = 'block'
-
-
-            var name = element.attr('data-name')
-            var phone = element.attr('data-phone')
+            var name='';
+            var phone='';
+            
+            name = "{{$trip_details->driver->name}}";
+            phone = "{{$trip_details->driver->phone}}";
+            
+            
             // document.getElementById("time_info").innerHTML = '-'
             document.getElementById("position_info").innerHTML = '-'
             var timeInfoDiv = document.getElementById("driver_info");
@@ -289,7 +294,7 @@
             table += "</table>";
 
             timeInfoDiv.innerHTML = table;
-            const selectedDriver = element.attr('device_id');
+            const selectedDriver = "{{$id}}";
             if (interval) {
                 clearInterval(interval);
                 refreshMap();
@@ -394,7 +399,7 @@
 
     function ajaxCall(driver) {
         $.ajax({
-            url: "{{ url('/live/location/') }}" + "/" + driver,
+            url: "{{ url('live/share/location') }}" + "/" + driver,
             method: "GET",
             success: function(response) {
                 let data = response['position']
@@ -411,7 +416,6 @@
                     table += "<tr><td>Speed: </td><td>" + (data.speed * 3.6).toFixed(1) +
                         " kph</td></tr>";
                     table += "<tr><td>Time: </td><td>" + data.serverTime + "</td></tr>";
-                    table+='<tr><td><button id="share_link_button"  class="btn share_link_button  font-weight-bolder" style="background: #ffc500">Share link</td><td><input type="text" id="sharedLink" class="form-control form-control-solid" style="width:455px" placeholder="Share link" value="'+response['slug']+'" disabled /></td></tr>'
                     // table += "<tr><td>Address: </td><td style='font-size:14px;'>" + data.address + "</td></tr>";
                     table += "</table>";
 
@@ -586,7 +590,7 @@
                             //     map: googleMap,
                             // });
                             var userImageURL = data.avatar;
-                        
+
                             // Create a custom marker with a circular image
                             const marker = new google.maps.Marker({
                                 position: {
@@ -691,9 +695,10 @@
         document.getElementById("infoCard").style.display = 'block'
         clearInterval(showInterval);
         firstCall = true
-
-        var name = $(this).attr('data-name')
-        var phone = $(this).attr('data-phone')
+        var name='';
+        var phone='';
+        name = "{{$trip_details->driver->name}}";
+        phone = "{{$trip_details->driver->phone}}";
         // document.getElementById("time_info").innerHTML = '-'
         document.getElementById("position_info").innerHTML = '-'
         var timeInfoDiv = document.getElementById("driver_info");
@@ -729,5 +734,4 @@
         // Clear the markers map
         driverMarkersMap.clear();
     }
-    
 </script>

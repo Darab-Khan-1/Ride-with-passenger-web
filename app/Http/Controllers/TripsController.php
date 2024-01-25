@@ -346,6 +346,8 @@ class TripsController extends Controller
         }
         
         // dd($unique);
+        $randomSlug = Str::random(8);
+        $uniqueRandomSlug = $randomSlug . '_' . time();
         $trip = new Trip();
         $trip->unique_id = $unique;
         $trip->user_id = $request->user_id;
@@ -363,6 +365,7 @@ class TripsController extends Controller
         $trip->drop_long = $request->drop_long;
         $trip->event_name = $request->event_name;
         $trip->description = $request->description;
+        $trip->slug=$uniqueRandomSlug;
         $trip->status = 'available';
         $trip->save();
         if($request->user_id!=null || $request->user_id!=""){
@@ -474,6 +477,14 @@ class TripsController extends Controller
             $trip->status = 'available';
         }
         $trip->save();
+        if($request->user_id!=null || $request->user_id!=""){
+            $data=[
+                'message'=>'Your trip is updated. See details!',
+                'title'=>'Trip updated',
+                'sound'=>'anychange.mp3',
+            ];
+            $this->sendDriverNotification($request->user_id,$data);
+        }
         Stop::where('trip_id', $request->trip_id)->delete();
 
         $description = $request->description;
