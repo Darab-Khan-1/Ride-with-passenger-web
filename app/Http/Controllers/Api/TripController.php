@@ -387,12 +387,11 @@ class TripController extends Controller
             if($user->fcm_token!=null){
                 $this->NotificationService->sendNotification($user->fcm_token,$data,'driver');
             }
-            Notification::create(['title'=>$data['title'],
-                'notification'=>$data['message'],
-                'type'=>'notification',
-                'user_id'=>$user->id,
-                'seen'=>0,
-            ]);
         }
+        Notification::create(['title'=>$data['title'],
+                'notification'=>$data['message'],
+                'type'=>'web',
+                'seen'=>0,
+        ]);
     }
 }

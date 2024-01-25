@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('notification');
             $table->string('type');
-            $table->string('user_id');
+            $table->string('user_id')->nullable();
             $table->string('seen');
             $table->timestamps();
         });
