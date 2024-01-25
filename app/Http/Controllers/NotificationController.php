@@ -14,8 +14,8 @@ class NotificationController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()){
-            $notifications=Notification::where('user_id',Auth::user()->id)->get();
-            Notification::where('user_id',Auth::user()->id)->where('seen',0)->update(['seen'=>1]);
+            $notifications=Notification::where('type','web')->get();
+            Notification::where('type','web')->where('seen',0)->update(['seen'=>1]);
             return DataTables::of($notifications)->make(true);
         }
         

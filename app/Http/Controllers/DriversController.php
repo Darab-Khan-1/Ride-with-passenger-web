@@ -219,6 +219,9 @@ class DriversController extends Controller
             //     $timeDifference = 6;
             // }
             $data['driver'] = Driver::where('device_id',$id)->first();
+            $data['slug'] = Trip::where('user_id',$data['driver']->user_id)->where('status','!=','available')->where('status','!=','completed')->select('slug')->first();
+            $basePath = url('/');
+            $data['slug']=$basePath.'/live/share/location/'.$data['slug']->slug;
             $data['position'] = $position = $this->DeviceService->live($id);
             // dd($position);
             if (isset($position[0])) {
@@ -241,7 +244,29 @@ class DriversController extends Controller
         // dd($drivers);
         return view('live', compact('drivers', 'id'));
     }
-
+    public function liveshare(Request $request,$slug=null)  {
+        $trip_details=Trip::with('driver')->where('status','!=','available')->where('status','!=','completed')->where('slug',$slug)->first();
+        if($trip_details!=null){
+            $data['driver'] = $trip_details->driver;
+            if ($request->ajax()) {
+                if($trip_details->driver!=null){
+                    $data['position'] = $position = $this->DeviceService->live($trip_details->driver->device_id);
+                    // dd($position);
+                    if (isset($position[0])) {
+                        $position[0]->serverTime = date('h:i A d M, Y', strtotime($position[0]->serverTime));
+                        $data['position'] = $position[0];
+                    }
+                }
+                return $data;
+            }
+            $id=$slug;
+            return view('liveshare', compact('id','trip_details'));
+        }else{
+            return view('expired');
+        }
+        
+        
+    }
     public function playbackIndex($service_id)
     {
         $service = null;

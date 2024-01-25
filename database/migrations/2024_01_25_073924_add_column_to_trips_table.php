@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::table('trips', function (Blueprint $table) {
             $table->string('reminder_status')->default(0);
+            $table->string('slug')->nullable();
         });
+        
     }
 
     /**
@@ -23,6 +25,7 @@ return new class extends Migration
     {
         Schema::table('trips', function (Blueprint $table) {
             $table->dropColumn('reminder_status');
+            $table->dropColumn('slug');
         });
     }
 };

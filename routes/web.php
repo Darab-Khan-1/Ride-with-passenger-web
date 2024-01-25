@@ -32,7 +32,7 @@ Route::get('/', [RegistrationController::class, 'index']);
 Route::post('/login', [RegistrationController::class, 'login']);
 
 Route::get('/web', [RegistrationController::class, 'web']);
-
+Route::get('live/share/location/{slug}', [DriversController::class, 'liveshare']);
 Route::group(['middleware' => 'admin'], function () {
     Route::post('/save/token', [RegistrationController::class, 'saveToken'])->name('save.token');
     Route::get('/profile/personal', [RegistrationController::class, 'profile']);
@@ -64,6 +64,7 @@ Route::group(['middleware' => 'admin'], function () {
     // Route::get('live', [DriversController::class, 'liveIndex']);
     Route::get('live/location/{device_id}', [DriversController::class, 'live']);
     Route::get('all/live/location', [DriversController::class, 'allLocations']);
+    
 
     Route::get('playback/index/{service_id}', [DriversController::class, 'playbackIndex']);
     Route::get('playback/history/{id}/{from}/{to}', [DriversController::class, 'playback']);
