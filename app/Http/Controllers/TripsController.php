@@ -179,11 +179,12 @@ class TripsController extends Controller
             } catch (\Exception $e) {
                 // dd($e->getMessage());
                 $error = json_decode($e->getMessage(), true);
-                $url  = $client->createAuthUrl();
-                return redirect($url);
-                exit;
-                // if ($error['error']['code'] == 401) {
-                // }
+                if ($error['error']['code'] == 401) {
+                    $url  = $client->createAuthUrl();
+                    return redirect($url);
+                    exit;
+                }
+                return redirect()->back();
             }
         }
         $data['available'] = Trip::whereIn('status', ['available'])->count();
