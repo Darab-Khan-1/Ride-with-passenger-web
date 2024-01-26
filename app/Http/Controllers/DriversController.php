@@ -221,7 +221,12 @@ class DriversController extends Controller
             $data['driver'] = Driver::where('device_id',$id)->first();
             $data['slug'] = Trip::where('user_id',$data['driver']->user_id)->where('status','!=','available')->where('status','!=','completed')->select('slug')->first();
             $basePath = url('/');
-            $data['slug']=$basePath.'/live/share/location/'.$data['slug']->slug;
+            if($data['slug']!=null){
+                $data['slug']=$basePath.'/live/share/location/'.$data['slug']->slug;
+            }else{
+                $data['slug']='';
+            }
+            
             $data['position'] = $position = $this->DeviceService->live($id);
             // dd($position);
             if (isset($position[0])) {
