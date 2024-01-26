@@ -257,7 +257,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                         </g>
                                                     </svg>
                                                     @php
-                                                        $notificationCount = DB::table('notifications')->where('type','=','web')->count();
+                                                        $notificationCount = DB::table('notifications')->where('type','=','web')->where('seen','=','0')->count();
                                                     @endphp
                                                     <span style="position: absolute; top: 0; right: 0; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px;">
                                                         {{$notificationCount}}

@@ -106,6 +106,17 @@
             height: 240,
             type: "donut",
         },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }],
         colors: ['#3699FF', "#FFA800"],
 
         labels: [
@@ -131,6 +142,17 @@
             height: 240,
             type: "donut",
         },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }],
         colors: ["#F64E60", '#3699FF', "#FFA800", "#1BC5BD"],
 
         labels: [
@@ -185,6 +207,17 @@
             height: 240,
             type: "donut",
         },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }],
         colors: colors,
 
         labels: labels,

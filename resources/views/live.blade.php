@@ -544,9 +544,7 @@
         clearMarkers();
         clearInterval(showInterval)
         clearInterval(interval);
-        showInterval = setInterval(function() {
-            showAll()
-        }, 5000);
+       
     }
 
     function showAll() {

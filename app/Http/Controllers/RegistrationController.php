@@ -32,6 +32,7 @@ class RegistrationController extends Controller
                 session(['name' => 'Admin' ]);
                 return response()->json(['result' => 'superadmin']);
             } else if($user->type == 'employee') {
+                $this->adminLogin();
                 $name = Employee::where('user_id',$user->id)->pluck('name');
                 session(['name' => $name[0] ]);
                 return response()->json(['result' => 'employee']);
