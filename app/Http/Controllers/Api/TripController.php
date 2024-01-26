@@ -106,7 +106,7 @@ class TripController extends Controller
                 $data->next_stop = $array;
             } else if (count($trip->stops) > 2) {
                 $array['stop'] = 1;
-                $array['stop_id'] = 0;
+                $array['stop_id'] = $trip->stops[count($trip->stops) -1]->id;
                 $array['type'] = "destination";
                 $array['lat'] = $trip->drop_lat;
                 $array['long'] = $trip->drop_long;
@@ -128,7 +128,7 @@ class TripController extends Controller
                 }
             } else {
                 $array['stop'] = 1;
-                $array['stop_id'] = 0;
+                $array['stop_id'] = $trip->stops[count($trip->stops) -1]->id;
                 $array['type'] = "destination";
                 $array['lat'] = $trip->drop_lat;
                 $array['long'] = $trip->drop_long;
