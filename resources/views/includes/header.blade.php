@@ -118,20 +118,21 @@ License: You must have a valid license purchased only from themeforest(the above
    messaging.onMessage((payload) => {
        var audio;
         if(payload.data.sound=="anychange.mp3"){
-            audio=new Audio("../anychange.mp3");
+            audio=new Audio("{{asset('anychange.mp3')}}");
         }
         if(payload.data.sound=="newtrip.mp3"){
-            audio=new Audio("../newtrip.mp3");
+            audio=new Audio("{{asset('newtrip.mp3')}}");
         }
         if(payload.data.sound=="notificationfromplatform.mp3"){
-            audio=new Audio("../notificationfromplatform.mp3");
+            audio=new Audio("{{asset('notificationfromplatform.mp3')}}");
         }
         if(payload.data.sound=="remindertrip.mp3"){
-            audio=new Audio("../remindertrip.mp3");
+            audio=new Audio("{{asset('remindertrip.mp3')}}");
         }
         toastr.success('New notification<br>'+payload.data.title+'<br>'+payload.data.body);
         audio.play();
     });
+    
 </script>
 </head>
 <!--end::Head-->
