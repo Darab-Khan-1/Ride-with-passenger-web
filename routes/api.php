@@ -42,4 +42,5 @@ Route::middleware('auth:api')->group(function () {
     //Notifications
     Route::get('/all/notifications', [NotificationController::class, 'index']);
     Route::get('/seen/notifications', [NotificationController::class, 'seenNotification']);
+    Route::get('/count/notifications', [NotificationController::class, 'countNotification']);
 });
