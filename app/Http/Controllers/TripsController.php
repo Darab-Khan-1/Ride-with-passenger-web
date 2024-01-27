@@ -195,7 +195,7 @@ class TripsController extends Controller
         return view('trips.trips', compact('data'));
     }
 
-    public function active(Request $request,$status='all')
+    public function active(Request $request, $status = 'all')
     {
         if (Auth::user()->type == "superadmin") {
 
@@ -231,13 +231,13 @@ class TripsController extends Controller
                     }
                 }
             }
-            if($status=='all'){
+            if ($status == 'all') {
                 $trips = Trip::latest()->whereNotIn('status', ['available', 'completed'])->whereNotNull('status')->with('stops', 'driver')->get();
-            }else if($status=='pick'){
+            } else if ($status == 'pick') {
                 $trips = Trip::latest()->where('status', 'pickup')->with('stops', 'driver')->get();
-            }else if($status=='drop'){
+            } else if ($status == 'drop') {
                 $trips = Trip::latest()->where('status', 'destination')->with('stops', 'driver')->get();
-            }else if($status=='intransit'){
+            } else if ($status == 'intransit') {
                 $trips = Trip::latest()->where('status', 'in-transit')->with('stops', 'driver')->get();
             }
 
@@ -389,7 +389,7 @@ class TripsController extends Controller
         $trip->save();
         if ($request->user_id != null || $request->user_id != "") {
             $data = [
-                'message' => 'You havs assigned a new trip!',
+                'message' => 'You have assigned a new trip!',
                 'title' => 'New trip',
                 'sound' => 'newtrip.mp3',
             ];
@@ -464,9 +464,14 @@ class TripsController extends Controller
 
     public function edit($id)
     {
-        $trip = Trip::where('id', $id)->with('stops')->first();
+        $trip = Trip::where('id', $id)->with('stops', 'driver')->first();
         $drivers = Driver::where('id', '>', 0)->with('user')->get();
-        return view('trips.edit', compact('trip', 'drivers'));
+        // dd($trip);
+        if ($trip->status == 'available') {
+            return view('trips.edit', compact('trip', 'drivers'));
+        }
+        // dd($trip);
+        return view('trips.edit_active', compact('trip'));
     }
 
     public function update(Request $request)
@@ -561,6 +566,132 @@ class TripsController extends Controller
         }
         return redirect('trips')->with('success', 'Trip updated successfully');
     }
+
+    public function activeUpdate(Request $request)
+    {
+        // dd($request->all());
+        $decodedJson = html_entity_decode($request->stops);
+        $stops = json_decode($decodedJson, true);
+        $stops_descriptions = json_decode($request->stop_descriptions, true);
+
+        $trip = Trip::find($request->trip_id);
+        // $trip->user_id = $request->user_id;
+        $trip->pickup_date = $request->pickup_date;
+        $trip->delivery_date = $request->delivery_date;
+        $trip->pickup_location = $request->pickup_location;
+        $trip->delivery_location = $request->delivery_location;
+        $trip->estimated_distance = $request->estimated_distance;
+        $trip->estimated_time = $request->estimated_time;
+        $trip->customer_name = $request->customer_name;
+        $trip->customer_phone = $request->customer_phone;
+        $trip->lat = $request->lat;
+        $trip->long = $request->long;
+        $trip->drop_lat = $request->drop_lat;
+        $trip->drop_long = $request->drop_long;
+        $trip->event_name = $request->event_name;
+        $trip->description = $request->description;
+        // if ($trip->status == null) {
+        //     $trip->status = 'available';
+        // }
+        $trip->save();
+        if ($request->user_id != null || $request->user_id != "") {
+            $data = [
+                'message' => 'Your trip is updated. See details!',
+                'title' => 'Trip updated',
+                'sound' => 'anychange.mp3',
+            ];
+            $this->sendDriverNotification($request->user_id, $data);
+        }
+        Stop::where('trip_id', $request->trip_id)->whereNull('datetime')->delete();
+        $previous_stops = Stop::where('trip_id', $request->trip_id)->get();
+
+        $description = $request->description;
+
+
+        if (count($previous_stops) == 0) {
+
+            $description = $request->description;
+
+            $stop = new Stop();
+            $stop->location = $request->pickup_location;
+            $stop->type = 'pickup';
+            $stop->trip_id = $request->trip_id;
+            $stop->lat = $request->lat;
+            $stop->long = $request->long;
+            $stop->description = $request->start_description;
+            $stop->save();
+
+            foreach ($stops as $key => $value) {
+                $stop = new Stop();
+                $stop->location = $value['stop'];
+                $stop->type = 'stop';
+                $stop->trip_id = $request->trip_id;
+                $stop->lat = $value['lat'];
+                $stop->long = $value['lng'];
+                $stop->description = $stops_descriptions[$key];
+                $stop->save();
+            }
+
+            $stop = new Stop();
+            $stop->location = $request->delivery_location;
+            $stop->type = 'destination';
+            $stop->trip_id = $request->trip_id;
+            $stop->lat = $request->drop_lat;
+            $stop->long = $request->drop_long;
+            $stop->description = $request->end_description;
+            $stop->save();
+        } else {
+            // foreach ($previous_stops as $p) {
+            foreach ($stops as $key => $s) {
+                // if($s['stop'] != $p->location){
+                if (!isset($previous_stops[$key + 1])) {
+                    $stop = new Stop();
+                    $stop->location =  $s['stop'];
+                    $stop->type =  'stop';
+                    $stop->trip_id = $request->trip_id;
+                    $stop->lat = $s['lat'];
+                    $stop->long = $s['lng'];
+                    $stop->description = $stops_descriptions[$key];
+                    $stop->save();
+                }
+            }
+            // }
+            if ($trip->status != 'destination') {
+                $stop = new Stop();
+                $stop->location = $request->delivery_location;
+                $stop->type = 'destination';
+                $stop->trip_id = $request->trip_id;
+                $stop->lat = $request->drop_lat;
+                $stop->long = $request->drop_long;
+                $stop->description = $request->end_description;
+                $stop->save();
+            }
+        }
+
+
+        if (Auth::user()->type == "superadmin") {
+
+
+            $user = User::where('type', 'superadmin')->first();
+            $accessToken = $user->access_token;
+            $client = $this->getClient();
+            $client->setAccessToken($accessToken);
+            $service = new Google_Service_Calendar($client);
+            $pickupDateTime = new DateTime($trip->pickup_date);
+            $formattedPickupDateTime = $pickupDateTime->format('Y-m-d\TH:i:s\Z');
+            $deliveryDateTime = new DateTime($trip->delivery_date);
+            $formattedDeliveryDateTime = $deliveryDateTime->format('Y-m-d\TH:i:s\Z');
+
+            $event = $service->events->get('rw.passengers@gmail.com', $request->event_id);
+            $event->setSummary($trip->event_name);
+            $event->setDescription($description);
+            $event->setStart(new \Google_Service_Calendar_EventDateTime(['dateTime' => $formattedPickupDateTime]));
+            $event->setEnd(new \Google_Service_Calendar_EventDateTime(['dateTime' => $formattedDeliveryDateTime]));
+            $service->events->update('rw.passengers@gmail.com', $request->event_id, $event);
+        }
+        return redirect('active/trips/all')->with('success', 'Trip updated successfully');
+    }
+
     public function delete($id)
     {
         $trip = Trip::find($id);

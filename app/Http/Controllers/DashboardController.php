@@ -24,6 +24,7 @@ class DashboardController extends Controller
         $data['active'] = Trip::whereNotIn('status',['available','completed'])->whereNotNull('status')->count();
         $data['completed'] = Trip::where('status','completed')->count();
         $data['incomplete'] = Trip::where('status',null)->count();
+        // dd($data);
         return view('dashboard',compact('data'));
     }
 }
