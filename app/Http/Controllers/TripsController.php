@@ -16,6 +16,7 @@ use Google_Service_Calendar;
 use Google_Service_Calendar_Event;
 use Illuminate\Support\Facades\Auth;
 use App\Services\NotificationService;
+use Str;
 
 class TripsController extends Controller
 {
@@ -97,20 +98,22 @@ class TripsController extends Controller
                 $trips = Trip::where('id', '>', 0)->get();
                 $calendarId = 'rw.passengers@gmail.com';
                 foreach ($trips as $key => $value) {
-                    $eventId = $value->event_id;
-                    $event = $service->events->get($calendarId, $eventId);
-                    // dd("HI");
-                    $startTime = $event->start->dateTime;
-                    $endTime = $event->end->dateTime;
-                    $startTime = str_replace('T', " ", $startTime);
-                    $startTime = str_replace('Z', "", $startTime);
-                    $endTime = str_replace('T', " ", $endTime);
-                    $endTime = str_replace('Z', "", $endTime);
+                    if ($value->event_id != null) {
+                        $eventId = $value->event_id;
+                        $event = $service->events->get($calendarId, $eventId);
+                        // dd("HI");
+                        $startTime = $event->start->dateTime;
+                        $endTime = $event->end->dateTime;
+                        $startTime = str_replace('T', " ", $startTime);
+                        $startTime = str_replace('Z', "", $startTime);
+                        $endTime = str_replace('T', " ", $endTime);
+                        $endTime = str_replace('Z', "", $endTime);
 
-                    $event_name = $event->getSummary();
-                    $description = $event->getDescription();
-                    if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
-                        Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
+                        $event_name = $event->getSummary();
+                        $description = $event->getDescription();
+                        if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
+                            Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
+                        }
                     }
                 }
             }
@@ -179,11 +182,12 @@ class TripsController extends Controller
             } catch (\Exception $e) {
                 // dd($e->getMessage());
                 $error = json_decode($e->getMessage(), true);
-                $url  = $client->createAuthUrl();
-                return redirect($url);
-                exit;
-                // if ($error['error']['code'] == 401) {
-                // }
+                if ($error['error']['code'] == 401) {
+                    $url  = $client->createAuthUrl();
+                    return redirect($url);
+                    exit;
+                }
+                return redirect()->back();
             }
         }
         $data['available'] = Trip::whereIn('status', ['available'])->count();
@@ -207,20 +211,23 @@ class TripsController extends Controller
                 $trips = Trip::where('id', '>', 0)->get();
                 $calendarId = 'rw.passengers@gmail.com';
                 foreach ($trips as $key => $value) {
-                    $eventId = $value->event_id;
-                    $event = $service->events->get($calendarId, $eventId);
-                    // dd("HI");
-                    $startTime = $event->start->dateTime;
-                    $endTime = $event->end->dateTime;
-                    $startTime = str_replace('T', " ", $startTime);
-                    $startTime = str_replace('Z', "", $startTime);
-                    $endTime = str_replace('T', " ", $endTime);
-                    $endTime = str_replace('Z', "", $endTime);
+                    if ($value->event_id != null) {
 
-                    $event_name = $event->getSummary();
-                    $description = $event->getDescription();
-                    if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
-                        Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
+                        $eventId = $value->event_id;
+                        $event = $service->events->get($calendarId, $eventId);
+                        // dd("HI");
+                        $startTime = $event->start->dateTime;
+                        $endTime = $event->end->dateTime;
+                        $startTime = str_replace('T', " ", $startTime);
+                        $startTime = str_replace('Z', "", $startTime);
+                        $endTime = str_replace('T', " ", $endTime);
+                        $endTime = str_replace('Z', "", $endTime);
+
+                        $event_name = $event->getSummary();
+                        $description = $event->getDescription();
+                        if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
+                            Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
+                        }
                     }
                 }
             }
@@ -271,20 +278,23 @@ class TripsController extends Controller
                 $trips = Trip::where('id', '>', 0)->get();
                 $calendarId = 'rw.passengers@gmail.com';
                 foreach ($trips as $key => $value) {
-                    $eventId = $value->event_id;
-                    $event = $service->events->get($calendarId, $eventId);
-                    // dd("HI");
-                    $startTime = $event->start->dateTime;
-                    $endTime = $event->end->dateTime;
-                    $startTime = str_replace('T', " ", $startTime);
-                    $startTime = str_replace('Z', "", $startTime);
-                    $endTime = str_replace('T', " ", $endTime);
-                    $endTime = str_replace('Z', "", $endTime);
+                    if ($value->event_id != null) {
 
-                    $event_name = $event->getSummary();
-                    $description = $event->getDescription();
-                    if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
-                        Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
+                        $eventId = $value->event_id;
+                        $event = $service->events->get($calendarId, $eventId);
+                        // dd("HI");
+                        $startTime = $event->start->dateTime;
+                        $endTime = $event->end->dateTime;
+                        $startTime = str_replace('T', " ", $startTime);
+                        $startTime = str_replace('Z', "", $startTime);
+                        $endTime = str_replace('T', " ", $endTime);
+                        $endTime = str_replace('Z', "", $endTime);
+
+                        $event_name = $event->getSummary();
+                        $description = $event->getDescription();
+                        if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
+                            Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
+                        }
                     }
                 }
             }
@@ -342,7 +352,7 @@ class TripsController extends Controller
         $decodedJson = html_entity_decode($request->stops);
         $stops = json_decode($decodedJson, true);
         $stops_descriptions = json_decode($request->stop_descriptions, true);
-    
+
         // dd($stops);
         $last = Trip::latest()->first();
         if ($last == null) {
@@ -353,7 +363,7 @@ class TripsController extends Controller
             $nextNumericPart = str_pad((int)$numericPart + 1, strlen($numericPart), '0', STR_PAD_LEFT);
             $unique = 'GO-' . $nextNumericPart;
         }
-        
+
         // dd($unique);
         $randomSlug = Str::random(8);
         $uniqueRandomSlug = $randomSlug . '_' . time();
@@ -374,18 +384,18 @@ class TripsController extends Controller
         $trip->drop_long = $request->drop_long;
         $trip->event_name = $request->event_name;
         $trip->description = $request->description;
-        $trip->slug=$uniqueRandomSlug;
+        $trip->slug = $uniqueRandomSlug;
         $trip->status = 'available';
         $trip->save();
-        if($request->user_id!=null || $request->user_id!=""){
-            $data=[
-                'message'=>'You havs assigned a new trip!',
-                'title'=>'New trip',
-                'sound'=>'newtrip.mp3',
+        if ($request->user_id != null || $request->user_id != "") {
+            $data = [
+                'message' => 'You havs assigned a new trip!',
+                'title' => 'New trip',
+                'sound' => 'newtrip.mp3',
             ];
-            $this->sendDriverNotification($request->user_id,$data);
+            $this->sendDriverNotification($request->user_id, $data);
         }
-        
+
         $description = $request->description;
 
         $stop = new Stop();
@@ -486,13 +496,13 @@ class TripsController extends Controller
             $trip->status = 'available';
         }
         $trip->save();
-        if($request->user_id!=null || $request->user_id!=""){
-            $data=[
-                'message'=>'Your trip is updated. See details!',
-                'title'=>'Trip updated',
-                'sound'=>'anychange.mp3',
+        if ($request->user_id != null || $request->user_id != "") {
+            $data = [
+                'message' => 'Your trip is updated. See details!',
+                'title' => 'Trip updated',
+                'sound' => 'anychange.mp3',
             ];
-            $this->sendDriverNotification($request->user_id,$data);
+            $this->sendDriverNotification($request->user_id, $data);
         }
         Stop::where('trip_id', $request->trip_id)->delete();
 
@@ -567,17 +577,18 @@ class TripsController extends Controller
         $trip->delete();
         return redirect('trips')->with('success', 'Trip deleted successfully');
     }
-    private function sendDriverNotification($id,$data)  {
-        $user=User::where('id',$id)->first(); 
-        if($user->fcm_token!=null){
-            (new NotificationService)->sendNotification($user->fcm_token,$data,'admin');
+    private function sendDriverNotification($id, $data)
+    {
+        $user = User::where('id', $id)->first();
+        if ($user->fcm_token != null) {
+            (new NotificationService)->sendNotification($user->fcm_token, $data, 'admin');
         }
-        Notification::create(['title'=>$data['title'],
-            'notification'=>$data['message'],
-            'type'=>'notification',
-            'user_id'=>$id,
-            'seen'=>0,
+        Notification::create([
+            'title' => $data['title'],
+            'notification' => $data['message'],
+            'type' => 'notification',
+            'user_id' => $id,
+            'seen' => 0,
         ]);
-        
     }
 }

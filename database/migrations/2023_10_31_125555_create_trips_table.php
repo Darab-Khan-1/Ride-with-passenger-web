@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id')->nullable();
             $table->string('unique_id');
-            $table->string('event_name');
+            $table->string('event_name')->nullable();
             $table->timestamp('pickup_date');
             $table->string('pickup_location')->nullable();
             $table->timestamp('delivery_date');
