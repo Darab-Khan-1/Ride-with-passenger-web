@@ -51,7 +51,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Trips
     Route::get('trips', [TripsController::class, 'available']);
-    Route::get('active/trips', [TripsController::class, 'active']);
+    Route::get('active/trips/{status?}', [TripsController::class, 'active']);
     Route::get('completed/trips', [TripsController::class, 'completed']);
     Route::get('new/trip', [TripsController::class, 'new']);
     Route::post('trip/create', [TripsController::class, 'create']);

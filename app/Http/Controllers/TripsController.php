@@ -191,7 +191,7 @@ class TripsController extends Controller
         return view('trips.trips', compact('data'));
     }
 
-    public function active(Request $request)
+    public function active(Request $request,$status='all')
     {
         if (Auth::user()->type == "superadmin") {
 
@@ -224,7 +224,16 @@ class TripsController extends Controller
                     }
                 }
             }
-            $trips = Trip::latest()->whereNotIn('status', ['available', 'completed'])->whereNotNull('status')->with('stops', 'driver')->get();
+            if($status=='all'){
+                $trips = Trip::latest()->whereNotIn('status', ['available', 'completed'])->whereNotNull('status')->with('stops', 'driver')->get();
+            }else if($status=='pick'){
+                $trips = Trip::latest()->where('status', 'pickup')->with('stops', 'driver')->get();
+            }else if($status=='drop'){
+                $trips = Trip::latest()->where('status', 'destination')->with('stops', 'driver')->get();
+            }else if($status=='intransit'){
+                $trips = Trip::latest()->where('status', 'in-transit')->with('stops', 'driver')->get();
+            }
+
             return DataTables::of($trips)->make(true);
         }
         if (Auth::user()->type == "superadmin") {

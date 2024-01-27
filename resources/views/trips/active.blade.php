@@ -117,8 +117,15 @@
                     </div>
                 </div>
                 <div class="card-body p-5" style="overflow-x: scroll;">
-
-                    <table class="table" id="table"></table>
+                    
+                    <table class="table" id="table">
+                        <select class="form-control " name="trip_status" id="trip_status" style='width: 191px;float: inline-end;'>
+                            <option value="all" selected>Active</option>
+                            <option value="pick" >Pickup</option>
+                            <option value="drop" >Dropoff</option>
+                            <option value="intransit" >In-Transit</option>
+                        </select>
+                    </table>
                 </div>
                 {{-- <div class="card-footer">
                 </div> --}}
@@ -135,11 +142,17 @@
 <script type="text/javascript">
     $(".trips-nav").click()
     $(".active-trips-nav").addClass("menu-item-active");
-
+   
 
     var table
     $(document).ready(function() {
-        table = $('#table').DataTable({
+         $("#trip_status").change(function(){
+            $('#table').DataTable().clear().destroy();
+            tableDraw(this.value);
+        });
+        tableDraw('all');
+        function tableDraw(status){
+            table = $('#table').DataTable({
             paging: true,
             // pageLength : parseInt(vv),
             responsive: false,
@@ -147,7 +160,7 @@
             serverSide: false,
 
             ajax: {
-                url: "{{ url('/active/trips') }}"
+                url: "{{ url('/active/trips') }}"+"/"+status
             },
 
             columns: [{
@@ -275,7 +288,7 @@
                     data: 'status',
                     title: 'Status',
                     render: function(data, type, row) {
-                        let html = '<span class="font-weight-bold text-warning">ACTIVE</span>'
+                        let html = '<span class="font-weight-bold text-warning">'+data+'</span>'
                         // if(data != null){
                         //     html =  data.toUpperCase()
                         // }
@@ -363,5 +376,7 @@
                 'csv'
             ]
         });
+        }
+        
     });
 </script>
