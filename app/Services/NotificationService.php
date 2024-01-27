@@ -36,7 +36,7 @@ class NotificationService
         
             $data = [
                 "to" => $fcm_token,
-                "data"=>[
+                "notification"=>[
                     
                         "title" => $notification_data['title'],
                         "body" => $notification_data['message'],
