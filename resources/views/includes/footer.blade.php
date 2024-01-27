@@ -47,8 +47,15 @@
 <script>
     var HOST_URL = "https://keenthemes.com/metronic/tools/preview";
 </script>
+
 <!--begin::Global Config(global config for global JS scripts)-->
 <script>
+var url = "{{ url('change/lang') }}";
+
+window.changeLang = function(e) {
+    console.log(url + "?lang=" + e.value);
+    window.location.href = url + "?lang=" + e.value;
+}
     var KTAppSettings = {
         "breakpoints": {
             "sm": 576,

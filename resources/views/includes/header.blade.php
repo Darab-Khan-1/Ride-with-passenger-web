@@ -43,6 +43,24 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    @php
+        if(session()->get('locale') != 'en' ){
+            echo '<style>
+                body {
+                    transform: scaleX(-1);
+                    filter: FlipH;
+                }
+                
+            </style>';
+
+        }
+    @endphp
+    <style>
+        .counter-mirror {
+            transform: scaleX(-1);
+            display: inline-block; /* Prevents block-level behavior */
+        }
+    </style>
 <script>
     const firebaseConfig = {
             apiKey: "{{ env('API_KEY') }}",
@@ -138,13 +156,13 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--end::Head-->
 <!--begin::Body-->
 
-<body id="kt_body" class="header-fixed header-mobile-fixed page-loading">
+<body id="kt_body" class="header-fixed header-mobile-fixed page-loading ">
     <!--begin::Main-->
     <!--begin::Header Mobile-->
     <div id="kt_header_mobile" class="header-mobile bg-primary header-mobile-fixed">
         <!--begin::Logo-->
         <a href="index.html">
-            <img alt="Logo" src="{{ asset('assets/ridewithpassngers.png') }}" class="max-h-50px"
+            <img alt="Logo" src="{{ asset('assets/ridewithpassngers.png') }}" class="max-h-50px counter-mirror"
                 style="border-radius: 0.82rem" />
         </a>
         <!--end::Logo-->
@@ -185,13 +203,13 @@ License: You must have a valid license purchased only from themeforest(the above
                     <!--begin::Top-->
                     <div class="header-top">
                         <!--begin::Container-->
-                        <div class="container">
+                        <div class="container-fluid">
                             <!--begin::Left-->
                             <div class="d-none d-lg-flex align-items-center mr-3">
                                 <!--begin::Logo-->
                                 <a href="{{ url('dashboard') }}" class="mr-20">
                                     <img alt="Logo" src="{{ asset('assets/ridewithpassngers.png') }}"
-                                        class="max-h-60px" style="border-radius: 0.82rem" />
+                                        class="max-h-60px counter-mirror" style="border-radius: 0.82rem" />
                                 </a>
                                 <!--end::Logo-->
                                 <!--begin::Tab Navs(for desktop mode)-->
@@ -268,6 +286,12 @@ License: You must have a valid license purchased only from themeforest(the above
                 
                                         </div>
                                     </a>
+                                    
+                                        <select class="form-control Langchange" id="Langchange" style="margin-left: 9px;" onchange="changeLang(this);">
+                                            <option value="en" {{ session()->get('locale') == 'en' ? 'selected' : '' }}>English</option>
+                                            <option value="ar" {{ session()->get('locale') == 'ar' ? 'selected' : '' }}>Arabic</option>                    
+                                        </select>
+                                    
                                     <a href="{{ url('/logout') }}"
                                         class="btn btn-secondary mx-5 font-weight-bold text-dark">Sign Out</a>
                                 </div>
@@ -328,7 +352,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <ul class="menu-nav">
                                                 <li class="menu-item dashboard-nav" aria-haspopup="true">
                                                     <a href="{{ url('dashboard') }}" class="menu-link">
-                                                        <span class="menu-text">Dashboard</span>
+                                                        <span class="menu-text counter-mirror">{{ __('messages.dashboard')}}</span>
                                                     </a>
                                                 </li>
                                             </ul>
