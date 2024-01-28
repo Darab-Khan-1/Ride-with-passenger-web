@@ -29,6 +29,7 @@ class RegistrationController extends Controller
             Session::put('token',0);
             if ($user->type == 'superadmin') {
                 $this->adminLogin();
+                session(['allowed_by_google' => 3 ]);
                 session(['name' => 'Admin' ]);
                 return response()->json(['result' => 'superadmin']);
             } else if($user->type == 'employee') {

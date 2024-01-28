@@ -64,8 +64,11 @@ class TripsController extends Controller
         $accessToken = $client->fetchAccessTokenWithAuthCode($request->get('code'));
         $user = User::where('type', 'superadmin')->first();
         // dd($accessToken);
-        $user->access_token = $accessToken['access_token'];
-        $user->save();
+        if(isset($accessToken['access_token'])){
+            $user->access_token = $accessToken['access_token'];
+            $user->save();
+        }
+        // dd("hi");
         return redirect('/trips');
     }
 
@@ -85,7 +88,8 @@ class TripsController extends Controller
 
     public function available(Request $request)
     {
-        if (Auth::user()->type == "superadmin") {
+        // dd(session('allowed_by_google'));
+        if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
             $user = User::where('type', 'superadmin')->first();
             $accessToken = $user->access_token;
             $client = $this->getClient();
@@ -93,7 +97,7 @@ class TripsController extends Controller
             $service = new Google_Service_Calendar($client);
         }
         if ($request->ajax()) {
-            if (Auth::user()->type == "superadmin") {
+            if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
                 $trips = Trip::where('id', '>', 0)->get();
                 $calendarId = 'rw.passengers@gmail.com';
@@ -116,11 +120,12 @@ class TripsController extends Controller
                         }
                     }
                 }
+                
             }
             $trips = Trip::latest()->where('status', 'available')->orWhereNull('status')->with('stops', 'driver')->get();
             return DataTables::of($trips)->make(true);
         }
-        if (Auth::user()->type == "superadmin") {
+        if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
             try {
                 $events = $service->events->listEvents('rw.passengers@gmail.com');
@@ -178,14 +183,26 @@ class TripsController extends Controller
                     $event = $service->events->insert($calendarId, $event);
                     $trip->event_id  = $event->getId();
                     $trip->save();
+            session(['allowed_by_google' => 3]);
+
                 }
             } catch (\Exception $e) {
-                // dd($e->getMessage());
                 $error = json_decode($e->getMessage(), true);
                 if ($error['error']['code'] == 401) {
                     $url  = $client->createAuthUrl();
                     return redirect($url);
                     exit;
+                }elseif($error['error']['code'] == 404){
+                    if(session('allowed_by_google') > 0){
+                        $val = session('allowed_by_google');
+                        $val--;
+                        session(['allowed_by_google' => $val]);
+                        // dd($val);    
+                        // dd(session('allowed_by_google'));    
+                        $url  = $client->createAuthUrl();
+                    return redirect($url);
+                    }
+                    // session(['allowed_by_google' => false]); 
                 }
                 return redirect()->back();
             }
@@ -197,7 +214,7 @@ class TripsController extends Controller
 
     public function active(Request $request, $status = 'all')
     {
-        if (Auth::user()->type == "superadmin") {
+        if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
             $user = User::where('type', 'superadmin')->first();
             $accessToken = $user->access_token;
@@ -206,7 +223,7 @@ class TripsController extends Controller
             $service = new Google_Service_Calendar($client);
         }
         if ($request->ajax()) {
-            if (Auth::user()->type == "superadmin") {
+            if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
                 $trips = Trip::where('id', '>', 0)->get();
                 $calendarId = 'rw.passengers@gmail.com';
@@ -243,11 +260,13 @@ class TripsController extends Controller
 
             return DataTables::of($trips)->make(true);
         }
-        if (Auth::user()->type == "superadmin") {
+        if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
             try {
                 $events = $service->events->listEvents('rw.passengers@gmail.com');
                 // dd($events->getItems(3)[0]->getId());
+            session(['allowed_by_google' => 3]);
+
             } catch (\Exception $e) {
                 $error = json_decode($e->getMessage(), true);
                 // dd($e->getMessage());
@@ -255,6 +274,16 @@ class TripsController extends Controller
                     $url  = $client->createAuthUrl();
                     return redirect($url);
                     exit;
+                }elseif($error['error']['code'] == 404){
+                    // dd($error);
+                    if(session('allowed_by_google' != 0)){
+                        $val = session('allowed_by_google');
+                        $val--;
+                        session(['allowed_by_google' => $val]);
+                        $url  = $client->createAuthUrl();
+                    return redirect($url);
+                    }
+                    // session(['allowed_by_google' => false]);
                 }
             }
         }
@@ -264,7 +293,7 @@ class TripsController extends Controller
 
     public function completed(Request $request)
     {
-        if (Auth::user()->type == "superadmin") {
+        if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
             $user = User::where('type', 'superadmin')->first();
             $accessToken = $user->access_token;
@@ -273,7 +302,7 @@ class TripsController extends Controller
             $service = new Google_Service_Calendar($client);
         }
         if ($request->ajax()) {
-            if (Auth::user()->type == "superadmin") {
+            if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
                 $trips = Trip::where('id', '>', 0)->get();
                 $calendarId = 'rw.passengers@gmail.com';
@@ -301,10 +330,12 @@ class TripsController extends Controller
             $trips = Trip::latest()->where('status', 'completed')->with('stops', 'driver')->get();
             return DataTables::of($trips)->make(true);
         }
-        if (Auth::user()->type == "superadmin") {
+        if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
             try {
                 $events = $service->events->listEvents('rw.passengers@gmail.com');
+            session(['allowed_by_google' => 3]);
+
             } catch (\Exception $e) {
                 $error = json_decode($e->getMessage(), true);
                 // dd($e->getMessage());
@@ -312,6 +343,16 @@ class TripsController extends Controller
                     $url  = $client->createAuthUrl();
                     return redirect($url);
                     exit;
+                }elseif($error['error']['code'] == 404){
+                    // dd($error);
+                    if(session('allowed_by_google' != 0)){
+                        $val = session('allowed_by_google');
+                        $val--;
+                        session(['allowed_by_google' => $val]);
+                        $url  = $client->createAuthUrl();
+                    return redirect($url);
+                    }
+                    // session(['allowed_by_google' => false]);
                 }
             }
         }
@@ -323,7 +364,7 @@ class TripsController extends Controller
 
     public function new()
     {
-        if (Auth::user()->type == "superadmin") {
+        if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
             try {
                 $user = User::where('type', 'superadmin')->first();
@@ -332,6 +373,8 @@ class TripsController extends Controller
                 $client->setAccessToken($accessToken);
                 $service = new Google_Service_Calendar($client);
                 $events = $service->events->listEvents('rw.passengers@gmail.com');
+            session(['allowed_by_google' => 3]);
+
             } catch (\Exception $e) {
                 $error = json_decode($e->getMessage(), true);
                 // dd($e->getMessage());
@@ -339,6 +382,16 @@ class TripsController extends Controller
                     $url  = $client->createAuthUrl();
                     return redirect($url);
                     exit;
+                }elseif($error['error']['code'] == 404){
+                    // dd($error);
+                    if(session('allowed_by_google' != 0)){
+                        $val = session('allowed_by_google');
+                        $val--;
+                        session(['allowed_by_google' => $val]);
+                        $url  = $client->createAuthUrl();
+                    return redirect($url);
+                    }
+                    // session(['allowed_by_google' => false]);
                 }
             }
         }
@@ -428,7 +481,7 @@ class TripsController extends Controller
         $stop->save();
 
         $event_id = null;
-        if (Auth::user()->type == "superadmin") {
+        if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
             $user = User::where('type', 'superadmin')->first();
             $accessToken = $user->access_token;
@@ -544,7 +597,7 @@ class TripsController extends Controller
         $stop->description = $request->end_description;
         $stop->save();
 
-        if (Auth::user()->type == "superadmin") {
+        if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
 
             $user = User::where('type', 'superadmin')->first();
@@ -669,7 +722,7 @@ class TripsController extends Controller
         }
 
 
-        if (Auth::user()->type == "superadmin") {
+        if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
 
             $user = User::where('type', 'superadmin')->first();
@@ -695,7 +748,7 @@ class TripsController extends Controller
     public function delete($id)
     {
         $trip = Trip::find($id);
-        if (Auth::user()->type == "superadmin") {
+        if (Auth::user()->type == "superadmin" && session('allowed_by_google')) {
 
             $user = User::where('type', 'superadmin')->first();
             $accessToken = $user->access_token;
