@@ -17,6 +17,7 @@ use GuzzleHttp\RedirectMiddleware;
 use App\Services\NotificationService;
 use PDO;
 use stdClass;
+use Config;
 
 class DriversController extends Controller
 {
@@ -25,6 +26,16 @@ class DriversController extends Controller
     public function __construct(DeviceService $DeviceService)
     {
         $this->DeviceService = $DeviceService;
+    }
+
+
+    public function adminLogin(){
+        $adminEmail =  Config::get('constants.Constants.adminEmail');
+        $adminPassword = Config::get('constants.Constants.adminPassword');
+        $data = 'email=' . $adminEmail . '&password=' . $adminPassword;
+        $response = static::curl('/api/session', 'POST', '', $data, array(Config::get('constants.Constants.urlEncoded')));
+        $res = json_decode($response->response);
+        // dd($response);
     }
 
     public function index(Request $request)
@@ -250,6 +261,7 @@ class DriversController extends Controller
         return view('live', compact('drivers', 'id'));
     }
     public function liveshare(Request $request,$slug=null)  {
+        $this->adminLogin();
         $trip_details=Trip::with('driver')->where('status','!=','available')->where('status','!=','completed')->where('slug',$slug)->first();
         if($trip_details!=null){
             $data['driver'] = $trip_details->driver;

@@ -64,7 +64,7 @@ class TripsController extends Controller
         $accessToken = $client->fetchAccessTokenWithAuthCode($request->get('code'));
         $user = User::where('type', 'superadmin')->first();
         // dd($accessToken);
-        if(isset($accessToken['access_token'])){
+        if (isset($accessToken['access_token'])) {
             $user->access_token = $accessToken['access_token'];
             $user->save();
         }
@@ -120,7 +120,6 @@ class TripsController extends Controller
                         }
                     }
                 }
-                
             }
             $trips = Trip::latest()->where('status', 'available')->orWhereNull('status')->with('stops', 'driver')->get();
             return DataTables::of($trips)->make(true);
@@ -183,8 +182,7 @@ class TripsController extends Controller
                     $event = $service->events->insert($calendarId, $event);
                     $trip->event_id  = $event->getId();
                     $trip->save();
-            session(['allowed_by_google' => 3]);
-
+                    session(['allowed_by_google' => 3]);
                 }
             } catch (\Exception $e) {
                 $error = json_decode($e->getMessage(), true);
@@ -192,15 +190,15 @@ class TripsController extends Controller
                     $url  = $client->createAuthUrl();
                     return redirect($url);
                     exit;
-                }elseif($error['error']['code'] == 404){
-                    if(session('allowed_by_google') > 0){
+                } elseif ($error['error']['code'] == 404) {
+                    if (session('allowed_by_google') > 0) {
                         $val = session('allowed_by_google');
                         $val--;
                         session(['allowed_by_google' => $val]);
                         // dd($val);    
                         // dd(session('allowed_by_google'));    
                         $url  = $client->createAuthUrl();
-                    return redirect($url);
+                        return redirect($url);
                     }
                     // session(['allowed_by_google' => false]); 
                 }
@@ -265,8 +263,7 @@ class TripsController extends Controller
             try {
                 $events = $service->events->listEvents('rw.passengers@gmail.com');
                 // dd($events->getItems(3)[0]->getId());
-            session(['allowed_by_google' => 3]);
-
+                session(['allowed_by_google' => 3]);
             } catch (\Exception $e) {
                 $error = json_decode($e->getMessage(), true);
                 // dd($e->getMessage());
@@ -274,14 +271,14 @@ class TripsController extends Controller
                     $url  = $client->createAuthUrl();
                     return redirect($url);
                     exit;
-                }elseif($error['error']['code'] == 404){
+                } elseif ($error['error']['code'] == 404) {
                     // dd($error);
-                    if(session('allowed_by_google' != 0)){
+                    if (session('allowed_by_google' != 0)) {
                         $val = session('allowed_by_google');
                         $val--;
                         session(['allowed_by_google' => $val]);
                         $url  = $client->createAuthUrl();
-                    return redirect($url);
+                        return redirect($url);
                     }
                     // session(['allowed_by_google' => false]);
                 }
@@ -334,8 +331,7 @@ class TripsController extends Controller
 
             try {
                 $events = $service->events->listEvents('rw.passengers@gmail.com');
-            session(['allowed_by_google' => 3]);
-
+                session(['allowed_by_google' => 3]);
             } catch (\Exception $e) {
                 $error = json_decode($e->getMessage(), true);
                 // dd($e->getMessage());
@@ -343,14 +339,14 @@ class TripsController extends Controller
                     $url  = $client->createAuthUrl();
                     return redirect($url);
                     exit;
-                }elseif($error['error']['code'] == 404){
+                } elseif ($error['error']['code'] == 404) {
                     // dd($error);
-                    if(session('allowed_by_google' != 0)){
+                    if (session('allowed_by_google' != 0)) {
                         $val = session('allowed_by_google');
                         $val--;
                         session(['allowed_by_google' => $val]);
                         $url  = $client->createAuthUrl();
-                    return redirect($url);
+                        return redirect($url);
                     }
                     // session(['allowed_by_google' => false]);
                 }
@@ -373,8 +369,7 @@ class TripsController extends Controller
                 $client->setAccessToken($accessToken);
                 $service = new Google_Service_Calendar($client);
                 $events = $service->events->listEvents('rw.passengers@gmail.com');
-            session(['allowed_by_google' => 3]);
-
+                session(['allowed_by_google' => 3]);
             } catch (\Exception $e) {
                 $error = json_decode($e->getMessage(), true);
                 // dd($e->getMessage());
@@ -382,14 +377,14 @@ class TripsController extends Controller
                     $url  = $client->createAuthUrl();
                     return redirect($url);
                     exit;
-                }elseif($error['error']['code'] == 404){
+                } elseif ($error['error']['code'] == 404) {
                     // dd($error);
-                    if(session('allowed_by_google' != 0)){
+                    if (session('allowed_by_google' != 0)) {
                         $val = session('allowed_by_google');
                         $val--;
                         session(['allowed_by_google' => $val]);
                         $url  = $client->createAuthUrl();
-                    return redirect($url);
+                        return redirect($url);
                     }
                     // session(['allowed_by_google' => false]);
                 }
@@ -742,7 +737,7 @@ class TripsController extends Controller
             $event->setEnd(new \Google_Service_Calendar_EventDateTime(['dateTime' => $formattedDeliveryDateTime]));
             $service->events->update('rw.passengers@gmail.com', $request->event_id, $event);
         }
-        return redirect('active/trips/all')->with('success', 'Trip updated successfully');
+        return redirect('active/trips/')->with('success', 'Trip updated successfully');
     }
 
     public function delete($id)
