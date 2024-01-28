@@ -16,12 +16,15 @@ use App\Helpers\Timezone;
 use GuzzleHttp\RedirectMiddleware;
 use App\Services\NotificationService;
 use PDO;
+use App\Helpers\Curl;
 use stdClass;
 use Config;
 
 class DriversController extends Controller
 {
     use Timezone;
+    use curl;
+
     protected $DeviceService;
     public function __construct(DeviceService $DeviceService)
     {
