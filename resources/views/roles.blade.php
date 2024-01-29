@@ -6,7 +6,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"
     rel="stylesheet" />
 <!--begin::Content-->
-<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+<div class="content d-flex flex-column flex-column-fluid counter-mirror" id="kt_content">
     <!--begin::Entry-->
     <div>
         <!--begin::Container-->
@@ -38,8 +38,7 @@
                                     <div class="text-dark font-weight-bolder font-size-h2 mt-3">{{ $total }}
                                     </div>
                                     <a href="#"
-                                        class="text-muted text-hover-primary font-weight-bold font-size-lg mt-1">Total
-                                        Roles</a>
+                                        class="text-muted text-hover-primary font-weight-bold font-size-lg mt-1">{{__('messages.total_roles')}}</a>
                                 </div>
                             </div>
                             <!--end::Tiles Widget 12-->
@@ -49,7 +48,7 @@
             </div>
             <div class="card card-custom my-5">
                 @if (session('success'))
-                    <div class="alert alert-success m-2">
+                    <div class="alert alert-success m-2 ">
                         {{ session('success') }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -57,7 +56,7 @@
                     </div>
                 @endif
                 @if (session('error'))
-                    <div class="alert alert-danger m-2">
+                    <div class="alert alert-danger m-2 ">
                         {{ session('error') }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -66,7 +65,7 @@
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
-                        <h3 class="card-label">Roles
+                        <h3 class="card-label">{{__('messages.roles')}}
                             {{-- <span class="d-block text-muted pt-2 font-size-sm">Companies made easy</span> --}}
                         </h3>
                     </div>
@@ -88,12 +87,12 @@
                                     </g>
                                 </svg>
                                 <!--end::Svg Icon-->
-                            </span>Add New
+                            </span>{{__('messages.add_new')}}
                         </button>
                         @endcan
                     </div>
                 </div>
-                <div class="card-body p-5" style="overflow-x: scroll;">
+                <div class="card-body p-5 " style="overflow-x: scroll;">
 
                     <table class="table" id="table"></table>
                 </div>
@@ -105,158 +104,158 @@
     </div>
     <!--end::Entry-->
 </div>
-<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+<div class="modal fade " id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addModalLabel">Register Driver</h5>
+                <h5 class="modal-title counter-mirror" id="addModalLabel">{{__('messages.register_driver')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body ">
                 <form class="form" action="{{ url('/register/role') }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="card-body">
 
                         <div class="row">
-                            <div class="form-group col-md-12">
-                                <label>Name:</label>
+                            <div class="form-group col-md-12 counter-mirror">
+                                <label>{{__('messages.name')}}:</label>
                                 <input type="text" name="name" class="form-control form-control-solid" required
-                                    placeholder="Enter full name" />
+                                    placeholder="{{__('messages.enter_full_name')}}" />
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 counter-mirror">
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label">Drivers</label>
+                                    <label class="col-3 col-form-label">{{__('messages.drivers')}}</label>
                                     <div class="col-9 col-form-label">
                                         <div class="checkbox-inline">
                                             <label class="checkbox checkbox-success">
                                                 <input type="checkbox" name="create_driver" />
                                                 <span></span>
-                                                Add
+                                                {{__('messages.add')}}
                                             </label>
                                             <label class="checkbox checkbox-primary">
                                                 <input type="checkbox" name="view_driver" />
                                                 <span></span>
-                                                View
+                                                 {{__('messages.view')}}
                                             </label>
                                             <label class="checkbox checkbox-info">
                                                 <input type="checkbox" name="update_driver" />
                                                 <span></span>
-                                                Update
+                                                 {{__('messages.update')}}
                                             </label>
                                             <label class="checkbox checkbox-danger">
                                                 <input type="checkbox" name="delete_driver" />
                                                 <span></span>
-                                                Delete
+                                                 {{__('messages.delete')}}
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 counter-mirror">
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label">Trips</label>
+                                    <label class="col-3 col-form-label">{{__('messages.trips')}}</label>
                                     <div class="col-9 col-form-label">
                                         <div class="checkbox-inline">
                                             <label class="checkbox checkbox-success">
                                                 <input type="checkbox" name="create_trip" />
                                                 <span></span>
-                                                Add
+                                                 {{__('messages.add')}}
                                             </label>
                                             <label class="checkbox checkbox-primary">
                                                 <input type="checkbox" name="view_trip" />
                                                 <span></span>
-                                                View
+                                                 {{__('messages.view')}}
                                             </label>
                                             <label class="checkbox checkbox-info">
                                                 <input type="checkbox" name="update_trip" />
                                                 <span></span>
-                                                Update
+                                                 {{__('messages.update')}}
                                             </label>
                                             <label class="checkbox checkbox-danger">
                                                 <input type="checkbox" name="delete_trip" />
                                                 <span></span>
-                                                Delete
+                                                 {{__('messages.delete')}}
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 counter-mirror">
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label">Employees</label>
+                                    <label class="col-3 col-form-label">{{__('messages.employees')}}</label>
                                     <div class="col-9 col-form-label">
                                         <div class="checkbox-inline">
                                             <label class="checkbox checkbox-success">
                                                 <input type="checkbox" name="create_employee" />
                                                 <span></span>
-                                                Add
+                                                 {{__('messages.add')}}
                                             </label>
                                             <label class="checkbox checkbox-primary">
                                                 <input type="checkbox" name="view_employee" />
                                                 <span></span>
-                                                View
+                                                 {{__('messages.view')}}
                                             </label>
                                             <label class="checkbox checkbox-info">
                                                 <input type="checkbox" name="update_employee" />
                                                 <span></span>
-                                                Update
+                                                 {{__('messages.update')}}
                                             </label>
                                             <label class="checkbox checkbox-danger">
                                                 <input type="checkbox" name="delete_employee" />
                                                 <span></span>
-                                                Delete
+                                                 {{__('messages.delete')}}
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 counter-mirror">
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label">Roles</label>
+                                    <label class="col-3 col-form-label">{{__('messages.roles')}}</label>
                                     <div class="col-9 col-form-label">
                                         <div class="checkbox-inline">
                                             <label class="checkbox checkbox-success">
                                                 <input type="checkbox" name="create_role" />
                                                 <span></span>
-                                                Add
+                                                 {{__('messages.add')}}
                                             </label>
                                             <label class="checkbox checkbox-primary">
                                                 <input type="checkbox" name="view_role" />
                                                 <span></span>
-                                                View
+                                                 {{__('messages.view')}}
                                             </label>
                                             <label class="checkbox checkbox-info">
                                                 <input type="checkbox" name="update_role" />
                                                 <span></span>
-                                                Update
+                                                 {{__('messages.update')}}
                                             </label>
                                             <label class="checkbox checkbox-danger">
                                                 <input type="checkbox" name="delete_role" />
                                                 <span></span>
-                                                Delete
+                                                 {{__('messages.delete')}}
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
+                            <div class="col-md-12 counter-mirror">
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label">Tracking</label>
+                                    <label class="col-3 col-form-label">{{__('messages.tracking')}}</label>
                                     <div class="col-9 col-form-label">
                                         <div class="checkbox-inline">
                                             <label class="checkbox checkbox-success">
                                                 <input type="checkbox" name="live_tracking" />
                                                 <span></span>
-                                                Live Tracking
+                                                 {{__('messages.live_tracking')}}
                                             </label>
                                             <label class="checkbox checkbox-primary">
                                                 <input type="checkbox" name="playback" />
                                                 <span></span>
-                                                Playback
+                                                {{__('messages.play_back')}}
                                             </label>
                                         </div>
                                     </div>
@@ -264,9 +263,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn  mr-2" style="background: #ffc500">Register</button>
-                        <button type="reset" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <div class="card-footer counter-mirror">
+                        <button type="submit" class="btn  mr-2" style="background: #ffc500">{{__('messages.register')}}</button>
+                        <button type="reset" class="btn btn-secondary" data-dismiss="modal">{{__('messages.cancel')}}</button>
                     </div>
                 </form>
             </div>
@@ -278,52 +277,52 @@
     </div>
 </div>
 
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+<div class="modal fade " id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Edit Role</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title counter-mirror" id="editModalLabel">{{__('messages.edit_role')}}</h5>
+                <button type="button" class="close " data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body counter-mirror">
                 <form class="form" action="{{ url('/update/role') }}" id="editForm" method="POST"
                     enctype="multipart/form-data">
                     @csrf
-                    <div class="card-body">
+                    <div class="card-body ">
                        
                         <div class="row">
                             <div class="form-group col-md-12">
-                                <label>Name:</label>
+                                <label>{{__('messages.name')}}:</label>
                                 <input type="text" name="name" id="name" class="form-control form-control-solid" required
                                     placeholder="Enter full name" />
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label">Drivers</label>
+                                    <label class="col-3 col-form-label">{{__('messages.drivers')}}</label>
                                     <div class="col-9 col-form-label">
                                         <div class="checkbox-inline">
                                             <label class="checkbox checkbox-success">
                                                 <input type="checkbox" name="create_driver" id="create_driver" />
                                                 <span></span>
-                                                Add
+                                                {{__('messages.add')}}
                                             </label>
                                             <label class="checkbox checkbox-primary">
                                                 <input type="checkbox" name="view_driver" id="view_driver" />
                                                 <span></span>
-                                                View
+                                                {{__('messages.view')}}
                                             </label>
                                             <label class="checkbox checkbox-info">
                                                 <input type="checkbox" name="update_driver" id="update_driver" />
                                                 <span></span>
-                                                Update
+                                                {{__('messages.update')}}
                                             </label>
                                             <label class="checkbox checkbox-danger">
                                                 <input type="checkbox" name="delete_driver" id="delete_driver" />
                                                 <span></span>
-                                                Delete
+                                                {{__('messages.delete')}}
                                             </label>
                                         </div>
                                     </div>
@@ -331,28 +330,28 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label">Trips</label>
+                                    <label class="col-3 col-form-label">{{__('messages.trips')}}</label>
                                     <div class="col-9 col-form-label">
                                         <div class="checkbox-inline">
                                             <label class="checkbox checkbox-success">
                                                 <input type="checkbox" name="create_trip" id="create_trip" />
                                                 <span></span>
-                                                Add
+                                                {{__('messages.add')}}
                                             </label>
                                             <label class="checkbox checkbox-primary">
                                                 <input type="checkbox" name="view_trip" id="view_trip" />
                                                 <span></span>
-                                                View
+                                                {{__('messages.view')}}
                                             </label>
                                             <label class="checkbox checkbox-info">
                                                 <input type="checkbox" name="update_trip" id="update_trip" />
                                                 <span></span>
-                                                Update
+                                                {{__('messages.update')}}
                                             </label>
                                             <label class="checkbox checkbox-danger">
                                                 <input type="checkbox" name="delete_trip" id="delete_trip" />
                                                 <span></span>
-                                                Delete
+                                                {{__('messages.delete')}}
                                             </label>
                                         </div>
                                     </div>
@@ -360,28 +359,28 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label">Employees</label>
+                                    <label class="col-3 col-form-label">{{__('messages.employees')}}</label>
                                     <div class="col-9 col-form-label">
                                         <div class="checkbox-inline">
                                             <label class="checkbox checkbox-success">
                                                 <input type="checkbox" name="create_employee" id="create_employee" />
                                                 <span></span>
-                                                Add
+                                                {{__('messages.add')}}
                                             </label>
                                             <label class="checkbox checkbox-primary">
                                                 <input type="checkbox" name="view_employee" id="view_employee" />
                                                 <span></span>
-                                                View
+                                                {{__('messages.view')}}
                                             </label>
                                             <label class="checkbox checkbox-info">
                                                 <input type="checkbox" name="update_employee" id="update_employee" />
                                                 <span></span>
-                                                Update
+                                                {{__('messages.update')}}
                                             </label>
                                             <label class="checkbox checkbox-danger">
                                                 <input type="checkbox" name="delete_employee" id="delete_employee" />
                                                 <span></span>
-                                                Delete
+                                                {{__('messages.delete')}}
                                             </label>
                                         </div>
                                     </div>
@@ -389,28 +388,28 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label">Roles</label>
+                                    <label class="col-3 col-form-label">{{__('messages.roles')}}</label>
                                     <div class="col-9 col-form-label">
                                         <div class="checkbox-inline">
                                             <label class="checkbox checkbox-success">
                                                 <input type="checkbox" name="create_role" id="create_role" />
                                                 <span></span>
-                                                Add
+                                                {{__('messages.add')}}
                                             </label>
                                             <label class="checkbox checkbox-primary">
                                                 <input type="checkbox" name="view_role" id="view_role" />
                                                 <span></span>
-                                                View
+                                                {{__('messages.view')}}
                                             </label>
                                             <label class="checkbox checkbox-info">
                                                 <input type="checkbox" name="update_role" id="update_role" />
                                                 <span></span>
-                                                Update
+                                                {{__('messages.update')}}
                                             </label>
                                             <label class="checkbox checkbox-danger">
                                                 <input type="checkbox" name="delete_role" id="delete_role" />
                                                 <span></span>
-                                                Delete
+                                                {{__('messages.delete')}}
                                             </label>
                                         </div>
                                     </div>
@@ -419,18 +418,18 @@
 
                             <div class="col-md-12">
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label">Tracking</label>
+                                    <label class="col-3 col-form-label">{{__('messages.tracking')}}</label>
                                     <div class="col-9 col-form-label">
                                         <div class="checkbox-inline">
                                             <label class="checkbox checkbox-success">
                                                 <input type="checkbox" name="live_tracking" id="live_tracking" />
                                                 <span></span>
-                                                Live Tracking
+                                               {{__('messages.live_tracking')}}
                                             </label>
                                             <label class="checkbox checkbox-primary">
                                                 <input type="checkbox" name="playback" id="playback" />
                                                 <span></span>
-                                                Playback
+                                                 {{__('messages.playback')}}
                                             </label>
                                         </div>
                                     </div>
@@ -440,10 +439,10 @@
                     </div>
 
             </div>
-            <div class="card-footer">
+            <div class="card-footer counter-mirror">
                 <input type="hidden" name="role_id" id="role_id">
-                <button type="submit" class="btn  mr-2" style="background: #ffc500">Update</button>
-                <button type="reset" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn  mr-2" style="background: #ffc500">{{__('messages.update')}}</button>
+                <button type="reset" class="btn btn-secondary" data-dismiss="modal">{{__('messages.cancel')}}</button>
             </div>
             </form>
         </div>
@@ -455,23 +454,23 @@
 </div>
 {{-- </div> --}}
 
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+<div class="modal fade " id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Delete Role</h5>
+                <h5 class="modal-title counter-mirror" id="deleteModalLabel">{{__('messages.delete_role')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                <p>Are you sure to delete this role?</p>
+            <div class="modal-body counter-mirror">
+                <p>{{__('messages.are_you_sure_to_delete_this_role?')}}</p>
             </div>
-            <div class="modal-footer">
-                <a id="deleteUrl" class="btn btn-primary font-weight-bold">Yes</a>
+            <div class="modal-footer counter-mirror">
+                <a id="deleteUrl" class="btn btn-primary font-weight-bold">{{__('messages.yes')}}</a>
                 <button type="button" class="btn btn-light-primary font-weight-bold"
-                    data-dismiss="modal">No</button>
+                    data-dismiss="modal">{{__('messages.no')}}</button>
             </div>
         </div>
     </div>
@@ -560,12 +559,12 @@
         columns: [
             {
                 data: 'name',
-                title: 'Name'
+                title: "{{__('messages.name')}}"
             },
         
             {
                 data: "id",
-                title: "Action",
+                title: "{{__('messages.action')}}",
                 render: function(data, type, row) {
                   
                     let html = ''
@@ -593,7 +592,7 @@
         dom: 'Bfrtip',
         buttons: [{
             extend: 'pdfHtml5',
-            text: 'PDF',
+            text: '{{__("messages.pdf")}}',
             title: $('h3').text(),
             orientation: 'potrait',
             pageSize: 'LEGAL',
@@ -613,7 +612,7 @@
             }
         }, {
             extend: 'print',
-            text: 'PRINT',
+            text: '{{__("messages.print")}}',
             title: $('h3').text(),
             exportOptions: {
                 modifier: {
@@ -623,7 +622,7 @@
             }
         }, {
             extend: 'excel',
-            text: 'EXCEL',
+            text: '{{__("messages.excel")}}',
             title: $('h3').text(),
             exportOptions: {
                 stripHtml: true,
@@ -635,7 +634,7 @@
             }
         }, {
             extend: 'copy',
-            text: 'COPY',
+            text: '{{__("messages.copy")}}',
             title: $('h3').text(),
             exportOptions: {
                 stripHtml: true,

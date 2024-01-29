@@ -2,7 +2,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"
     rel="stylesheet" />
 <!--begin::Content-->
-<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+<div class="content d-flex flex-column flex-column-fluid counter-mirror" id="kt_content">
     <!--begin::Entry-->
     <div>
         <!--begin::Container-->
@@ -34,8 +34,8 @@
                                     <div class="text-dark font-weight-bolder font-size-h2 mt-3">{{ $total }}
                                     </div>
                                     <a href="#"
-                                        class="text-muted text-hover-primary font-weight-bold font-size-lg mt-1">Total
-                                        Employees</a>
+                                        class="text-muted text-hover-primary font-weight-bold font-size-lg mt-1">{{__('messages.total')}}
+                                        {{__('messages.employees')}}</a>
                                 </div>
                             </div>
                             <!--end::Tiles Widget 12-->
@@ -47,7 +47,7 @@
                 @if (session('success'))
                     <div class="alert alert-success m-2">
                         {{ session('success') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <button type="button" class="close counter-mirror" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -62,7 +62,7 @@
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
-                        <h3 class="card-label">Drivers
+                        <h3 class="card-label">{{__('messages.drivers')}}
                             {{-- <span class="d-block text-muted pt-2 font-size-sm">Companies made easy</span> --}}
                         </h3>
                     </div>
@@ -84,7 +84,7 @@
                                     </g>
                                 </svg>
                                 <!--end::Svg Icon-->
-                            </span>Add New
+                            </span>{{__('messages.add_new')}}
                         </button>
                         @endcan
 
@@ -107,12 +107,12 @@
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addModalLabel">Register Employee</h5>
+                <h5 class="modal-title counter-mirror" id="addModalLabel">{{__('messages.register_employee')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body counter-mirror">
                 <form class="form" action="{{ url('/register/employee') }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
@@ -120,41 +120,41 @@
 
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label>Select role:</label>
+                                <label>{{__('messages.select_role')}}:</label>
                                 <select class="form-control" name="role">
-                                    <option value="">-- Select Role --</option>
+                                    <option value="">-- {{__('messages.select_role')}} --</option>
                                     @foreach ($roles as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Full Name:</label>
+                                <label>{{__('messages.full_name')}}:</label>
                                 <input type="text" name="name" class="form-control " required
-                                    placeholder="Enter full name" />
+                                    placeholder="{{__('messages.enter_full_name')}}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Email:</label>
+                                <label>{{__('messages.email')}}:</label>
                                 <input type="email" name="email" class="form-control " required
-                                    placeholder="Enter email" />
+                                    placeholder="{{__('messages.enter_email')}}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Password:</label>
+                                <label>{{__('messages.password')}}:</label>
                                 <input type="password" name="password" class="form-control "
-                                    required placeholder="Enter password" />
+                                    required placeholder="{{__('messages.enter_password')}}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Phone:</label>
+                                <label>{{__('messages.phone')}}:</label>
                                 <input type="text" name="phone" class="form-control " required
-                                    placeholder="Enter phone" />
+                                    placeholder="{{__('messages.enter_phone')}}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Address:</label>
+                                <label>{{__('messages.address')}}:</label>
                                 <input type="text" name="address" class="form-control " required
-                                    placeholder="Enter license number" />
+                                    placeholder="{{__('messages.address')}}" />
                             </div>
                             <div class="form-group row">
-                                <label class="col-xl-3 col-lg-3 col-form-label">Avatar: </label>
+                                <label class="col-xl-3 col-lg-3 col-form-label">{{__('messages.avatar')}}: </label>
                                 <div class="col-lg-9 col-xl-6">
                                     <div class="image-input image-input-outline" id="kt_profile_avatar"
                                         style="background-image: url({{ asset('assets/media/users/blank.png') }})">
@@ -182,14 +182,14 @@
                                             <i class="ki ki-bold-close icon-xs text-muted"></i>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">Allowed files .png .jpg .jpeg</span>
+                                    <span class="form-text text-muted">{{__('messages.allowed_files')}} .png .jpg .jpeg</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn  mr-2" style="background: #ffc500">Register</button>
-                        <button type="reset" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <div class="card-footer counter-mirror">
+                        <button type="submit" class="btn  mr-2" style="background: #ffc500">{{__('messages.register')}}</button>
+                        <button type="reset" class="btn btn-secondary" data-dismiss="modal">{{__('messages.cancel')}}</button>
                     </div>
                 </form>
             </div>
@@ -204,9 +204,9 @@
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
+        <div class="modal-content counter-mirror">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Edit Employee</h5>
+                <h5 class="modal-title" id="editModalLabel">{{__('messages.edit_employee')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
@@ -218,33 +218,33 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label>Select role:</label>
+                                <label>{{__('messages.select_role')}}:</label>
                                 <select class="form-control" name="role" id="role">
-                                    <option value="">-- Select Role --</option>
+                                    <option value="">-- {{__('messages.select_role')}} --</option>
                                     @foreach ($roles as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Full Name:</label>
+                                <label>{{__('messages.full_name')}}:</label>
                                 <input type="text" name="name" id="name"
-                                    class="form-control " required placeholder="Enter full name" />
+                                    class="form-control " required placeholder="{{__('messages.enter_full_name')}}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Email:</label>
+                                <label>{{__('messages.email')}}:</label>
                                 <input type="email" name="email" id="email"
-                                    class="form-control " required placeholder="Enter email" />
+                                    class="form-control " required placeholder="{{__('messages.enter_email')}}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Phone:</label>
+                                <label>{{__('messages.phone')}}:</label>
                                 <input type="text" name="phone" id="phone"
-                                    class="form-control " required placeholder="Enter phone" />
+                                    class="form-control " required placeholder="{{__('messages.phone')}}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Address:</label>
+                                <label>{{__('messages.address')}}:</label>
                                 <input type="text" name="address" id="address"
-                                    class="form-control " required placeholder="Enter address" />
+                                    class="form-control " required placeholder="{{__('messages.address')}}" />
                             </div>
                             {{-- <div class="form-group col-md-6">
                                 <label>License expiry:</label>
@@ -254,7 +254,7 @@
                             </div> --}}
                             <div class="form-group col-md-6">
                                 <div class="row">
-                                    <label class="col-xl-3 col-lg-3 col-form-label">Avatar: </label>
+                                    <label class="col-xl-3 col-lg-3 col-form-label">{{__('messages.avatar')}}: </label>
                                     <div class="col-lg-9 col-xl-6">
                                         <div class="image-input image-input-outline " id="kt_profile_avatar_edit"
                                             style="background-image: url({{ asset('assets/media/users/blank.png') }})">
@@ -282,7 +282,7 @@
                                                 <i class="ki ki-bold-close icon-xs text-muted"></i>
                                             </span>
                                         </div>
-                                        <span class="form-text text-muted">Allowed files .png .jpg .jpeg</span>
+                                        <span class="form-text text-muted">{{__('messages.allowed_files')}} .png .jpg .jpeg</span>
                                     </div>
                                 </div>
                             </div>
@@ -292,10 +292,10 @@
                     </div>
 
             </div>
-            <div class="card-footer">
+            <div class="card-footer counter-mirror">
                 <input type="hidden" name="user_id" id="user_id">
-                <button type="submit" class="btn  mr-2" style="background: #ffc500">Update</button>
-                <button type="reset" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn  mr-2 counter-mirror" style="background: #ffc500">{{__('messages.update')}}</button>
+                <button type="reset" class="btn btn-secondary counter-mirror" data-dismiss="modal">{{__('messages.cancel')}}</button>
             </div>
             </form>
         </div>
@@ -310,20 +310,20 @@
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content counter-mirror">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Delete employee</h5>
+                <h5 class="modal-title" id="deleteModalLabel">{{__('messages.delete_employee')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure to delete this driver?</p>
+                <p>{{__('messages.delete_driver')}}</p>
             </div>
             <div class="modal-footer">
-                <a id="deleteUrl" class="btn btn-primary font-weight-bold">Yes</a>
+                <a id="deleteUrl" class="btn btn-primary font-weight-bold">{{__('messages.yes')}}</a>
                 <button type="button" class="btn btn-light-primary font-weight-bold"
-                    data-dismiss="modal">No</button>
+                    data-dismiss="modal">{{__('messages.no')}}</button>
             </div>
         </div>
     </div>
@@ -333,9 +333,9 @@
 <div class="modal fade" id="passChangeModal" tabindex="-1" role="dialog" aria-labelledby="passChangeModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content counter-mirror">
             <div class="modal-header">
-                <h5 class="modal-title" id="passChangeModalLabel">Change Password</h5>
+                <h5 class="modal-title" id="passChangeModalLabel">{{__('messages.change_password')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
@@ -345,19 +345,19 @@
                     @csrf
                     <input type="hidden" name="user_id" id="changePassUser" />
                     <div class="form-group">
-                        <label>New Password:</label>
+                        <label>{{__('messages.new_password')}}:</label>
                         <input type="password" name="password" minlength="8" id="password"
                             class="form-control " required placeholder="" />
                     </div>
                     <div class="form-group">
-                        <label>Confirm Password:</label>
+                        <label>{{__('messages.confirm_password')}}:</label>
                         <input type="password" name="password" minlength="8" id="confirm_password"
                             class="form-control " required placeholder="" />
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="button" id="change_password_button" class="btn btn-primary mr-2">Change</button>
-                    <button type="reset" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="change_password_button" class="btn btn-primary mr-2">{{__('messages.change')}}</button>
+                    <button type="reset" class="btn btn-secondary" data-dismiss="modal">{{__('messages.cancel')}}</button>
                 </div>
             </form>
         </div>
@@ -369,18 +369,18 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Approve Driver</h5>
+                <h5 class="modal-title" id="deleteModalLabel">{{__('messages.approve_driver')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                <p>Are you sure to approve this driver?</p>
+            <div class="modal-body counter-mirror">
+                <p>{{__('messages.approve_driver_con')}}</p>
             </div>
-            <div class="modal-footer">
-                <a id="approveUrl" class="btn btn-primary font-weight-bold">Yes</a>
+            <div class="modal-footer counter-mirror">
+                <a id="approveUrl" class="btn btn-primary font-weight-bold">{{__('messages.yes')}}</a>
                 <button type="button" class="btn btn-light-primary font-weight-bold"
-                    data-dismiss="modal">No</button>
+                    data-dismiss="modal">{{__('messages.no')}}</button>
             </div>
         </div>
     </div>
@@ -501,7 +501,7 @@
 
         columns: [{
                 data: 'avatar',
-                title: 'Avatar',
+                title: '{{__("messages.avatar")}}',
                 render: function(data, type, row) {
                     // html = '<img src="' + data + '" height="100" width="100"></img>'
                     // if(row.online){
@@ -524,11 +524,11 @@
             },
             {
                 data: 'name',
-                title: 'Name'
+                title: '{{__("messages.name")}}'
             },
             {
                 data: 'user',
-                title: 'Contact',
+                title: '{{__("messages.contact")}}',
                 render: function(data, type, row) {
                     let html = ''
                     html += '<span class="font-weight-bold">Email: </span>' + data.email
@@ -539,7 +539,7 @@
             },
             {
                 data: 'role',
-                title: 'Role',
+                title: '{{__("messages.role")}}',
                 render: function(data, type, row) {
                     let html = ''
                     if (data != null)
@@ -551,7 +551,7 @@
             },
             {
                 data: "user_id",
-                title: "Action",
+                title: '{{__("messages.action")}}',
                 width: 150,
                 render: function(data, type, row) {
                     let permission_icon =
@@ -586,7 +586,7 @@
         dom: 'Bfrtip',
         buttons: [{
             extend: 'pdfHtml5',
-            text: 'PDF',
+            text: '{{__("messages.pdf")}}',
             title: $('h3').text(),
             orientation: 'potrait',
             pageSize: 'LEGAL',
@@ -606,7 +606,7 @@
             }
         }, {
             extend: 'print',
-            text: 'PRINT',
+            text: '{{__("messages.print")}}',
             title: $('h3').text(),
             exportOptions: {
                 modifier: {
@@ -616,7 +616,7 @@
             }
         }, {
             extend: 'excel',
-            text: 'EXCEL',
+            text: '{{__("messages.excel")}}',
             title: $('h3').text(),
             exportOptions: {
                 stripHtml: true,
@@ -628,7 +628,7 @@
             }
         }, {
             extend: 'copy',
-            text: 'COPY',
+            text: '{{__("messages.copy")}}',
             title: $('h3').text(),
             exportOptions: {
                 stripHtml: true,

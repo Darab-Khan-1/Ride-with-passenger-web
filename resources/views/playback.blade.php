@@ -121,12 +121,12 @@
                     <div class="col-md-3">
                         <div class="card card-custom " style="height:80vh;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                             <div class="card-body py-2">
-                                <div class="row">
-                                    <div class="form-group col-md-12">
-                                        <h3 class="text-center py-2">Drivers</h3>
+                                <div class="row"> 
+                                    <div class="form-group col-md-12 counter-mirror">
+                                        <h3 class="text-center py-2">{{__('messages.drivers')}}</h3>
                                         {{-- <button class="btn btn-primary w-100" onclick="showAll()">Show All</button> --}}
                                         <input type="text" id="searchInput" class="form-control mb-2"
-                                            placeholder="Search by name or phone number" style="border:none">
+                                            placeholder="{{__('messages.search_by_name_or_phone_number')}}" style="border:none">
                                         <ul class="user-list">
                                             @foreach ($drivers as $value)
                                                 <li id="{{ 'USER' . $value->device_id }}"
@@ -154,7 +154,7 @@
 
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-9 counter-mirror">
                         <div class="card card-custom" style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                             <div class="card-body p-5">
                                 <div class="row px-5">
@@ -176,7 +176,7 @@
                                         value="{{ isset($service->id) ? date('Y-m-d H:i:s', strtotime($service->completed_at)) : date('Y-m-d H:i:s', strtotime('now')) }}">
 
                                     <button class="m-1 btn btn-primary text-light" id="fetchAndPlayButton"
-                                        style="width: 130px;" onclick="fetchPositionsAndPlay()">&nbsp;Search</button>
+                                        style="width: 130px;" onclick="fetchPositionsAndPlay()">&nbsp;{{__('messages.search')}}</button>
                                     <span style="padding-top: 15px;"><i style="display: none" id="spinner"
                                             class="fas fa-spinner fa-spin"></i></span>
                                     <div class="col-md-1">

@@ -1,7 +1,13 @@
 <?php
 return [
     // Home Dashboard
-    "lng"=>"عربي",
+    "title"=>"ركوب مع الركاب",
+    "total"=>"المجموع",
+    "users"=>"المستخدمين",
+    "hi"=>"أهلاً",
+    "home"=>"بيت",
+    "arb"=>"عربي",
+    "eng"=>"English",
     "dashboard" => "لوحة التحكم",
     "user" => "المستخدم",
     "drivers" => "السائقين",
@@ -14,6 +20,7 @@ return [
     "completed" => "مكتمل",
     "total_trips" => "إجمالي الرحلات",
     "roles" => "الأدوار",
+    "role"=>"دور",
     "manager" => "مدير",
     "viewer" => "مشاهد",
     "sub_admin" => "مسؤول فرعي",
@@ -43,6 +50,7 @@ return [
     "are_you_sure_to_delete_this_role?" => "هل أنت متأكد من حذف هذا الدور؟",
     "yes" => "نعم",
     "no" => "لا",
+    "edit_role"=>"تحرير الدور",
 
     // Uses Management Employees
     "total_employees" => "إجمالي الموظفين",
@@ -53,6 +61,7 @@ return [
     "address" => "العنوان",
     "delete" => "حذف",
     "edit_details" => "تحرير التفاصيل",
+    "change" => "يتغير",
     "change_password" => "تغيير كلمة المرور",
     "license" => "الترخيص",
     "send_notification" => "إرسال إشعار",
@@ -83,6 +92,9 @@ return [
     "close" => "إغلاق",
 
     // Trips Management New Trip
+    "trips"=>"حالة الرحلات",
+    "map"=>"خريطة",
+    "trips_management"=>"إدارة الرحلات",
     "new_trip" => "رحلة جديدة",
     "pickup_location" => "موقع الالتقاط",
     "delivery_location" => "موقع التسليم",
@@ -119,8 +131,21 @@ return [
     "speed" => "السرعة",
     "time" => "الوقت",
     "to" => "إلى",
-    "search_by_name+or_phone_number" => "البحث بالاسم أو رقم الهاتف",
+    "search_by_name_or_phone_number" => "البحث بالاسم أو رقم الهاتف",
     "playback" => "تشغيل مرة أخرى",
 
+    "pdf"=>"مطبعة",
+    "print"=>"مطبعة",
+    "excel"=>"التفوق",
+    "copy"=>"ينسخ",
+    "approve_driver_con"=>"هل أنت متأكد من الموافقة على برنامج التشغيل هذا?",
+    "approve_driver"=>"الموافقة على السائق",
+    "are_you_sure_to_delete_this_role?"=>"",
+    "edit_employee"=>"تحرير الموظف",
+    "delete_employee"=>"حذف الموظف",
+    "delete_driver"=>"هل أنت متأكد من حذف برنامج التشغيل هذا؟",
+    "passowrd_not_match"=>"كلمة السر غير متطابقة",
+    "edit_driver"=>"تحرير برنامج التشغيل",
+    "license_no"=>"رقم الرخصة",
 ];
 ?>

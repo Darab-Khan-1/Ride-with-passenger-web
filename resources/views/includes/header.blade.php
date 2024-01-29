@@ -17,7 +17,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <head>
     <base href="">
     <meta charset="utf-8" />
-    <title>Ride WITH Passenger | Dashboard</title>
+    <title>{{__('messages.title')}} | {{__('messages.dashboard')}}</title>
     <meta name="description" content="Updates and statistics" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -50,17 +50,16 @@ License: You must have a valid license purchased only from themeforest(the above
                     transform: scaleX(-1);
                     filter: FlipH;
                 }
+                  .counter-mirror {
+                        transform: scaleX(-1);
+                        display: inline-block; 
+                    }
                 
             </style>';
 
         }
     @endphp
-    <style>
-        .counter-mirror {
-            transform: scaleX(-1);
-            display: inline-block; /* Prevents block-level behavior */
-        }
-    </style>
+    
 <script>
     const firebaseConfig = {
             apiKey: "{{ env('API_KEY') }}",
@@ -216,29 +215,29 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <ul class="header-tabs nav align-self-end font-size-lg" role="tablist">
                                     <!--begin::Item-->
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link py-4 px-6 home-nav" data-toggle="tab"
-                                            data-target="#kt_header_tab_1" role="tab">Home</a>
+                                        <a href="#" class="nav-link py-4 px-6 home-nav counter-mirror" data-toggle="tab"
+                                            data-target="#kt_header_tab_1" role="tab">{{__('messages.home')}}</a>
                                     </li>
                                     <!--end::Item-->
                                     <!--begin::Item-->
 
                                     @canany(['view_driver', 'view_employee', 'view_role'])
                                         <li class="nav-item mr-3">
-                                            <a href="#" class="nav-link py-4 px-6 users-nav" data-toggle="tab"
-                                                data-target="#kt_header_tab_2" role="tab">Users Management</a>
+                                            <a href="#" class="nav-link py-4 px-6 users-nav counter-mirror" data-toggle="tab"
+                                                data-target="#kt_header_tab_2" role="tab">{{ __('messages.user_management')}}</a>
                                         </li>
                                     @endcanany
 
                                     @canany(['view_trip', 'create_trip'])
                                         <li class="nav-item mr-3">
-                                            <a href="#" class="nav-link py-4 px-6 trips-nav" data-toggle="tab"
-                                                data-target="#kt_header_tab_3" role="tab">Trips Management</a>
+                                            <a href="#" class="nav-link py-4 px-6 trips-nav counter-mirror" data-toggle="tab"
+                                                data-target="#kt_header_tab_3" role="tab">{{__('messages.trips_management')}}</a>
                                         </li>
                                     @endcanany
                                     @canany(['live_tracking', 'playback'])
                                         <li class="nav-item mr-3">
-                                            <a href="#" class="nav-link py-4 px-6 map-nav" data-toggle="tab"
-                                                data-target="#kt_header_tab_4" role="tab">Map</a>
+                                            <a href="#" class="nav-link py-4 px-6 map-nav counter-mirror" data-toggle="tab"
+                                                data-target="#kt_header_tab_4" role="tab">{{__('messages.map')}}</a>
                                         </li>
                                     @endcanany
 
@@ -256,11 +255,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                             id="kt_quick_user_toggle">
                                             <div class="d-flex flex-column text-right pr-3">
                                                 <span
-                                                    class="text-white opacity-50 font-weight-bold font-size-sm d-none d-md-inline">Hi, {{ explode(' ',session('name'))[0] }}</span>
+                                                    class="text-white opacity-50 font-weight-bold font-size-sm d-none d-md-inline counter-mirror">{{__('messages.hi')}}, {{ explode(' ',session('name'))[0] }}</span>
                                             </div>
                                             <span class="symbol symbol-35">
                                                 <span
-                                                    class="symbol-label font-size-h5 font-weight-bold text-white bg-white-o-30">{{ substr(session('name'), 0, 1) }}</span>
+                                                    class="symbol-label font-size-h5 font-weight-bold text-white bg-white-o-30 counter-mirror">{{ substr(session('name'), 0, 1) }}</span>
                                             </span>
                                         </div>
                                     </a>
@@ -287,13 +286,13 @@ License: You must have a valid license purchased only from themeforest(the above
                                         </div>
                                     </a>
                                     
-                                        <select class="form-control Langchange" id="Langchange" style="margin-left: 9px;" onchange="changeLang(this);">
-                                            <option value="en" {{ session()->get('locale') == 'en' ? 'selected' : '' }}>English</option>
-                                            <option value="ar" {{ session()->get('locale') == 'ar' ? 'selected' : '' }}>Arabic</option>                    
+                                        <select class="form-control Langchange counter-mirror" id="Langchange" style="margin-left: 9px;" onchange="changeLang(this);">
+                                            <option value="en" {{ session()->get('locale') == 'en' ? 'selected' : '' }}>{{__('messages.eng')}}</option>
+                                            <option value="ar" {{ session()->get('locale') == 'ar' ? 'selected' : '' }}>{{__('messages.arb')}}</option>                    
                                         </select>
                                     
                                     <a href="{{ url('/logout') }}"
-                                        class="btn btn-secondary mx-5 font-weight-bold text-dark">Sign Out</a>
+                                        class="btn btn-secondary mx-5 font-weight-bold text-dark counter-mirror">{{__('messages.sign_out')}}</a>
                                 </div>
                                 <!--end::User-->
                             </div>
@@ -313,29 +312,29 @@ License: You must have a valid license purchased only from themeforest(the above
                                     role="tablist">
                                     <!--begin::Item-->
                                     <li class="nav-item mr-2">
-                                        <a href="#" class="nav-link btn btn-clean home-nav" data-toggle="tab"
-                                            data-target="#kt_header_tab_1" role="tab">Home</a>
+                                        <a href="#" class="nav-link btn btn-clean home-nav counter-mirror" data-toggle="tab"
+                                            data-target="#kt_header_tab_1" role="tab">{{__('messages.home')}}</a>
                                     </li>
                                     <!--end::Item-->
                                     <!--begin::Item-->
                                     @canany(['view_driver', 'view_employee', 'view_role'])
                                         <li class="nav-item mr-2">
-                                            <a href="#" class="nav-link btn btn-clean users-nav" data-toggle="tab"
-                                                data-target="#kt_header_tab_2" role="tab">User Management</a>
+                                            <a href="#" class="nav-link btn btn-clean users-nav counter-mirror" data-toggle="tab"
+                                                data-target="#kt_header_tab_2" role="tab">{{__('messages.user_management')}}</a>
                                         </li>
                                     @endcanany
 
                                     @canany(['view_trip', 'create_trip'])
                                         <li class="nav-item mr-2">
-                                            <a href="#" class="nav-link btn btn-clean trips-nav" data-toggle="tab"
-                                                data-target="#kt_header_tab_3" role="tab">Trips Management</a>
+                                            <a href="#" class="nav-link btn btn-clean trips-nav counter-mirror" data-toggle="tab"
+                                                data-target="#kt_header_tab_3" role="tab">{{__('messages.trips_management')}}</a>
                                         </li>
                                     @endcanany
 
                                     @canany(['live_tracking', 'playback'])
                                         <li class="nav-item mr-2">
-                                            <a href="#" class="nav-link btn btn-clean map-nav" data-toggle="tab"
-                                                data-target="#kt_header_tab_4" role="tab">Map</a>
+                                            <a href="#" class="nav-link btn btn-clean map-nav counter-mirror" data-toggle="tab"
+                                                data-target="#kt_header_tab_4" role="tab">{{__('messages.map')}}</a>
                                         </li>
                                     @endcanany
                                     <!--end::Item-->
@@ -370,21 +369,21 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 @can('view_role')
                                                     <li class="menu-item roles-nav" aria-haspopup="true">
                                                         <a href="{{ url('roles') }}" class="menu-link">
-                                                            <span class="menu-text">Roles</span>
+                                                            <span class="menu-text counter-mirror">{{__('messages.roles')}}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('view_employee')
                                                     <li class="menu-item employees-nav" aria-haspopup="true">
                                                         <a href="{{ url('employees') }}" class="menu-link">
-                                                            <span class="menu-text">Employees</span>
+                                                            <span class="menu-text counter-mirror">{{__('messages.employees')}}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('view_driver')
                                                     <li class="menu-item drivers-nav" aria-haspopup="true">
                                                         <a href="{{ url('drivers') }}" class="menu-link">
-                                                            <span class="menu-text">Drivers</span>
+                                                            <span class="menu-text counter-mirror">{{ __('messages.drivers')}}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
@@ -399,24 +398,24 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 @can('create_trip')
                                                     <li class="menu-item new-trip-nav" aria-haspopup="true">
                                                         <a href="{{ url('new/trip') }}" class="menu-link">
-                                                            <span class="menu-text">+ New Trip</span>
+                                                            <span class="menu-text counter-mirror ">+ {{__('messages.new_trip')}}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('view_trip')
                                                     <li class="menu-item trips-nav" aria-haspopup="true">
                                                         <a href="{{ url('trips') }}" class="menu-link">
-                                                            <span class="menu-text">Available</span>
+                                                            <span class="menu-text counter-mirror">{{__('messages.available')}}</span>
                                                         </a>
                                                     </li>
                                                     <li class="menu-item active-trips-nav" aria-haspopup="true">
                                                         <a href="{{ url('active/trips') }}" class="menu-link">
-                                                            <span class="menu-text">Active</span>
+                                                            <span class="menu-text counter-mirror">{{__('messages.active')}}</span>
                                                         </a>
                                                     </li>
                                                     <li class="menu-item completed-trips-nav" aria-haspopup="true">
                                                         <a href="{{ url('completed/trips') }}" class="menu-link">
-                                                            <span class="menu-text">Completed</span>
+                                                            <span class="menu-text counter-mirror">{{__('messages.completed')}}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
@@ -430,14 +429,14 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 @can('live_tracking')
                                                     <li class="menu-item live-nav" aria-haspopup="true">
                                                         <a href="{{ url('live/location/0') }}" class="menu-link">
-                                                            <span class="menu-text">Live Tracking</span>
+                                                            <span class="menu-text counter-mirror">{{__('messages.live_tracking')}}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('playback')
                                                     <li class="menu-item playback-nav" aria-haspopup="true">
                                                         <a href="{{ url('playback/index/0') }}" class="menu-link">
-                                                            <span class="menu-text">Playback</span>
+                                                            <span class="menu-text counter-mirror">{{__('messages.play_back')}}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
