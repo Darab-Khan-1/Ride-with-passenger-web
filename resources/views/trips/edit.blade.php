@@ -469,12 +469,5 @@
             return formattedTime;
         }
     }
-
-
-    function enableAutocomplete(input) {
-        var autocomplete = new google.maps.places.Autocomplete(input);
-
-        // Set the types of predictions to display
-        autocomplete.setTypes(['geocode']);
-    }
+    
 </script>
