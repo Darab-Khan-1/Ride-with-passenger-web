@@ -515,7 +515,7 @@ class TripsController extends Controller
         $trip = Trip::where('id', $id)->with('stops', 'driver')->first();
         $drivers = Driver::where('id', '>', 0)->with('user')->get();
         // dd($trip);
-        if ($trip->status == 'available') {
+        if ($trip->status == 'available' || $trip->status == null) {
             return view('trips.edit', compact('trip', 'drivers'));
         }
         // dd($trip);
