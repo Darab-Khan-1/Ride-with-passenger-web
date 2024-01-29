@@ -111,7 +111,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"
     rel="stylesheet" />
 <!--begin::Content-->
-<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+<div class="content d-flex flex-column flex-column-fluid counter-mirror" id="kt_content">
     <!--begin::Entry-->
     <div>
         <!--begin::Container-->
@@ -123,11 +123,11 @@
                             <div class="card-body py-2">
                                 <div class="row">
                                     <div class="form-group col-md-12">
-                                        <h3 class="text-center py-2">Drivers</h3>
-                                        <button class="btn btn-primary w-100" onclick="showAllLocations()">Show
-                                            All</button>
+                                        <h3 class="text-center py-2">{{__('messages.drivers')}}</h3>
+                                        <button class="btn btn-primary w-100" onclick="showAllLocations()">{{__('messages.show_all')}}
+                                            </button>
                                         <input type="text" id="searchInput" class="form-control mb-2"
-                                            placeholder="Search by name or phone number" style="border:none">
+                                            placeholder="{{__('messages.search_by_name_or_phone_number')}}" style="border:none">
                                         <ul class="user-list">
                                             @foreach ($drivers as $value)
                                                 <li id="{{ 'USER' . $value->device_id }}" class="user-item"
@@ -284,8 +284,8 @@
             var timeInfoDiv = document.getElementById("driver_info");
 
             var table = "<table>";
-            table += "<tr><td>Name: </td><td>" + name + "</td></tr>";
-            table += "<tr><td>Phone: </td><td>" + phone + "</td></tr>";
+            table += "<tr><td>{{__('messages.name')}}: </td><td>" + name + "</td></tr>";
+            table += "<tr><td>{{__('messages.phone')}}: </td><td>" + phone + "</td></tr>";
             table += "</table>";
 
             timeInfoDiv.innerHTML = table;
@@ -427,12 +427,12 @@
                     });
                 } else {
                     clearInterval(interval); // Clear previous interval
-                    toastr.error("Driver data not found.");
+                    toastr.error("<span class='counter-mirror'>Driver data not found.</span>");
                 }
             },
             error: function() {
                 clearInterval(interval); // Clear previous interval
-                toastr.error("Driver data not found")
+                toastr.error("<span class='counter-mirror'>Driver data not found</span>")
 
             }
         });

@@ -24,7 +24,7 @@
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
-                        <h3 class="card-label">Dashboard
+                        <h3 class="card-label counter-mirror">{{__('messages.dashboard')}}
                             {{-- <span class="d-block text-muted pt-2 font-size-sm">Companies made easy</span> --}}
                         </h3>
                     </div>
@@ -38,12 +38,12 @@
                             <div class="card mb-12 h-md-100" dir="ltr"
                                 style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                                 <div class="card-body d-flex flex-column flex-center">
-                                    <div class="mb-2">
-                                        <p class="m-5" style="font-weight: bold;font-size: 17px;">
-                                            Users</p>
-                                        <div class="py-18 text-left">
+                                    <div class="mb-2 counter-mirror">
+                                        <p class="m-5 " style="font-weight: bold;font-size: 17px;">
+                                            {{__('messages.users')}}</p>
+                                        <div class="py-18 text-left" >
                                             <div id="driverChart"></div>
-                                            <h3>Total Users: {{ $data['drivers'] }}</h3>
+                                            <h3>{{__('messages.total_user')}}: {{ $data['drivers'] }}</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -53,12 +53,12 @@
                             <div class="card mb-12 h-md-100" dir="ltr"
                                 style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                                 <div class="card-body d-flex flex-column flex-center">
-                                    <div class="mb-2">
-                                        <p class="m-5" style="font-weight: bold;font-size: 17px;">
-                                            Trips Status</p>
+                                    <div class="mb-2 counter-mirror">
+                                        <p class="m-5 " style="font-weight: bold;font-size: 17px;">
+                                            {{__('messages.trips')}}</p>
                                         <div class="py-18 text-left">
                                             <div id="tripChart"></div>
-                                            <h3>Total Trips: {{ $data['trips'] }}</h3>
+                                            <h3 >{{__('messages.total_trips')}}: {{ $data['trips'] }}</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -67,13 +67,13 @@
                         <div class="col-xl-5 mb-xl-10">
                             <div class="card mb-12 h-md-100" dir="ltr"
                                 style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                                <div class="card-body d-flex flex-column flex-center">
-                                    <div class="mb-2">
+                                <div class="card-body d-flex flex-column flex-center counter-mirror">
+                                    <div class="mb-2 ">
                                         <p class="m-5" style="font-weight: bold;font-size: 17px;">
-                                            Roles</p>
+                                            {{__('messages.roles')}}</p>
                                         <div class="py-18 text-left">
                                             <div id="roleChart"></div>
-                                            <h3>Total Roles: {{ count($data['roles']) }}</h3>
+                                            <h3>{{__('messages.total_roles')}}: {{ count($data['roles']) }}</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -120,11 +120,11 @@
         colors: ['#3699FF', "#FFA800"],
 
         labels: [
-            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.drivers +
-            ' Drivers</span></div>',
-            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data.drivers +
+            ' {{__("messages.drivers")}}</span></div>',
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data
             .employees +
-            ' Employees</span></div>',
+            ' {{__("messages.employees")}}</span></div>',
         ],
         tooltip: {
             // your tooltip options here
@@ -156,17 +156,17 @@
         colors: ["#F64E60", '#3699FF', "#FFA800", "#1BC5BD"],
 
         labels: [
-            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data
             .incomplete +
-            ' Incomplete</span></div>',
-            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data
+            ' {{__("messages.incomplete")}}</span></div>',
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data
             .available +
-            ' Available</span></div>',
-            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data.active +
-            ' Active</span></div>',
-            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100">' + data
+            ' {{__("messages.available")}}</span></div>',
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data.active +
+            ' {{__("messages.active")}}</span></div>',
+            '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data
             .completed +
-            ' Completed</span></div>',
+            ' {{__("messages.completed")}}</span></div>',
         ],
         tooltip: {
             // your tooltip options here

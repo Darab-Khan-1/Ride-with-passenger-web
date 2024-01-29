@@ -10,6 +10,7 @@ use App\Models\Trip;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Services\NotificationService;
+use App;
 class DashboardController extends Controller
 {
     public function index(){
@@ -26,5 +27,12 @@ class DashboardController extends Controller
         $data['incomplete'] = Trip::where('status',null)->count();
         // dd($data);
         return view('dashboard',compact('data'));
+    }
+    public function lang_change(Request $request)
+    {
+        
+        app()->setLocale($request->lang);
+        session()->put('locale', $request->lang);  
+        return redirect()->back();
     }
 }

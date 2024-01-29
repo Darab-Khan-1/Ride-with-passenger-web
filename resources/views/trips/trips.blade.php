@@ -92,7 +92,7 @@
                     <div class="card-title">
                         <h3 class="card-label text-success">Available Trips ({{ $data['available'] }})
                         </h3>
-                        <h3 class="card-label text-danger">&nbsp;Incomplete Trips ({{ $data['incomplete'] }})
+                        <h3 class="card-label text-danger">&nbsp;{{__('messages.incomplete_trips')}} ({{ $data['incomplete'] }})
                         </h3>
                     </div>
                     <div class="card-toolbar">
@@ -294,7 +294,7 @@
                     data: 'status',
                     title: 'Status',
                     render: function(data, type, row) {
-                        let html = '<span class="font-weight-bold text-danger">INCOMPLETE</span>'
+                        let html = '<span class="font-weight-bold text-danger">{{__("messages.incomplete")}}</span>'
                         if(data != null){
                             html =  data.toUpperCase()
                         }

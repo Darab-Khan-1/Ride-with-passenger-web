@@ -39,7 +39,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('profile/password/update', [RegistrationController::class, 'updatePassword']);
     Route::get('logout', [RegistrationController::class, 'logout']);
     Route::get('dashboard', [DashboardController::class, 'index']);
-
+    // Langauge
+    Route::get('change/lang', [DashboardController::class, 'lang_change'])->name('User.LangChange');
+        
     //Drivers
     Route::get('drivers', [DriversController::class, 'index']);
     Route::post('register/driver', [DriversController::class, 'create']);
@@ -96,6 +98,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('/custom/notification/{id}', [DriversController::class, 'customNotification'])->name('send.notification');
     Route::get('/all/notifications', [NotificationController::class, 'index'])->name('all.notification');
     
+
     // Route::post('/google/events/update/{eventId}', [TripsController::class, 'updateEvent'])->name('google.events.update');
     // Route::delete('/google/events/delete/{eventId}', [TripsController::class, 'deleteEvent'])->name('google.events.delete');
 });
