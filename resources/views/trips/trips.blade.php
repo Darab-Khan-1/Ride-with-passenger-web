@@ -88,9 +88,9 @@
                         </button>
                     </div>
                 @endif
-                <div class="card-header flex-wrap border-0 pt-6 pb-0">
+                <div class="card-header flex-wrap border-0 pt-6 pb-0 counter-mirror">
                     <div class="card-title">
-                        <h3 class="card-label text-success">Available Trips ({{ $data['available'] }})
+                        <h3 class="card-label text-success">{{__("messages.available_trips")}} ({{ $data['available'] }})
                         </h3>
                         <h3 class="card-label text-danger">&nbsp;{{__('messages.incomplete_trips')}} ({{ $data['incomplete'] }})
                         </h3>
@@ -117,7 +117,7 @@
                         <!--end::Button-->
                     </div>
                 </div>
-                <div class="card-body p-5" style="overflow-x: scroll;">
+                <div class="card-body p-5 counter-mirror" style="overflow-x: scroll;">
 
                     <table class="table" id="table"></table>
                 </div>
@@ -133,20 +133,20 @@
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content counter-mirror">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Delete Trip</h5>
+                <h5 class="modal-title" id="deleteModalLabel">{{__('messages.delete')}} {{__('messages.trips')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure to delete this trip?</p>
+                <p>{{__('messages.delete_trip')}}</p>
             </div>
             <div class="modal-footer">
-                <a id="deleteUrl" class="btn btn-primary font-weight-bold">Yes</a>
+                <a id="deleteUrl" class="btn btn-primary font-weight-bold">{{__('messages.yes')}}</a>
                 <button type="button" class="btn btn-light-primary font-weight-bold"
-                    data-dismiss="modal">No</button>
+                    data-dismiss="modal">{{__('messages.no')}}</button>
             </div>
         </div>
     </div>
@@ -175,7 +175,7 @@
             columns: [
                 {
                     data: 'unique_id',
-                    title: 'Trip&nbsp;ID',
+                    title: '{{__("messages.trip_id")}}',
                     width: '150px',
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
@@ -183,14 +183,14 @@
                 },
                 {
                     data: 'event_name',
-                    title: 'Event&nbsp;Name',
+                    title: '{{__("messages.event_name")}}',
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
                     }
                 },
                 {
                     data: 'driver',
-                    title: 'Driver',
+                    title: '{{__("messages.driver")}}',
                     render: function(data, type, row) {
                         let html =
                             '<span class="font-weight-bold text-danger">NOT&nbsp;ASSIGNED</span>'
@@ -204,7 +204,7 @@
                 },
                 {
                     data: 'pickup_date',
-                    title: 'Pickup&nbsp;Details',
+                    title: '{{__("messages.pickup_details")}}',
                     width: "250px",
                     render: function(data, type, row) {
                         let no_data = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
@@ -224,7 +224,7 @@
                 },
                 {
                     data: 'delivery_date',
-                    title: 'Delivery&nbsp; Details',
+                    title: '{{__("messages.delivery_details")}}',
                     width: "250px",
                     render: function(data, tye, row) {
                         let no_data = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
@@ -244,7 +244,7 @@
                 },
                 {
                     data: 'estimated_distance',
-                    title: 'Details',
+                    title: '{{__("messages.details")}}',
                     width: "250px",
                     render: function(data, tye, row) {
                         if(data != null){
@@ -256,7 +256,7 @@
                 },
                 {
                     data: 'customer_name',
-                    title: 'Customer',
+                    title: '{{__("messages.customer")}}',
                     width: "250px",
                     render: function(data, tye, row) {
                         let html = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
@@ -268,7 +268,7 @@
                 },
                 {
                     data: 'stops',
-                    title: 'Stops',
+                    title: '{{__("messages.stops")}}',
                     width: "250px",
                     render: function(data, tye, row) {
                         let html = "";
@@ -285,14 +285,14 @@
                 }, 
                 {
                     data: 'description',
-                    title: 'Description',
+                    title: '{{__("messages.description")}}',
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
                     }
                 },
                 {
                     data: 'status',
-                    title: 'Status',
+                    title: '{{__("messages.status")}}',
                     render: function(data, type, row) {
                         let html = '<span class="font-weight-bold text-danger">{{__("messages.incomplete")}}</span>'
                         if(data != null){
@@ -303,7 +303,7 @@
                 },
                 {
                     data: "id",
-                    title: "Action",
+                    title: '{{__("messages.action")}}',
                     width: 150,
                     render: function(data, type, row) {
                         let url = "{{ url('edit/trip') }}" + "/" + data
@@ -329,7 +329,7 @@
             dom: 'Bfrtip',
             buttons: [{
                     extend: 'pdfHtml5',
-                    text: 'PDF',
+                    text: '{{__("messages.pdf")}}',
                     title: $('h3').text(),
                     orientation: 'landscape',
                     pageSize: 'LEGAL',
@@ -347,7 +347,7 @@
                     }
                 }, {
                     extend: 'print',
-                    text: 'PRINT',
+                    text: '{{__("messages.print")}}',
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -357,7 +357,7 @@
                     }
                 }, {
                     extend: 'excel',
-                    text: 'EXCEL',
+                    text: '{{__("messages.excel")}}',
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -367,7 +367,7 @@
                     }
                 }, {
                     extend: 'copy',
-                    text: 'COPY',
+                    text: '{{__("messages.copy")}}',
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -376,7 +376,18 @@
                         columns: ':visible:not(:last-child)'
                     }
                 },
-                'csv'
+                 {
+                    extend: 'csv',
+                    text: '{{__("messages.csv")}}',
+                    title: $('h3').text(),
+                    exportOptions: {
+                        modifier: {
+                            page: 'all'
+                        },
+                        columns: ':visible:not(:last-child)'
+                    }
+                },
+                
             ]
         });
     });

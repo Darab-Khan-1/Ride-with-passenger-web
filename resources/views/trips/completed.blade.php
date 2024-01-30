@@ -89,12 +89,12 @@
                     </div>
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
-                    <div class="card-title">
-                        <h3 class="card-label">Completed Trips ({{ $total }})
+                    <div class="card-title counter-mirror">
+                        <h3 class="card-label">{{__('messages.completed')}}  {{__('messages.trips')}} ({{ $total }})
                             {{-- <span class="d-block text-muted pt-2 font-size-sm">Companies made easy</span> --}}
                         </h3>
                     </div>
-                    <div class="card-toolbar">
+                    <div class="card-toolba counter-mirror">
                         <!--begin::Button-->
                         {{-- <a href="{{ url('new/trip') }}" class="btn  font-weight-bolder" style="background: #ffc500">
                             <span class="svg-icon svg-icon-md">
@@ -116,7 +116,7 @@
                         <!--end::Button-->
                     </div>
                 </div>
-                <div class="card-body p-5" style="overflow-x: scroll;">
+                <div class="card-body p-5 counter-mirror" style="overflow-x: scroll;">
 
                     <table class="table" id="table"></table>
                 </div>
@@ -152,7 +152,7 @@
             columns: [
                 {
                     data: 'unique_id',
-                    title: 'Trip&nbsp;ID',
+                    title: "{{__('messages.trip_id')}}",
                     width: '150px',
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
@@ -160,14 +160,14 @@
                 },
                 {
                     data: 'event_name',
-                    title: 'Event&nbsp;Name',
+                    title: "{{__('messages.event_name')}}",
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
                     }
                 },
                 {
                     data: 'driver',
-                    title: 'Driver',
+                    title: "{{__('messages.driver')}}",
                     render: function(data, type, row) {
                         let html =
                             '<span class="font-weight-bold text-danger">NOT&nbsp;ASSIGNED</span>'
@@ -181,7 +181,7 @@
                 },
                 {
                     data: 'pickup_date',
-                    title: 'Pickup&nbsp;Details',
+                    title: "{{__('messages.pickup_details')}}",
                     width: "250px",
                     render: function(data, type, row) {
                         let no_data = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
@@ -201,7 +201,7 @@
                 },
                 {
                     data: 'delivery_date',
-                    title: 'Delivery&nbsp; Details',
+                    title: "{{__('messages.delivery_details')}}",
                     width: "250px",
                     render: function(data, tye, row) {
                         let no_data = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
@@ -221,7 +221,7 @@
                 },
                 {
                     data: 'estimated_distance',
-                    title: 'Details',
+                    title: "{{__('messages.details')}}",
                     width: "250px",
                     render: function(data, tye, row) {
                         if(data != null){
@@ -233,7 +233,7 @@
                 },
                 {
                     data: 'customer_name',
-                    title: 'Customer',
+                    title: "{{__('messages.customer')}}",
                     width: "250px",
                     render: function(data, tye, row) {
                         let html = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
@@ -245,7 +245,7 @@
                 },
                 {
                     data: 'stops',
-                    title: 'Stops',
+                    title: "{{__('messages.stops')}}",
                     width: "250px",
                     render: function(data, tye, row) {
                         let html = "";
@@ -262,14 +262,14 @@
                 }, 
                 {
                     data: 'description',
-                    title: 'Description',
+                    title: "{{__('messages.description')}}",
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
                     }
                 },
                 {
                     data: 'status',
-                    title: 'Status',
+                    title: "{{__('messages.status')}}",
                     render: function(data, type, row) {
                         let html = '<span class="font-weight-bold text-success">COMPLETED</span>'
                         // if(data != null){
@@ -280,7 +280,7 @@
                 },
                 {
                     data: "id",
-                    title: "Action",
+                    title: "{{__('messages.action')}}",
                     width: 150,
                     render: function(data, type, row) {
                         let url = "{{ url('playback/index') }}" + "/" + row.id
@@ -299,7 +299,7 @@
             dom: 'Bfrtip',
             buttons: [{
                     extend: 'pdfHtml5',
-                    text: 'PDF',
+                    text: "{{__('messages.pdf')}}",
                     title: $('h3').text(),
                     orientation: 'landscape',
                     pageSize: 'LEGAL',
@@ -317,7 +317,7 @@
                     }
                 }, {
                     extend: 'print',
-                    text: 'PRINT',
+                    text: "{{__('messages.print')}}",
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -327,7 +327,7 @@
                     }
                 }, {
                     extend: 'excel',
-                    text: 'EXCEL',
+                    text: "{{__('messages.excel')}}",
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -337,7 +337,7 @@
                     }
                 }, {
                     extend: 'copy',
-                    text: 'COPY',
+                    text: "{{__('messages.copy')}}",
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -346,7 +346,18 @@
                         // columns: ':visible:not(:last-child)'
                     }
                 },
-                'csv'
+                {
+                    extend: 'csv',
+                    text: "{{__('messages.csv')}}",
+                    title: $('h3').text(),
+                    exportOptions: {
+                        modifier: {
+                            page: 'all'
+                        },
+                        // columns: ':visible:not(:last-child)'
+                    }
+                },
+              
             ]
         });
     });
