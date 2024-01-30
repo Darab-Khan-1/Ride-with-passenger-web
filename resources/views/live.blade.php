@@ -111,14 +111,14 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"
     rel="stylesheet" />
 <!--begin::Content-->
-<div class="content d-flex flex-column flex-column-fluid counter-mirror" id="kt_content">
+<div class="content d-flex flex-column flex-column-fluid " id="kt_content">
     <!--begin::Entry-->
     <div>
         <!--begin::Container-->
         <div class="card card-custom m-4">
             <div class="p-5">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-3 counter-mirror">
                         <div class="card card-custom " style="height:90vh;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                             <div class="card-body py-2">
                                 <div class="row">
@@ -154,7 +154,7 @@
 
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-9 counter-mirror">
                         <div class="card card-custom" id="infoCard"
                             style="display:none;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                             <div class="card-body p-5">

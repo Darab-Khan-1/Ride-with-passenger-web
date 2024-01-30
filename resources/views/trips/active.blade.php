@@ -88,9 +88,9 @@
                         </button>
                     </div>
                 @endif
-                <div class="card-header flex-wrap border-0 pt-6 pb-0">
+                <div class="card-header flex-wrap border-0 pt-6 pb-0 counter-mirror">
                     <div class="card-title">
-                        <h3 class="card-label">Active Trips ({{ $total }})
+                        <h3 class="card-label">{{__('messages.active_trip')}} ({{ $total }})
                             {{-- <span class="d-block text-muted pt-2 font-size-sm">Companies made easy</span> --}}
                         </h3>
                     </div>
@@ -116,14 +116,14 @@
                         <!--end::Button-->
                     </div>
                 </div>
-                <div class="card-body p-5" style="overflow-x: scroll;">
+                <div class="card-body p-5 counter-mirror" style="overflow-x: scroll;">
                     
                     <table class="table" id="table">
                         <select class="form-control " name="trip_status" id="trip_status" style='width: 191px;float: inline-end;'>
-                            <option value="all" selected>Active</option>
-                            <option value="pick" >Pickup</option>
-                            <option value="drop" >Dropoff</option>
-                            <option value="intransit" >In-Transit</option>
+                            <option value="all" selected>{{__('messages.active')}}</option>
+                            <option value="pick" >{{__('messages.pickup_up')}}</option>
+                            <option value="drop" >{{__('messages.dropoff')}}</option>
+                            <option value="intransit" >{{__('messages.in_transit')}}</option>
                         </select>
                     </table>
                 </div>
@@ -165,7 +165,7 @@
 
             columns: [{
                     data: 'unique_id',
-                    title: 'Trip&nbsp;ID',
+                    title: '{{__("messages.trip_id")}}',
                     width: '150px',
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
@@ -173,14 +173,14 @@
                 },
                 {
                     data: 'event_name',
-                    title: 'Event&nbsp;Name',
+                    title: '{{__("messages.event_name")}}',
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
                     }
                 },
                 {
                     data: 'driver',
-                    title: 'Driver',
+                    title: '{{__("messages.driver")}}',
                     render: function(data, type, row) {
                         let html =
                             '<span class="font-weight-bold text-danger">NOT&nbsp;ASSIGNED</span>'
@@ -194,7 +194,7 @@
                 },
                 {
                     data: 'pickup_date',
-                    title: 'Pickup&nbsp;Details',
+                    title: '{{__("messages.pickup_details")}}',
                     width: "250px",
                     render: function(data, type, row) {
                         let no_data =
@@ -215,7 +215,7 @@
                 },
                 {
                     data: 'delivery_date',
-                    title: 'Delivery&nbsp; Details',
+                    title: '{{__("messages.delivery_details")}}',
                     width: "250px",
                     render: function(data, tye, row) {
                         let no_data =
@@ -236,7 +236,7 @@
                 },
                 {
                     data: 'estimated_distance',
-                    title: 'Details',
+                    title: '{{__("messages.details")}}',
                     width: "250px",
                     render: function(data, tye, row) {
                         if (data != null) {
@@ -248,7 +248,7 @@
                 },
                 {
                     data: 'customer_name',
-                    title: 'Customer',
+                    title: '{{__("messages.customer")}}',
                     width: "250px",
                     render: function(data, tye, row) {
                         let html =
@@ -262,7 +262,7 @@
                 },
                 {
                     data: 'stops',
-                    title: 'Stops',
+                    title: '{{__("messages.stops")}}',
                     width: "250px",
                     render: function(data, tye, row) {
                         let html = "";
@@ -279,14 +279,14 @@
                 },
                 {
                     data: 'description',
-                    title: 'Description',
+                    title: '{{__("messages.description")}}',
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
                     }
                 },
                 {
                     data: 'status',
-                    title: 'Status',
+                    title: '{{__("messages.status")}}',
                     render: function(data, type, row) {
                         let html = '<span class="font-weight-bold text-warning">'+data+'</span>'
                         // if(data != null){
@@ -297,7 +297,7 @@
                 },
                 {
                     data: "id",
-                    title: "Action",
+                    title: '{{__("messages.action")}}',
                     width: 150,
                     render: function(data, type, row) {
                         let url = "{{ url('edit/trip') }}" + "/" + data
@@ -326,7 +326,7 @@
             dom: 'Bfrtip',
             buttons: [{
                     extend: 'pdfHtml5',
-                    text: 'PDF',
+                    text: "{{__('messages.pdf')}}",
                     title: $('h3').text(),
                     orientation: 'landscape',
                     pageSize: 'LEGAL',
@@ -344,7 +344,7 @@
                     }
                 }, {
                     extend: 'print',
-                    text: 'PRINT',
+                    text: "{{__('messages.print')}}",
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -354,7 +354,7 @@
                     }
                 }, {
                     extend: 'excel',
-                    text: 'EXCEL',
+                    text: "{{__('messages.excel')}}",
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -364,7 +364,7 @@
                     }
                 }, {
                     extend: 'copy',
-                    text: 'COPY',
+                    text: "{{__('messages.copy')}}",
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -373,7 +373,18 @@
                         columns: ':visible:not(:last-child)'
                     }
                 },
-                'csv'
+                {
+                    extend: 'copy',
+                    text: "{{__('messages.csv')}}",
+                    title: $('h3').text(),
+                    exportOptions: {
+                        modifier: {
+                            page: 'all'
+                        },
+                        columns: ':visible:not(:last-child)'
+                    }
+                },
+                
             ]
         });
         }
