@@ -127,10 +127,21 @@ class TripsController extends Controller
         if (Auth::user()->type == "superadmin" && (session('allowed_by_google') != null && session('allowed_by_google') > 0)) {
 
             try {
-                $events = $service->events->listEvents('rw.passengers@gmail.com');
+                // $events = $service->events->listEvents('rw.passengers@gmail.com');
                 // dd($events);
                 // dd($events->getItems(3)[0]->getId());
-                foreach ($events->getItems() as $key => $event) {
+                $events = [];
+                $pageToken = NULL;
+                do {
+                    $calendarEvents = $service->events->listEvents('rw.passengers@gmail.com', [
+                        'pageToken' => $pageToken
+                    ]);
+                
+                    $events = array_merge($events, $calendarEvents->getItems());
+                    $pageToken = $calendarEvents->getNextPageToken();
+                } while ($pageToken);
+
+                foreach ($events as $key => $event) {
                     $trip = Trip::where('event_id', $event->getId())->first();
                     if ($trip == null) {
                         $last = Trip::latest()->first();
