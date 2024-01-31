@@ -292,7 +292,7 @@ class TripController extends Controller
                     if (($key + 1) ==  count($trip->stops)) {
                         $trip->status = 'destination';
                     } else {
-                        $trip->status = 'stop ' . ($key + 1);
+                        $trip->status = 'stop ' . ($key);
                     }
                     $trip->save();
                     break;
