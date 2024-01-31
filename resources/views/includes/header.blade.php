@@ -44,7 +44,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @php
-        if(session()->get('locale') != 'en' ){
+        if(session()->get('locale') == 'ar' ){
             echo '<style>
                 body {
                     transform: scaleX(-1);
