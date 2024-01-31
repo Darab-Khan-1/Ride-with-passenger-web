@@ -88,6 +88,8 @@ class RegistrationController extends Controller
     }
     public function logout()
     {
+        app()->setLocale('en');
+        session()->put('locale', 'en');  
         Auth::logout();
         return redirect('/');
     }

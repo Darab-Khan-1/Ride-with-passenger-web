@@ -556,6 +556,9 @@ class TripsController extends Controller
         $trip->drop_long = $request->drop_long;
         $trip->event_name = $request->event_name;
         $trip->description = $request->description;
+        $randomSlug = Str::random(8);
+        $uniqueRandomSlug = $randomSlug . '_' . time();
+        $trip->slug = $trip->slug == null ? $uniqueRandomSlug : $trip->slug;
         if ($trip->status == null) {
             $trip->status = 'available';
         }
