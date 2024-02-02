@@ -160,8 +160,8 @@ class TripsController extends Controller
                         $new = new Trip();
                         $new->unique_id = $unique;
                         $new->event_id = $event->getId();
-                        $new->pickup_date = date('Y-m-d H:i:s',strtotime($startTime));
-                        $new->delivery_date = date('Y-m-d H:i:s',strtotime($endTime));
+                        $new->pickup_date = (date('Y-m-d H:i:s',strtotime($startTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s',strtotime('now')) : date('Y-m-d H:i:s',strtotime($startTime)));
+                        $new->delivery_date = (date('Y-m-d H:i:s',strtotime($endTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s',strtotime('now')) : date('Y-m-d H:i:s',strtotime($endTime)));
                         $new->event_name = $event->getSummary();
                         $new->description = $event->getDescription();
                         $new->save();
