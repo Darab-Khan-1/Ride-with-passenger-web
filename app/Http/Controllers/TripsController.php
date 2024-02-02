@@ -160,8 +160,8 @@ class TripsController extends Controller
                         $new = new Trip();
                         $new->unique_id = $unique;
                         $new->event_id = $event->getId();
-                        $new->pickup_date = $startTime;
-                        $new->delivery_date = $endTime;
+                        $new->pickup_date = date('Y-m-d H:i:s',strtotime($startTime));
+                        $new->delivery_date = date('Y-m-d H:i:s',strtotime($endTime));
                         $new->event_name = $event->getSummary();
                         $new->description = $event->getDescription();
                         $new->save();
@@ -197,6 +197,7 @@ class TripsController extends Controller
                 }
             } catch (\Exception $e) {
                 $error = json_decode($e->getMessage(), true);
+                // dd($e);
                 if ($error['error']['code'] == 401) {
                     $url  = $client->createAuthUrl();
                     return redirect($url);
