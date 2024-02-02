@@ -26,7 +26,7 @@
     .user-list {
         list-style: none;
         padding: 0;
-        height: 70vh;
+        height: 67vh;
         overflow-y: scroll;
     }
 
@@ -53,6 +53,16 @@
         /* color: #000000; Change text color on click */
     }
 
+    .driver-map-icon {
+        width: 30px !important;
+        height: 30px !important;
+        user-select: none !important;
+        border: 0px !important;
+        padding: 0px !important;
+        margin: 0px !important;
+        border-radius: 50% !important;
+        max-width: none !important;
+    }
 
     .user-profile {
         margin-right: 10px;
@@ -123,11 +133,13 @@
                             <div class="card-body py-2">
                                 <div class="row">
                                     <div class="form-group col-md-12">
-                                        <h3 class="text-center py-2">{{__('messages.drivers')}}</h3>
-                                        <button class="btn btn-primary w-100" onclick="showAllLocations()">{{__('messages.show_all')}}
-                                            </button>
+                                        <h3 class="text-center py-2">{{ __('messages.drivers') }}</h3>
+                                        <button class="btn btn-primary w-100"
+                                            onclick="showAllLocations()">{{ __('messages.show_all') }}
+                                        </button>
                                         <input type="text" id="searchInput" class="form-control mb-2"
-                                            placeholder="{{__('messages.search_by_name_or_phone_number')}}" style="border:none">
+                                            placeholder="{{ __('messages.search_by_name_or_phone_number') }}"
+                                            style="border:none">
                                         <ul class="user-list">
                                             @foreach ($drivers as $value)
                                                 <li id="{{ 'USER' . $value->device_id }}" class="user-item"
@@ -181,7 +193,7 @@
                                                 <div class="text-dark font-weight-bolder font-size-h4 mt-3"
                                                     id="position_info">-
                                                 </div>
-                                                
+
                                                 {{-- <a href="#"
                                                     class="text-muted text-hover-primary font-weight-bold font-size-lg mt-1">Position</a> --}}
                                             </div>
@@ -238,17 +250,17 @@
 
 
     $(document).ready(function() {
-         $(document).on('click', '.share_link_button', function() {
-            let copyGfGText = 
+        $(document).on('click', '.share_link_button', function() {
+            let copyGfGText =
                 document.getElementById("sharedLink");
- 
+
             copyGfGText.select();
             document.execCommand("copy");
-             
+
             document.querySelector('#share_link_button').value = 'Linked copied';
 
-         });
-        
+        });
+
         initMap();
         $("#searchInput").on("keyup", function() {
             var searchText = $(this).val().toLowerCase();
@@ -284,8 +296,8 @@
             var timeInfoDiv = document.getElementById("driver_info");
 
             var table = "<table>";
-            table += "<tr><td>{{__('messages.name')}}: </td><td>" + name + "</td></tr>";
-            table += "<tr><td>{{__('messages.phone')}}: </td><td>" + phone + "</td></tr>";
+            table += "<tr><td>{{ __('messages.name') }}: </td><td>" + name + "</td></tr>";
+            table += "<tr><td>{{ __('messages.phone') }}: </td><td>" + phone + "</td></tr>";
             table += "</table>";
 
             timeInfoDiv.innerHTML = table;
@@ -411,7 +423,9 @@
                     table += "<tr><td>Speed: </td><td>" + (data.speed * 3.6).toFixed(1) +
                         " kph</td></tr>";
                     table += "<tr><td>Time: </td><td>" + data.serverTime + "</td></tr>";
-                    table+='<tr><td><button id="share_link_button"  class="btn share_link_button  font-weight-bolder" style="background: #ffc500">Share link</td><td><input type="text" id="sharedLink" class="form-control form-control-solid" style="width:455px" placeholder="Share link" value="'+response['slug']+'" disabled /></td></tr>'
+                    table +=
+                        '<tr><td><button id="share_link_button"  class="btn share_link_button  font-weight-bolder" style="background: #ffc500">Share link</td><td><input type="text" id="sharedLink" class="form-control form-control-solid" style="width:455px" placeholder="Share link" value="' +
+                        response['slug'] + '" disabled /></td></tr>'
                     // table += "<tr><td>Address: </td><td style='font-size:14px;'>" + data.address + "</td></tr>";
                     table += "</table>";
 
@@ -544,7 +558,7 @@
         clearMarkers();
         clearInterval(showInterval)
         clearInterval(interval);
-       
+
     }
 
     function showAll() {
@@ -584,14 +598,43 @@
                             //     map: googleMap,
                             // });
                             var userImageURL = data.avatar;
-                        
-                            // Create a custom marker with a circular image
+                            // userImageURL = `<svg xmlns="http://www.w3.org/2000/svg"
+                            //         xmlns:xlink="http://www.w3.org/1999/xlink">
+                            //     <image width="80" height="80"
+                            //         xlink:href="` + userImageURL + `" />
+                            //     </svg>`
+
+                            // userImageURL = `<div class="driver-map-icon" style="border-radius:50% !important">
+                            //             <img src="http://localhost:8000/assets/media/users/blank.png" alt="Profile Image" class="user-avatar">
+                            //                         </div>`
+
+                            const shape = {
+                                coords: [1, 1, 1, 20, 18, 20, 18, 1],
+                                type: "poly",
+                            };
+                            console.log(userImageURL);
+                            var markerSize = 30; // Size of the marker icon
+
+                            // Create the round marker icon
+                            var roundMarkerIcon = createRoundMarkerIcon(userImageURL, markerSize);
+
+                            console.log(roundMarkerIcon);
+                            // Create the marker using the round marker icon
                             const marker = new google.maps.Marker({
                                 position: {
                                     lat: data.latitude,
                                     lng: data.longitude
                                 },
                                 map: googleMap,
+                                icon: {
+                                    url: roundMarkerIcon, // Use the round marker icon
+                                    scaledSize: new google.maps.Size(markerSize,
+                                        markerSize), // Adjust the size of the image
+                                    anchor: new google.maps.Point(markerSize / 2,
+                                        markerSize / 2), // Center the image as the marker
+                                },
+                                title: 'User Marker', // Set a title for the marker
+
                                 // icon: {
                                 //     url: userImageURL,
                                 //     scaledSize: new google.maps.Size(40,
@@ -599,10 +642,6 @@
                                 //     origin: new google.maps.Point(0, 0),
                                 //     anchor: new google.maps.Point(20,
                                 //     20), // Center the image as the marker
-                                //     shape: {
-                                //         coords: [40, 40, 40], // Circular shape
-                                //         type: 'circle',
-                                //     },
                                 // },
                                 // icon: {
                                 //     url: 'data:image/svg+xml;charset=UTF-8,' +
@@ -612,12 +651,6 @@
                                 //     scaledSize: new google.maps.Size(40, 40),
                                 //     anchor: new google.maps.Point(20, 20),
                                 // },
-                                icon: {
-                                    url: userImageURL, // Use the direct URL for the user's circular image
-                                    scaledSize: new google.maps.Size(40, 40),
-                                    anchor: new google.maps.Point(20, 20),
-                                },
-                                title: 'User Marker', // Set a title for the marker
                             });
 
 
@@ -663,6 +696,31 @@
             }
         });
     }
+
+    function createRoundMarkerIcon(imageUrl, size) {
+        // Create a canvas element
+        var canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        var ctx = canvas.getContext('2d');
+
+        // Draw a circle on the canvas as a mask
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+
+        // Load the image onto the canvas
+        var image = new Image();
+        image.onload = function() {
+            ctx.drawImage(image, 0, 0, size, size); // Draw the image
+        };
+        image.src = imageUrl; // Set the image source
+
+        // Return the canvas as a data URL
+        return canvas.toDataURL();
+    }
+
 
     function getPopupContent(data) {
         let online = '<span class="status-dot offline"></span>';
@@ -727,5 +785,4 @@
         // Clear the markers map
         driverMarkersMap.clear();
     }
-    
 </script>
