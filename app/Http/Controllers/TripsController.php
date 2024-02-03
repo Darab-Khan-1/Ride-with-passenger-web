@@ -116,6 +116,8 @@ class TripsController extends Controller
                         $event_name = $event->getSummary();
                         $description = $event->getDescription();
                         if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
+                            $startTime = (date('Y-m-d H:i:s',strtotime($startTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s',strtotime('now')) : date('Y-m-d H:i:s',strtotime($startTime)));
+                            $endTime = (date('Y-m-d H:i:s',strtotime($endTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s',strtotime('now')) : date('Y-m-d H:i:s',strtotime($endTime)));
                             Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
                         }
                     }
