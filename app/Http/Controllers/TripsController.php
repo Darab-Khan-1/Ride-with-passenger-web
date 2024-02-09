@@ -101,7 +101,7 @@ class TripsController extends Controller
 
                 $now = new DateTime('now');
                 $yesterday = $now->modify('-1 day')->format('Y-m-d');
-                $nextWeek = $now->modify('+7 days')->format('Y-m-d');
+                $nextWeek = $now->modify('+3 days')->format('Y-m-d');
                 $trips = Trip::whereBetween('pickup_date', [$yesterday, $nextWeek])->get();
                 // dd(count($trips));
                 $calendarId = 'rw.passengers@gmail.com';
@@ -182,7 +182,7 @@ class TripsController extends Controller
                 $pageToken = NULL;
                 $now = new DateTime('now');
                 $yesterday = $now->modify('-1 day')->format('Y-m-d');
-                $nextWeek = $now->modify('+7 days')->format('Y-m-d');
+                $nextWeek = $now->modify('+3 days')->format('Y-m-d');
 
                 do {
                     $calendarEvents = $service->events->listEvents('rw.passengers@gmail.com', [
