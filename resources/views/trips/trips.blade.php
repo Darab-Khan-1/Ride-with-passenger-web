@@ -52,7 +52,7 @@
             {{-- <div class="card card-custom mt-5" style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                 <div class="card-body p-5">
                     <div class="row px-5">
-                       
+
                         <input type="hidden" value="{{ isset($service->id) ? $service->driver->device_id : '' }}"
                             id="device_id">
 
@@ -88,6 +88,7 @@
                         </button>
                     </div>
                 @endif
+
                 <div class="card-header flex-wrap border-0 pt-6 pb-0 counter-mirror">
                     <div class="card-title">
                         <h3 class="card-label text-success">{{__("messages.available_trips")}} ({{ $data['available'] }})
@@ -163,6 +164,7 @@
     $(document).ready(function() {
         table = $('#table').DataTable({
             paging: true,
+            "ordering": false,
             // pageLength : parseInt(vv),
             responsive: false,
             processing: false,
@@ -203,16 +205,17 @@
                     }
                 },
                 {
+
                     data: 'pickup_date',
                     title: '{{__("messages.pickup_details")}}',
                     width: "250px",
-                    render: function(data, type, row) {
+                                        render: function(data, type, row) {
                         let no_data = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
                         let html = ''
                         if (row.pickup_location != null) {
-                            html += "<b>Location:</b> " + row.pickup_location 
+                            html += "<b>Location:</b> " + row.pickup_location
                         } else {
-                            html += "<b>Location:</b> " + no_data 
+                            html += "<b>Location:</b> " + no_data
                         }
                         if(data != null){
                             html +=   "<br><b>Date/Time:</b>" + data
@@ -282,7 +285,7 @@
                         }
                         return html
                     }
-                }, 
+                },
                 {
                     data: 'description',
                     title: '{{__("messages.description")}}',
@@ -387,7 +390,7 @@
                         columns: ':visible:not(:last-child)'
                     }
                 },
-                
+
             ]
         });
     });
