@@ -17,7 +17,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <head>
     <base href="">
     <meta charset="utf-8" />
-    <title>{{__('messages.title')}} | {{__('messages.dashboard')}}</title>
+    <title>Ride-with-Passenger|{{ __('messages.dashboard') }} </title>
     <meta name="description" content="Updates and statistics" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -36,7 +36,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <!--end::Global Theme Styles-->
     <!--begin::Layout Themes(used by all pages)-->
     <!--end::Layout Themes-->
-    <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
+    <link rel="shortcut icon" href="{{ asset('assets/ridewithpassngers.png') }}" />
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase.js"></script>
@@ -44,7 +44,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @php
-        if(session()->get('locale') == 'ar' ){
+        if (session()->get('locale') == 'ar') {
             echo '<style>
                 body {
                     transform: scaleX(-1);
@@ -52,16 +52,15 @@ License: You must have a valid license purchased only from themeforest(the above
                 }
                   .counter-mirror {
                         transform: scaleX(-1);
-                        display: inline-block; 
+                        display: inline-block;
                     }
-                
-            </style>';
 
+            </style>';
         }
     @endphp
-    
-<script>
-    const firebaseConfig = {
+
+    <script>
+        const firebaseConfig = {
             apiKey: "{{ env('API_KEY') }}",
             authDomain: "{{ env('AUTH_DOMAIN') }}",
             projectId: "{{ env('PROJECT_ID') }}",
@@ -71,91 +70,96 @@ License: You must have a valid license purchased only from themeforest(the above
             databaseURL: "{{ env('FIREBASE_DATABASE_URL') }}"
         };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const messaging = firebase.messaging();
- 
-  if({{ Session::get('token')}}===0 ? true:false ){
-    
-        //Registering Service worker file for FCM messages
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register("{{ asset('firebase-messaging-sw.js') }}").then(function(registration) {
-                     //messaging.useServiceWorker(registration);
-                     retreiveToken(messaging);
-                    
-                    console.log('Service Worker registration successful with scope: ', registration.scope);
-                }, function(err) {
-                    console.log('Service Worker registration failed: ', err);
-                });
-            });
-            
-        }
-        function retreiveToken(messaging) {
+        const app = firebase.initializeApp(firebaseConfig);
+        const messaging = firebase.messaging();
 
-            messaging.requestPermission()
-                .then(function () {
-                    return messaging.getToken()
-                })
-                .then(function(token) {
-                    if (token) {
-                        saveTokenToServer(token);
-                    } else {
-                        alert('You should allow notification!');
-                    }
-                    }).catch(function (err) {
-                        console.log('User Chat Token Error'+ err);
+        if ({{ Session::get('token') }} === 0 ? true : false) {
+
+            //Registering Service worker file for FCM messages
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register("{{ asset('firebase-messaging-sw.js') }}").then(function(
+                        registration) {
+                        //messaging.useServiceWorker(registration);
+                        retreiveToken(messaging);
+
+                        console.log('Service Worker registration successful with scope: ', registration
+                            .scope);
+                    }, function(err) {
+                        console.log('Service Worker registration failed: ', err);
+                    });
                 });
 
-    
+            }
+
+            function retreiveToken(messaging) {
+
+                messaging.requestPermission()
+                    .then(function() {
+                        return messaging.getToken()
+                    })
+                    .then(function(token) {
+                        if (token) {
+                            saveTokenToServer(token);
+                        } else {
+                            alert('You should allow notification!');
+                        }
+                    }).catch(function(err) {
+                        console.log('User Chat Token Error' + err);
+                    });
+
+
+            }
+
+            function saveTokenToServer(token) {
+
+                $.ajax({
+                    url: '{{ route('save.token') }}',
+                    headers: {
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    data: {
+                        token: token,
+                        admin_id: {{ auth()->user() != null ? auth()->user()->id : '-1' }},
+
+                    },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(err) {
+                        console.log('User Chat Token Error' + err);
+                    },
+                });
+            }
+
         }
-         function saveTokenToServer(token) {
-        
-            $.ajax({
-                url: '{{ route("save.token") }}',
-                headers: {
-                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-                },
-                type: 'POST',
-                data: {
-                    token: token,
-                    admin_id:{{auth()->user()!=null ? auth()->user()->id:'-1'}},
-                
-                },
-                dataType: 'JSON',
-                success: function (response) {
-                    console.log(response);
-                },
-                error: function (err) {
-                    console.log('User Chat Token Error'+ err);
-                },
-            });
-        }
-        
-  }
-   messaging.onMessage((payload) => {
-       var audio;
-        if(payload.data.sound=="anychange.mp3"){
-            audio=new Audio("{{asset('anychange.mp3')}}");
-        }
-        if(payload.data.sound=="newtrip.mp3"){
-            audio=new Audio("{{asset('newtrip.mp3')}}");
-        }
-        if(payload.data.sound=="notificationfromplatform.mp3"){
-            audio=new Audio("{{asset('notificationfromplatform.mp3')}}");
-        }
-        if(payload.data.sound=="remindertrip.mp3"){
-            audio=new Audio("{{asset('remindertrip.mp3')}}");
-        }
-        toastr.success('<div class="counter-mirror">New notification<br>'+payload.data.title+'<br></div>'+payload.data.body);
-        audio.play();
-    });
-    
-</script>
+        messaging.onMessage((payload) => {
+            var audio;
+            if (payload.data.sound == "anychange.mp3") {
+                audio = new Audio("{{ asset('anychange.mp3') }}");
+            }
+            if (payload.data.sound == "newtrip.mp3") {
+                audio = new Audio("{{ asset('newtrip.mp3') }}");
+            }
+            if (payload.data.sound == "notificationfromplatform.mp3") {
+                audio = new Audio("{{ asset('notificationfromplatform.mp3') }}");
+            }
+            if (payload.data.sound == "remindertrip.mp3") {
+                audio = new Audio("{{ asset('remindertrip.mp3') }}");
+            }
+            toastr.success('<div class="counter-mirror">New notification<br>' + payload.data.title + '<br></div>' +
+                payload.data.body);
+            audio.play();
+        });
+    </script>
 </head>
 <!--end::Head-->
 <!--begin::Body-->
 
 <body id="kt_body" class="header-fixed header-mobile-fixed page-loading ">
+
     <!--begin::Main-->
     <!--begin::Header Mobile-->
     <div id="kt_header_mobile" class="header-mobile bg-primary header-mobile-fixed">
@@ -215,29 +219,33 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <ul class="header-tabs nav align-self-end font-size-lg" role="tablist">
                                     <!--begin::Item-->
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link py-4 px-6 home-nav counter-mirror" data-toggle="tab"
-                                            data-target="#kt_header_tab_1" role="tab">{{__('messages.home')}}</a>
+                                        <a href="#" class="nav-link py-4 px-6 home-nav counter-mirror"
+                                            data-toggle="tab" data-target="#kt_header_tab_1"
+                                            role="tab">{{ __('messages.home') }}</a>
                                     </li>
                                     <!--end::Item-->
                                     <!--begin::Item-->
 
                                     @canany(['view_driver', 'view_employee', 'view_role'])
                                         <li class="nav-item mr-3">
-                                            <a href="#" class="nav-link py-4 px-6 users-nav counter-mirror" data-toggle="tab"
-                                                data-target="#kt_header_tab_2" role="tab">{{ __('messages.user_management')}}</a>
+                                            <a href="#" class="nav-link py-4 px-6 users-nav counter-mirror"
+                                                data-toggle="tab" data-target="#kt_header_tab_2"
+                                                role="tab">{{ __('messages.user_management') }}</a>
                                         </li>
                                     @endcanany
 
                                     @canany(['view_trip', 'create_trip'])
                                         <li class="nav-item mr-3">
-                                            <a href="#" class="nav-link py-4 px-6 trips-nav counter-mirror" data-toggle="tab"
-                                                data-target="#kt_header_tab_3" role="tab">{{__('messages.trips_management')}}</a>
+                                            <a href="#" class="nav-link py-4 px-6 trips-nav counter-mirror"
+                                                data-toggle="tab" data-target="#kt_header_tab_3"
+                                                role="tab">{{ __('messages.trips_management') }}</a>
                                         </li>
                                     @endcanany
                                     @canany(['live_tracking', 'playback'])
                                         <li class="nav-item mr-3">
-                                            <a href="#" class="nav-link py-4 px-6 map-nav counter-mirror" data-toggle="tab"
-                                                data-target="#kt_header_tab_4" role="tab">{{__('messages.map')}}</a>
+                                            <a href="#" class="nav-link py-4 px-6 map-nav counter-mirror"
+                                                data-toggle="tab" data-target="#kt_header_tab_4"
+                                                role="tab">{{ __('messages.map') }}</a>
                                         </li>
                                     @endcanany
 
@@ -255,7 +263,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                             id="kt_quick_user_toggle">
                                             <div class="d-flex flex-column text-right pr-3">
                                                 <span
-                                                    class="text-white opacity-50 font-weight-bold font-size-sm d-none d-md-inline counter-mirror">{{__('messages.hi')}}, {{ explode(' ',session('name'))[0] }}</span>
+                                                    class="text-white opacity-50 font-weight-bold font-size-sm d-none d-md-inline counter-mirror">{{ __('messages.hi') }},
+                                                    {{ explode(' ', session('name'))[0] }}</span>
                                             </div>
                                             <span class="symbol symbol-35">
                                                 <span
@@ -268,31 +277,48 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <div class="btn btn-icon btn-hover-transparent-white w-auto d-flex align-items-center btn-lg px-2 position-relative"
                                             id="kt_quick_user_toggle">
                                             <div class="d-flex flex-column text-right pr-3">
-                                                <span    style="cursor:pointer" class=" svg-icon svg-icon-warning svg-icon-2x "><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo8/dist/../src/media/svg/icons/General/Notifications1.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                            <path d="M17,12 L18.5,12 C19.3284271,12 20,12.6715729 20,13.5 C20,14.3284271 19.3284271,15 18.5,15 L5.5,15 C4.67157288,15 4,14.3284271 4,13.5 C4,12.6715729 4.67157288,12 5.5,12 L7,12 L7.5582739,6.97553494 C7.80974924,4.71225688 9.72279394,3 12,3 C14.2772061,3 16.1902508,4.71225688 16.4417261,6.97553494 L17,12 Z" fill="#000000"/>
-                                                            <rect fill="#000000" opacity="0.3" x="10" y="16" width="4" height="4" rx="2"/>
+                                                <span style="cursor:pointer"
+                                                    class=" svg-icon svg-icon-warning svg-icon-2x "><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo8/dist/../src/media/svg/icons/General/Notifications1.svg--><svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
+                                                        height="24px" viewBox="0 0 24 24" version="1.1">
+                                                        <g stroke="none" stroke-width="1" fill="none"
+                                                            fill-rule="evenodd">
+                                                            <path
+                                                                d="M17,12 L18.5,12 C19.3284271,12 20,12.6715729 20,13.5 C20,14.3284271 19.3284271,15 18.5,15 L5.5,15 C4.67157288,15 4,14.3284271 4,13.5 C4,12.6715729 4.67157288,12 5.5,12 L7,12 L7.5582739,6.97553494 C7.80974924,4.71225688 9.72279394,3 12,3 C14.2772061,3 16.1902508,4.71225688 16.4417261,6.97553494 L17,12 Z"
+                                                                fill="#000000" />
+                                                            <rect fill="#000000" opacity="0.3" x="10" y="16"
+                                                                width="4" height="4" rx="2" />
                                                         </g>
                                                     </svg>
                                                     @php
-                                                        $notificationCount = DB::table('notifications')->where('type','=','web')->where('seen','=','0')->count();
+                                                        $notificationCount = DB::table('notifications')
+                                                            ->where('type', '=', 'web')
+                                                            ->where('seen', '=', '0')
+                                                            ->count();
                                                     @endphp
-                                                    <span class="counter-mirror" style="position: absolute; top: 0; right: 0; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px;">
-                                                        {{$notificationCount}}
+                                                    <span class="counter-mirror"
+                                                        style="position: absolute; top: 0; right: 0; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px;">
+                                                        {{ $notificationCount }}
                                                     </span>
                                                 </span>
                                             </div>
-                
+
                                         </div>
                                     </a>
-                                    
-                                        <select class="form-control Langchange counter-mirror" id="Langchange" style="margin-left: 9px;" onchange="changeLang(this);">
-                                            <option value="en" {{ session()->get('locale') == 'en' ? 'selected' : '' }}>{{__('messages.eng')}}</option>
-                                            <option value="ar" {{ session()->get('locale') == 'ar' ? 'selected' : '' }}>{{__('messages.arb')}}</option>                    
-                                        </select>
-                                    
+
+                                    <select class="form-control Langchange counter-mirror" id="Langchange"
+                                        style="margin-left: 9px;" onchange="changeLang(this);">
+                                        <option value="en"
+                                            {{ session()->get('locale') == 'en' ? 'selected' : '' }}>
+                                            {{ __('messages.eng') }}</option>
+                                        <option value="ar"
+                                            {{ session()->get('locale') == 'ar' ? 'selected' : '' }}>
+                                            {{ __('messages.arb') }}</option>
+                                    </select>
+
                                     <a href="{{ url('/logout') }}"
-                                        class="btn btn-secondary mx-5 font-weight-bold text-dark counter-mirror">{{__('messages.sign_out')}}</a>
+                                        class="btn btn-secondary mx-5 font-weight-bold text-dark counter-mirror">{{ __('messages.sign_out') }}</a>
                                 </div>
                                 <!--end::User-->
                             </div>
@@ -312,29 +338,33 @@ License: You must have a valid license purchased only from themeforest(the above
                                     role="tablist">
                                     <!--begin::Item-->
                                     <li class="nav-item mr-2">
-                                        <a href="#" class="nav-link btn btn-clean home-nav counter-mirror" data-toggle="tab"
-                                            data-target="#kt_header_tab_1" role="tab">{{__('messages.home')}}</a>
+                                        <a href="#" class="nav-link btn btn-clean home-nav counter-mirror"
+                                            data-toggle="tab" data-target="#kt_header_tab_1"
+                                            role="tab">{{ __('messages.home') }}</a>
                                     </li>
                                     <!--end::Item-->
                                     <!--begin::Item-->
                                     @canany(['view_driver', 'view_employee', 'view_role'])
                                         <li class="nav-item mr-2">
-                                            <a href="#" class="nav-link btn btn-clean users-nav counter-mirror" data-toggle="tab"
-                                                data-target="#kt_header_tab_2" role="tab">{{__('messages.user_management')}}</a>
+                                            <a href="#" class="nav-link btn btn-clean users-nav counter-mirror"
+                                                data-toggle="tab" data-target="#kt_header_tab_2"
+                                                role="tab">{{ __('messages.user_management') }}</a>
                                         </li>
                                     @endcanany
 
                                     @canany(['view_trip', 'create_trip'])
                                         <li class="nav-item mr-2">
-                                            <a href="#" class="nav-link btn btn-clean trips-nav counter-mirror" data-toggle="tab"
-                                                data-target="#kt_header_tab_3" role="tab">{{__('messages.trips_management')}}</a>
+                                            <a href="#" class="nav-link btn btn-clean trips-nav counter-mirror"
+                                                data-toggle="tab" data-target="#kt_header_tab_3"
+                                                role="tab">{{ __('messages.trips_management') }}</a>
                                         </li>
                                     @endcanany
 
                                     @canany(['live_tracking', 'playback'])
                                         <li class="nav-item mr-2">
-                                            <a href="#" class="nav-link btn btn-clean map-nav counter-mirror" data-toggle="tab"
-                                                data-target="#kt_header_tab_4" role="tab">{{__('messages.map')}}</a>
+                                            <a href="#" class="nav-link btn btn-clean map-nav counter-mirror"
+                                                data-toggle="tab" data-target="#kt_header_tab_4"
+                                                role="tab">{{ __('messages.map') }}</a>
                                         </li>
                                     @endcanany
                                     <!--end::Item-->
@@ -351,7 +381,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <ul class="menu-nav">
                                                 <li class="menu-item dashboard-nav" aria-haspopup="true">
                                                     <a href="{{ url('dashboard') }}" class="menu-link">
-                                                        <span class="menu-text counter-mirror">{{ __('messages.dashboard')}}</span>
+                                                        <span
+                                                            class="menu-text counter-mirror">{{ __('messages.dashboard') }}</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -369,21 +400,24 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 @can('view_role')
                                                     <li class="menu-item roles-nav" aria-haspopup="true">
                                                         <a href="{{ url('roles') }}" class="menu-link">
-                                                            <span class="menu-text counter-mirror">{{__('messages.roles')}}</span>
+                                                            <span
+                                                                class="menu-text counter-mirror">{{ __('messages.roles') }}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('view_employee')
                                                     <li class="menu-item employees-nav" aria-haspopup="true">
                                                         <a href="{{ url('employees') }}" class="menu-link">
-                                                            <span class="menu-text counter-mirror">{{__('messages.employees')}}</span>
+                                                            <span
+                                                                class="menu-text counter-mirror">{{ __('messages.employees') }}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('view_driver')
                                                     <li class="menu-item drivers-nav" aria-haspopup="true">
                                                         <a href="{{ url('drivers') }}" class="menu-link">
-                                                            <span class="menu-text counter-mirror">{{ __('messages.drivers')}}</span>
+                                                            <span
+                                                                class="menu-text counter-mirror">{{ __('messages.drivers') }}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
@@ -398,24 +432,28 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 @can('create_trip')
                                                     <li class="menu-item new-trip-nav" aria-haspopup="true">
                                                         <a href="{{ url('new/trip') }}" class="menu-link">
-                                                            <span class="menu-text counter-mirror ">+ {{__('messages.new_trip')}}</span>
+                                                            <span class="menu-text counter-mirror ">+
+                                                                {{ __('messages.new_trip') }}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('view_trip')
                                                     <li class="menu-item trips-nav" aria-haspopup="true">
                                                         <a href="{{ url('trips') }}" class="menu-link">
-                                                            <span class="menu-text counter-mirror">{{__('messages.available')}}</span>
+                                                            <span
+                                                                class="menu-text counter-mirror">{{ __('messages.available') }}</span>
                                                         </a>
                                                     </li>
                                                     <li class="menu-item active-trips-nav" aria-haspopup="true">
                                                         <a href="{{ url('active/trips') }}" class="menu-link">
-                                                            <span class="menu-text counter-mirror">{{__('messages.active')}}</span>
+                                                            <span
+                                                                class="menu-text counter-mirror">{{ __('messages.active') }}</span>
                                                         </a>
                                                     </li>
                                                     <li class="menu-item completed-trips-nav" aria-haspopup="true">
                                                         <a href="{{ url('completed/trips') }}" class="menu-link">
-                                                            <span class="menu-text counter-mirror">{{__('messages.completed')}}</span>
+                                                            <span
+                                                                class="menu-text counter-mirror">{{ __('messages.completed') }}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
@@ -429,14 +467,16 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 @can('live_tracking')
                                                     <li class="menu-item live-nav" aria-haspopup="true">
                                                         <a href="{{ url('live/location/0') }}" class="menu-link">
-                                                            <span class="menu-text counter-mirror">{{__('messages.live_tracking')}}</span>
+                                                            <span
+                                                                class="menu-text counter-mirror">{{ __('messages.live_tracking') }}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('playback')
                                                     <li class="menu-item playback-nav" aria-haspopup="true">
                                                         <a href="{{ url('playback/index/0') }}" class="menu-link">
-                                                            <span class="menu-text counter-mirror">{{__('messages.play_back')}}</span>
+                                                            <span
+                                                                class="menu-text counter-mirror">{{ __('messages.play_back') }}</span>
                                                         </a>
                                                     </li>
                                                 @endcan
@@ -453,3 +493,9 @@ License: You must have a valid license purchased only from themeforest(the above
                     </div>
                     <!--end::Bottom-->
                 </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

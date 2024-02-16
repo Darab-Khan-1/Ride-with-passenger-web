@@ -52,7 +52,7 @@
             {{-- <div class="card card-custom mt-5" style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                 <div class="card-body p-5">
                     <div class="row px-5">
-                       
+
                         <input type="hidden" value="{{ isset($service->id) ? $service->driver->device_id : '' }}"
                             id="device_id">
 
@@ -142,7 +142,7 @@
 <script type="text/javascript">
     $(".trips-nav").click()
     $(".active-trips-nav").addClass("menu-item-active");
-   
+
 
     var table
     $(document).ready(function() {
@@ -155,6 +155,7 @@
             table = $('#table').DataTable({
             paging: true,
             // pageLength : parseInt(vv),
+            "ordering": false,
             responsive: false,
             processing: false,
             serverSide: false,
@@ -384,10 +385,10 @@
                         columns: ':visible:not(:last-child)'
                     }
                 },
-                
+
             ]
         });
         }
-        
+
     });
 </script>
