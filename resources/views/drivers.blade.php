@@ -673,7 +673,7 @@
                 modifier: {
                     page: 'all'
                 },
-                columns: ':visible:not(:first-child):visible:not(:last-child):visible:not(:nth-child(5))'
+                columns: 'visible:not(:last-child)'
             },
             customize: function(doc) {
                 doc.content[1].table.widths = Array(doc.content[1].table.body[0]
@@ -689,7 +689,7 @@
                 modifier: {
                     page: 'all'
                 },
-                columns: ':visible:not(:first-child):visible:not(:last-child):visible:not(:nth-child(5))'
+                columns: 'visible:not(:last-child)'
             }
         }, {
             extend: 'excel',
@@ -701,7 +701,7 @@
                 modifier: {
                     page: 'all'
                 },
-                columns: ':visible:not(:first-child):visible:not(:last-child):visible:not(:nth-child(5))'
+                columns: 'visible:not(:last-child)'
             }
         }, {
             extend: 'copy',
@@ -713,7 +713,7 @@
                 modifier: {
                     page: 'all'
                 },
-                columns: ':visible:not(:first-child):visible:not(:last-child):visible:not(:nth-child(5))'
+                columns: 'visible:not(:last-child)'
             }
         }]
     });

@@ -168,18 +168,18 @@ class DriversController extends Controller
     //     return redirect('drivers')->with('success', $driver->name . ' is approved now!');
     // }
 
-    public function changePassword(Request $request)
-    {
-        // dd($request->all());
-        $user = User::find($request->user_id);
-        $user->tokens->each(function($token, $key) {
-            $token->delete();
-        });
-        $user->password = Hash::make($request->password);
-        $user->save();
-        
-        return redirect()->back()->with('success', 'Password changed');
-    }
+        public function changePassword(Request $request)
+        {
+            // dd($request->all());
+            $user = User::find($request->user_id);
+            $user->tokens->each(function($token, $key) {
+                $token->delete();
+            });
+            $user->password = Hash::make($request->password);
+            $user->save();
+            
+            return redirect()->back()->with('success', 'Password changed');
+        }
     public function delete($id)
     {
         $driver = Driver::where('user_id', $id)->first();

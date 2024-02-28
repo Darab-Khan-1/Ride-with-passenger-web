@@ -216,6 +216,24 @@
                         </div>
                         <div class="card card-custom  my-5" style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                             <div class="card-body p-5">
+                                <span class="badge badge-secondary" onclick="resetMap()"
+                                    style="margin-top: 10px;position: absolute;z-index: 9;right: 80px;">
+                                    <span
+                                        class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\Communication\Group.svg--><svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px"
+                                            viewBox="0 0 24 24" version="1.1">
+                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <polygon points="0 0 24 0 24 24 0 24" />
+                                                <path
+                                                    d="M18,14 C16.3431458,14 15,12.6568542 15,11 C15,9.34314575 16.3431458,8 18,8 C19.6568542,8 21,9.34314575 21,11 C21,12.6568542 19.6568542,14 18,14 Z M9,11 C6.790861,11 5,9.209139 5,7 C5,4.790861 6.790861,3 9,3 C11.209139,3 13,4.790861 13,7 C13,9.209139 11.209139,11 9,11 Z"
+                                                    fill="#000000" fill-rule="nonzero" opacity="0.3" />
+                                                <path
+                                                    d="M17.6011961,15.0006174 C21.0077043,15.0378534 23.7891749,16.7601418 23.9984937,20.4 C24.0069246,20.5466056 23.9984937,21 23.4559499,21 L19.6,21 C19.6,18.7490654 18.8562935,16.6718327 17.6011961,15.0006174 Z M0.00065168429,20.1992055 C0.388258525,15.4265159 4.26191235,13 8.98334134,13 C13.7712164,13 17.7048837,15.2931929 17.9979143,20.2 C18.0095879,20.3954741 17.9979143,21 17.2466999,21 C13.541124,21 8.03472472,21 0.727502227,21 C0.476712155,21 -0.0204617505,20.45918 0.00065168429,20.1992055 Z"
+                                                    fill="#000000" fill-rule="nonzero" />
+                                            </g>
+                                        </svg><!--end::Svg Icon--></span>
+                                </span>
                                 <div id="map" style="height: 85vh"></div>
                             </div>
                             {{-- <div class="card-footer">
@@ -246,6 +264,7 @@
     let interval;
     let showInterval;
     let firstCall;
+    var bounds = null;
     let markers = [];
 
 
@@ -453,19 +472,19 @@
     }
 
     var popupTemplate = `
-    <div class="popup-card">
-        <div class="card-header" style="display: flex; align-items: center;">
-            <img class="" src="{avatar}" alt="Driver Avatar" style="border-radius:50%;width: 50px; height: 50px;">
-            <h3 style="font-size: 14px; margin-left: 10px; text-align: right; flex-grow: 1;">{name} </h3>
-            <a href="{href}" style="position: absolute;top: 20px;right: 40px;">Live Track</a>
-        </div>
-        <div class="card-body">
-            <p style="font-size: 12px;"><strong>Phone:</strong> {phone}</p>
-            <p style="font-size: 12px;"><strong>Speed:</strong> {speed}</p>
-            <p style="font-size: 12px;"><strong>Time:</strong> {time}</p>
-        </div>
-    </div>
-`;
+            <div class="popup-card">
+                <div class="card-header" style="display: flex; align-items: center;">
+                    <img class="" src="{avatar}" alt="Driver Avatar" style="border-radius:50%;width: 50px; height: 50px;">
+                    <h3 style="font-size: 14px; margin-left: 10px; text-align: right; flex-grow: 1;">{name} </h3>
+                    <a href="{href}" style="position: absolute;top: 20px;right: 40px;">Live Track</a>
+                </div>
+                <div class="card-body">
+                    <p style="font-size: 12px;"><strong>Phone:</strong> {phone}</p>
+                    <p style="font-size: 12px;"><strong>Speed:</strong> {speed}</p>
+                    <p style="font-size: 12px;"><strong>Time:</strong> {time}</p>
+                </div>
+            </div>
+        `;
 
 
     // function showAll() {
@@ -616,9 +635,9 @@
                             var markerSize = 30; // Size of the marker icon
 
                             // Create the round marker icon
-                            var roundMarkerIcon = createRoundMarkerIcon(userImageURL, markerSize);
+                            // var roundMarkerIcon = createRoundMarkerIcon(userImageURL, markerSize);
 
-                            console.log(roundMarkerIcon);
+                            // console.log(roundMarkerIcon);
                             // Create the marker using the round marker icon
                             const marker = new google.maps.Marker({
                                 position: {
@@ -627,30 +646,13 @@
                                 },
                                 map: googleMap,
                                 icon: {
-                                    url: roundMarkerIcon, // Use the round marker icon
+                                    url: userImageURL, // Use the round marker icon
                                     scaledSize: new google.maps.Size(markerSize,
                                         markerSize), // Adjust the size of the image
                                     anchor: new google.maps.Point(markerSize / 2,
                                         markerSize / 2), // Center the image as the marker
                                 },
                                 title: 'User Marker', // Set a title for the marker
-
-                                // icon: {
-                                //     url: userImageURL,
-                                //     scaledSize: new google.maps.Size(40,
-                                //     40), // Adjust the size of the circular image
-                                //     origin: new google.maps.Point(0, 0),
-                                //     anchor: new google.maps.Point(20,
-                                //     20), // Center the image as the marker
-                                // },
-                                // icon: {
-                                //     url: 'data:image/svg+xml;charset=UTF-8,' +
-                                //         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">' +
-                                //         '<circle cx="12" cy="12" r="11" fill="black" />' +
-                                //         '</svg>',
-                                //     scaledSize: new google.maps.Size(40, 40),
-                                //     anchor: new google.maps.Point(20, 20),
-                                // },
                             });
 
 
@@ -669,15 +671,24 @@
                             // Add a click event to open the info window when the marker is clicked
                             marker.addListener('click', function() {
                                 infowindow.open(googleMap, marker);
+                                // animateZoomToLocation(data.latitude, data.longitude, 15)
+                                googleMap.panTo(new google.maps.LatLng(data.latitude, data
+                                    .longitude));
+
+                                // Set the new zoom level
+                                googleMap.setZoom(15);
+
                             });
                         }
                     });
 
-                    var bounds = new google.maps.LatLngBounds();
+                    bounds = new google.maps.LatLngBounds();
 
                     // Loop through the markers and extend the bounds for each marker's position
                     driverMarkersMap.forEach(function(marker) {
                         bounds.extend(marker.getPosition());
+                        // map.setCenter(newCenter);
+                        // map.setZoom(newZoomLevel);
                     });
 
                     // Fit the map to the bounds
@@ -695,6 +706,46 @@
                 toastr.error("Driver data not found");
             }
         });
+    }
+
+    function resetMap() {
+        // Define the bounds for the map
+
+        googleMap.setCenter({
+            lat: 31.963158,
+            lng: 35.930359
+        });
+        // Check if the bounds are valid
+        if (bounds != null) {
+            // Fit the map to the bounds
+            googleMap.fitBounds(bounds);
+        } else {
+            // Set the center of the googleMap
+            googleMap.setCenter(new google.maps.LatLng(40.7128, -74.0060)); // Example: Center coordinates
+        }
+    }
+
+    function isValidBounds() {
+        // Check if the bounds are valid by verifying they contain at least one LatLng
+        return bounds.getNorthEast().equals(bounds.getSouthWest());
+    }
+
+    function animateZoomToLocation(latitude, longitude, zoomLevel) {
+        var newCenter = new google.maps.LatLng(latitude, longitude);
+
+        // Get the current map center
+        var currentCenter = googleMap.getCenter();
+
+        // Create a new LatLngBounds object containing both the current and target locations
+        var bounds = new google.maps.LatLngBounds();
+        // bounds.extend(currentCenter);
+        bounds.extend(newCenter);
+
+        // Pan the map to the bounds center
+        googleMap.panToBounds(bounds);
+
+        // Set the new zoom level
+        googleMap.setZoom(zoomLevel);
     }
 
     function createRoundMarkerIcon(imageUrl, size) {

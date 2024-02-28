@@ -101,7 +101,7 @@ class TripsController extends Controller
 
                 $now = new DateTime('now');
                 $yesterday = $now->modify('-1 day')->format('Y-m-d');
-                $nextWeek = $now->modify('+3 days')->format('Y-m-d');
+                $nextWeek = $now->modify('+1 days')->format('Y-m-d');
                 $trips = Trip::whereBetween('pickup_date', [$yesterday, $nextWeek])->get();
                 // dd(count($trips));
                 $calendarId = 'rw.passengers@gmail.com';
@@ -172,8 +172,8 @@ class TripsController extends Controller
 
 
             $trips = Trip::where('status', 'available')->orWhereNull('status')->with('stops', 'driver')
-            ->orderby('pickup_date', 'asc')
-            ->get();
+                ->orderby('pickup_date', 'asc')
+                ->get();
             // dd($trips);
             // {{ dd($trips->trips->id) }}
             return DataTables::of($trips)->make(true);
@@ -186,9 +186,10 @@ class TripsController extends Controller
                 // dd($events->getItems(3)[0]->getId());
                 $events = [];
                 $pageToken = NULL;
-                $now = new DateTime('now');
-                $yesterday = $now->modify('-1 day')->format('Y-m-d');
-                $nextWeek = $now->modify('+3 days')->format('Y-m-d');
+                date_default_timezone_set('UTC');
+                $now = gmdate('Y-m-d H:i:s');
+                $yesterday = date('Y-m-d',strtotime($now));
+                $nextWeek = date('Y-m-d',strtotime($now));
 
                 do {
                     $calendarEvents = $service->events->listEvents('rw.passengers@gmail.com', [
@@ -196,10 +197,10 @@ class TripsController extends Controller
                         'timeMax' => $nextWeek . 'T23:59:59Z',   // Events until next 7 days
                         'pageToken' => $pageToken
                     ]);
-
                     $events = array_merge($events, $calendarEvents->getItems());
                     $pageToken = $calendarEvents->getNextPageToken();
                 } while ($pageToken);
+                date_default_timezone_set('Asia/Amman');
 
 
                 foreach ($events as $key => $event) {
@@ -324,7 +325,7 @@ class TripsController extends Controller
             } else if ($status == 'pick') {
                 $trips = Trip::where('status', 'pickup')->with('stops', 'driver')->orderby('pickup_date', 'asc')->get();
             } else if ($status == 'drop') {
-                $trips = Trip::where('status', 'destination')->with('stops', 'driver')->orderby('pickup_date','asc')->get();
+                $trips = Trip::where('status', 'destination')->with('stops', 'driver')->orderby('pickup_date', 'asc')->get();
             } else if ($status == 'intransit') {
                 $trips = Trip::where('status', 'in-transit')->with('stops', 'driver')->orderby('pickup_date', 'asc')->get();
             }
@@ -360,7 +361,6 @@ class TripsController extends Controller
         $total = Trip::whereNotIn('status', ['available', 'completed'])->whereNotNull('status')->count();
 
         return view('trips.active', compact('total'));
-
     }
 
     public function completed(Request $request)
@@ -399,7 +399,7 @@ class TripsController extends Controller
                     }
                 }
             }
-            $trips = Trip::where('status', 'completed')->with('stops', 'driver') ->orderby('updated_at','desc')->get();
+            $trips = Trip::where('status', 'completed')->with('stops', 'driver')->orderby('updated_at', 'desc')->get();
             return DataTables::of($trips)->make(true);
         }
         if (Auth::user()->type == "superadmin" && (session('allowed_by_google') != null && session('allowed_by_google') > 0)) {
