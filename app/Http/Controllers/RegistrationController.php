@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Config;
 use App\Helpers\Curl;
 use App\Models\Employee;
 use Session;
+use Symfony\Component\HttpFoundation\Session\Session as SessionSession;
+
 class RegistrationController extends Controller
 {
     use curl;
@@ -37,7 +39,11 @@ class RegistrationController extends Controller
                 $name = Employee::where('user_id',$user->id)->pluck('name');
                 session(['name' => $name[0] ]);
                 return response()->json(['result' => 'employee']);
-            } else {
+            } else if($user->type == 'customer') {
+                $this->adminLogin();
+                return response()->json(['result' => 'customer']);
+            } 
+            else {
                 return response()->json(['result' => 'invalid']);
             }
         } else {
@@ -69,7 +75,7 @@ class RegistrationController extends Controller
     public function updatePassword(Request $request)
     {
         // dd($request->all());
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         $validatedData = $request->validate([
             'old_password' => [
                 'required',

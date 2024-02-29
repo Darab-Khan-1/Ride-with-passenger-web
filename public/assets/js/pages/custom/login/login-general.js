@@ -112,10 +112,15 @@ var KTLogin = function() {
 									$("#kt_login_signin_submit").removeAttr('disabled');
 								});
 							}
+							// alert(data.result == 'customer')
+							document.getElementById("processing").style.display = 'none';
+								$("#kt_login_signin_submit").removeAttr('disabled');
 							if(data.result == "superadmin"){
 								window.location.href  =  "dashboard";
 							}else if(data.result == "employee"){
-								window.location.href  = "dashboard";
+								window.location.href  = "/dashboard";
+							}else if(data.result == 'customer') {
+								window.location.href = "/dashboard"
 							}else if(data.result == "manager"){
 								window.location.href  =  "/dashboard";
 							}

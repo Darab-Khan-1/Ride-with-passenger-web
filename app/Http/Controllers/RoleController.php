@@ -25,28 +25,34 @@ class RoleController extends Controller
     public function createPermission()
     {
 
-        Permission::create(['name' => 'create_driver']);
-        Permission::create(['name' => 'update_driver']);
-        Permission::create(['name' => 'view_driver']);
-        Permission::create(['name' => 'delete_driver']);
+        // Permission::create(['name' => 'create_driver']);
+        // Permission::create(['name' => 'update_driver']);
+        // Permission::create(['name' => 'view_driver']);
+        // Permission::create(['name' => 'delete_driver']);
 
-        Permission::create(['name' => 'create_trip']);
-        Permission::create(['name' => 'update_trip']);
-        Permission::create(['name' => 'view_trip']);
-        Permission::create(['name' => 'delete_trip']);
+        // Permission::create(['name' => 'create_trip']);
+        // Permission::create(['name' => 'update_trip']);
+        // Permission::create(['name' => 'view_trip']);
+        // Permission::create(['name' => 'delete_trip']);
 
-        Permission::create(['name' => 'create_employee']);
-        Permission::create(['name' => 'update_employee']);
-        Permission::create(['name' => 'view_employee']);
-        Permission::create(['name' => 'delete_employee']);
+        // Permission::create(['name' => 'create_employee']);
+        // Permission::create(['name' => 'update_employee']);
+        // Permission::create(['name' => 'view_employee']);
+        // Permission::create(['name' => 'delete_employee']);
 
-        Permission::create(['name' => 'create_role']);
-        Permission::create(['name' => 'update_role']);
-        Permission::create(['name' => 'view_role']);
-        Permission::create(['name' => 'delete_role']);
+        // Permission::create(['name' => 'create_role']);
+        // Permission::create(['name' => 'update_role']);
+        // Permission::create(['name' => 'view_role']);
+        // Permission::create(['name' => 'delete_role']);
 
-        Permission::create(['name' => 'live_tracking']);
-        Permission::create(['name' => 'playback']);
+        // Permission::create(['name' => 'live_tracking']);
+        // Permission::create(['name' => 'playback']);
+
+
+        Permission::create(['name' => 'create_customer']);
+        Permission::create(['name' => 'update_customer']);
+        Permission::create(['name' => 'view_customer']);
+        Permission::create(['name' => 'delete_customer']);
 
 
     }
@@ -96,7 +102,7 @@ function assignAllPermissionsToUser()
     public function update(Request $request)
     {
         $role = Role::with('permissions')->find($request->role_id);
-        
+        // dd($role);  
         $role->permissions()->detach();
         
         // Extract and filter only the 'on' permissions

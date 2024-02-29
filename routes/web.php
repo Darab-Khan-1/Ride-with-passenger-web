@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\TripController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\RegistrationController;
@@ -97,7 +99,16 @@ Route::group(['middleware' => 'admin'], function () {
     //Notification
     Route::post('/custom/notification/{id}', [DriversController::class, 'customNotification'])->name('send.notification');
     Route::get('/all/notifications', [NotificationController::class, 'index'])->name('all.notification');
-    
+
+
+
+    // Company 
+    Route::get('/customer', [CustomerController::class,'customerInfo']);
+    Route::post('/register/customer', [CustomerController::class,'create']);
+    Route::get('/delete/customer/{id}', [CustomerController::class,'delete']);
+    Route::get('get/customer/{id}', [CustomerController::class, 'get']);
+    Route::post('update/customer', [CustomerController::class, 'update']);
+    Route::post('change/customer/password', [CustomerController::class, 'change_password']);
 
     // Route::post('/google/events/update/{eventId}', [TripsController::class, 'updateEvent'])->name('google.events.update');
     // Route::delete('/google/events/delete/{eventId}', [TripsController::class, 'deleteEvent'])->name('google.events.delete');
