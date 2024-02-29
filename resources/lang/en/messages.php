@@ -34,6 +34,7 @@ return [
     "search" => "Search",
     "add_new" => "Add New",
     "name" => "Name",
+    "edit_customer_role" => "Edit Customer Role",
     "action" => "Action",
     "add" => "Add",
     "update" => "Update",
@@ -80,6 +81,7 @@ return [
     "new_password" => "New Password",
     "confirm_password" => "Confirm Password",
     "sign_out" => "Sign Out",
+    "employee_deleted" => "Are you sure? Do you want to delete employee",
 
     // User Management Drivers
     "show_all" => "Show All",
@@ -90,7 +92,7 @@ return [
 
     // Trips Management New Trip
     "map"=>"Map",
-    "trips"=>"Trips Status",
+    "trips"=>"Trips",
     "trips_management"=>"Trips Management",
     "new_trip" => "New Trip",
     "pickup_location" => "Pickup Location",
@@ -170,5 +172,11 @@ return [
     "pickup_up"=>"Pickup Up",
     "dropoff"=>"Dropoff",
     "in_transit"=>"In-Transit",
+
+    // customer
+    "register_customer" => "Register_customer",
+    "customer" => "Customers",
+    "delete_customer"=>"Are you sure to delete this customer?",
+    "edit_customer"=>"Edit Customer"
 ];
 ?>

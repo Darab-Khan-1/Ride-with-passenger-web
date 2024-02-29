@@ -121,4 +121,15 @@ class EmployeeController extends Controller
         $employee->save();
         return redirect('/employees')->with('success', 'Employee updated successfully');
     }
+
+    public function delete($id) {
+        $employee = Employee::where('user_id', $id)->first();
+        $employee->delete();
+
+        $user = User::find($id);
+        $user->email = $user->email . "-remove" . $id;
+        $user->save();
+        $user->delete();
+        return redirect('/employees')->with('success', 'Successflly Deleted'); 
+    }
 }

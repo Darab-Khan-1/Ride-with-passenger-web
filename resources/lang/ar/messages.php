@@ -83,6 +83,8 @@ return [
     "confirm_password" => "تأكيد كلمة المرور",
     "hi" => "مرحبًا",
     "sign_out" => "تسجيل الخروج",
+    "employee_deleted" => "هل أنت متأكد؟ هل تريد حذف الموظف",
+
 
     // User Management Drivers
     "show_all" => "عرض الكل",
@@ -92,7 +94,7 @@ return [
     "close" => "إغلاق",
 
     // Trips Management New Trip
-    "trips"=>"حالة الرحلات",
+    "trips"=>"رحلات",
     "map"=>"خريطة",
     "trips_management"=>"إدارة الرحلات",
     "new_trip" => "رحلة جديدة",
@@ -170,5 +172,13 @@ return [
     "pickup_up"=>"رحلة نشطة",
     "dropoff"=>"إنزال",
     "in_transit"=>"في مرحلة انتقالية",
+
+
+
+    // customer
+    "customer" => "عملاء",
+    "Are you sure to delete this customer" => "هل أنت متأكد من حذف هذا العميل",
+    "Edit Customer" => "تحرير العميل",
+    "edit_customer_role" => "تحرير دور العميل",
 ];
 ?>

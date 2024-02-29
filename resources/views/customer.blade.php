@@ -1,5 +1,6 @@
 @include('includes/header')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"
+<link
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"
     rel="stylesheet" />
 <!--begin::Content-->
 <div class="content d-flex flex-column flex-column-fluid counter-mirror" id="kt_content">
@@ -9,31 +10,31 @@
         <div class="px-5">
             <div class="card card-custom my-5">
                 @if (session('success'))
-                    <div class="alert alert-success m-2">
-                        {{ session('success') }}
-                        <button type="button" class="close counter-mirror" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+                <div class="alert alert-success m-2">
+                    {{ session('success') }}
+                    <button type="button" class="close counter-mirror" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 @endif
                 @if (session('error'))
-                    <div class="alert alert-danger m-2">
-                        {{ session('error') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+                <div class="alert alert-danger m-2">
+                    {{ session('error') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
-                        <h3 class="card-label">{{__('messages.employees')}} ({{ $total }})
-                            {{-- <span class="d-block text-muted pt-2 font-size-sm">Companies made easy</span> --}}
+                        <h3 class="card-label">{{__('messages.customer')}} ({{ $total }})
+                            <span class="d-block text-muted pt-2 font-size-sm">Companies made easy</span>
                         </h3>
                     </div>
                     <div class="card-toolbar">
                         <!--begin::Button-->
                         @can('create_employee')
-                        <button data-toggle="modal" data-target="#addModal" class="btn  font-weight-bolder"
+                        <button data-toggle="modal" data-target="#addModal" class="add_new btn  font-weight-bolder"
                             style="background: #ffc500">
                             <span class="svg-icon svg-icon-md">
                                 <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Flatten.svg-->
@@ -71,26 +72,28 @@
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title counter-mirror" id="addModalLabel">{{__('messages.register_employee')}}</h5>
+                <h5 class="modal-title counter-mirror" id="addModalLabel">{{__('messages.register_customer')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
             <div class="modal-body counter-mirror">
-                <form class="form" action="{{ url('/register/employee') }}" method="POST"
-                    enctype="multipart/form-data">
+                <form class="form" action="{{ url('/register/customer') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="card-body">
 
                         <div class="row">
-                            <div class="form-group col-md-6">
+                            {{-- <div class="form-group col-md-6">
                                 <label>{{__('messages.select_role')}}:</label>
                                 <select class="form-control" name="role">
                                     <option value="">-- {{__('messages.select_role')}} --</option>
                                     @foreach ($roles as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
+                            </div> --}}
+                            <div>
+                                <input type="hidden" name="role_id" id="role_id" value="{{ $roles->id }}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label>{{__('messages.full_name')}}:</label>
@@ -104,8 +107,8 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label>{{__('messages.password')}}:</label>
-                                <input type="password" name="password" class="form-control "
-                                    required placeholder="{{__('messages.enter_password')}}" />
+                                <input type="password" name="password" minlength="8" class="form-control " required
+                                    placeholder="{{__('messages.enter_password')}}" />
                             </div>
                             <div class="form-group col-md-6">
                                 <label>{{__('messages.phone')}}:</label>
@@ -146,14 +149,17 @@
                                             <i class="ki ki-bold-close icon-xs text-muted"></i>
                                         </span>
                                     </div>
-                                    <span class="form-text text-muted">{{__('messages.allowed_files')}} .png .jpg .jpeg</span>
+                                    <span class="form-text text-muted">{{__('messages.allowed_files')}} .png .jpg
+                                        .jpeg</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer counter-mirror">
-                        <button type="submit" class="btn  mr-2" style="background: #ffc500">{{__('messages.register')}}</button>
-                        <button type="reset" class="btn btn-secondary" data-dismiss="modal">{{__('messages.cancel')}}</button>
+                        <button type="submit" class="btn  mr-2"
+                            style="background: #ffc500">{{__('messages.register')}}</button>
+                        <button type="reset" class="btn btn-secondary"
+                            data-dismiss="modal">{{__('messages.cancel')}}</button>
                     </div>
                 </form>
             </div>
@@ -165,56 +171,52 @@
     </div>
 </div>
 
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content counter-mirror">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">{{__('messages.edit_employee')}}</h5>
+                <h5 class="modal-title" id="editModalLabel">{{__('messages.edit_customer')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <form class="form" action="{{ url('/update/employee') }}" method="POST"
-                    enctype="multipart/form-data">
+                <form class="form" action="{{ url('/update/customer') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="card-body">
                         <div class="row">
-                            <div class="form-group col-md-6">
-                                <label>{{__('messages.select_role')}}:</label>
-                                <select class="form-control" name="role" id="role">
+                            {{-- <div class="form-group col-md-6">
+                                <label>{{__('messages.select_role')}}:</label> 
+                                 <select class="form-control" name="role" id="role">
                                     <option value="">-- {{__('messages.select_role')}} --</option>
                                     @foreach ($roles as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
-                                </select>
-                            </div>
+                                </select> 
+                            </div>  --}}
                             <div class="form-group col-md-6">
                                 <label>{{__('messages.full_name')}}:</label>
-                                <input type="text" name="name" id="name"
-                                    class="form-control " required placeholder="{{__('messages.enter_full_name')}}" />
+                                <input type="text" name="name" id="name" class="form-control " required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label>{{__('messages.email')}}:</label>
-                                <input type="email" name="email" id="email"
-                                    class="form-control " required placeholder="{{__('messages.enter_email')}}" />
+                                <input type="email" name="email" id="email" class="form-control " required
+                                    placeholder="{{__('messages.enter_email')}}" />
                             </div>
                             <div class="form-group col-md-6">
                                 <label>{{__('messages.phone')}}:</label>
-                                <input type="text" name="phone" id="phone"
-                                    class="form-control " required placeholder="{{__('messages.phone')}}" />
+                                <input type="text" name="phone" id="phone" class="form-control " required
+                                    placeholder="{{__('messages.phone')}}" />
                             </div>
                             <div class="form-group col-md-6">
                                 <label>{{__('messages.address')}}:</label>
-                                <input type="text" name="address" id="address"
-                                    class="form-control " required placeholder="{{__('messages.address')}}" />
+                                <input type="text" name="address" id="address" class="form-control " required
+                                    placeholder="{{__('messages.address')}}" />
                             </div>
                             {{-- <div class="form-group col-md-6">
                                 <label>License expiry:</label>
-                                <input type="date" name="license_expiry" id="license_expiry"
-                                    class="form-control " required
-                                    placeholder="Enter license expiry" />
+                                <input type="date" name="license_expiry" id="license_expiry" class="form-control "
+                                    required placeholder="Enter license expiry" />
                             </div> --}}
                             <div class="form-group col-md-6">
                                 <div class="row">
@@ -229,8 +231,7 @@
                                                 data-action="change" data-toggle="tooltip" title=""
                                                 data-original-title="Change avatar">
                                                 <i class="fa fa-pen icon-sm text-muted"></i>
-                                                <input type="file" name="profile_avatar"
-                                                    accept=".png, .jpg, .jpeg">
+                                                <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg">
                                                 <input type="hidden" name="profile_avatar_remove">
                                             </label>
                                             <span
@@ -246,7 +247,8 @@
                                                 <i class="ki ki-bold-close icon-xs text-muted"></i>
                                             </span>
                                         </div>
-                                        <span class="form-text text-muted">{{__('messages.allowed_files')}} .png .jpg .jpeg</span>
+                                        <span class="form-text text-muted">{{__('messages.allowed_files')}} .png .jpg
+                                            .jpeg</span>
                                     </div>
                                 </div>
                             </div>
@@ -258,15 +260,17 @@
             </div>
             <div class="card-footer counter-mirror">
                 <input type="hidden" name="user_id" id="user_id">
-                <button type="submit" class="btn  mr-2 counter-mirror" style="background: #ffc500">{{__('messages.update')}}</button>
-                <button type="reset" class="btn btn-secondary counter-mirror" data-dismiss="modal">{{__('messages.cancel')}}</button>
+                <button type="submit" class="btn  mr-2 counter-mirror"
+                    style="background: #ffc500">{{__('messages.update')}}</button>
+                <button type="reset" class="btn btn-secondary counter-mirror"
+                    data-dismiss="modal">{{__('messages.cancel')}}</button>
             </div>
             </form>
         </div>
         {{-- <div class="modal-footer">
-                <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary font-weight-bold">Save changes</button>
-            </div> --}}
+            <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary font-weight-bold">Save changes</button>
+        </div> --}}
     </div>
 </div>
 {{-- </div> --}}
@@ -282,7 +286,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>{{__('messages.employee_deleted')}}</p>
+                <p>{{__('messages.delete_customer')}}</p>
             </div>
             <div class="modal-footer">
                 <a id="deleteUrl" class="btn btn-primary font-weight-bold">{{__('messages.yes')}}</a>
@@ -304,24 +308,26 @@
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <form action="{{ url('/change/password') }}" method="post" id="changePasswordForm">
+            <form action="{{ url('/change/customer/password') }}" method="post" id="changePasswordForm">
                 <div class="modal-body">
                     @csrf
                     <input type="hidden" name="user_id" id="changePassUser" />
                     <div class="form-group">
                         <label>{{__('messages.new_password')}}:</label>
-                        <input type="password" name="password" minlength="8" id="password"
-                            class="form-control " required placeholder="" />
+                        <input type="password" name="password" minlength="8" id="password" class="form-control "
+                            required placeholder="" />
                     </div>
                     <div class="form-group">
                         <label>{{__('messages.confirm_password')}}:</label>
-                        <input type="password" name="password" minlength="8" id="confirm_password"
-                            class="form-control " required placeholder="" />
+                        <input type="password" name="password" minlength="8" id="confirm_password" class="form-control "
+                            required placeholder="" />
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="button" id="change_password_button" class="btn btn-primary mr-2">{{__('messages.change')}}</button>
-                    <button type="reset" class="btn btn-secondary" data-dismiss="modal">{{__('messages.cancel')}}</button>
+                    <button type="button" id="change_password_button"
+                        class="btn btn-primary mr-2">{{__('messages.change')}}</button>
+                    <button type="reset" class="btn btn-secondary"
+                        data-dismiss="modal">{{__('messages.cancel')}}</button>
                 </div>
             </form>
         </div>
@@ -354,7 +360,7 @@
 
 <script type="text/javascript">
     $(".users-nav").click()
-    $(".employees-nav").addClass("menu-item-active");
+    $(".customer-nav").addClass("menu-item-active");
 
 
     var KTProfile = function() {
@@ -391,7 +397,7 @@
 
     $(document).on('click', '.delete-user', function() {
         let user = $(this).attr('user_id');
-        $("#deleteUrl").attr('href', "{{ url('/delete/employee') }}" + "/" + user);
+        $("#deleteUrl").attr('href', "{{ url('/delete/customer') }}" + "/" + user);
         $("#deleteModal").modal('show');
     });
     $(document).on('click', '.change-pass', function() {
@@ -428,13 +434,16 @@
         }
     })
 
+    $(document).on('click', '.add_new', function() {
+        let role_id = ("#role_id").val()
+    })
 
 
-    $(document).on('click', '.edit-employee', function() {
+    $(document).on('click', '.edit-customer', function() {
         let user = $(this).attr('user_id');
         // $("input[type=checkbox]").removeAttr('checked')
         $.ajax({
-            url: "{{ url('/get/employee') }}" + "/" + user,
+            url: "{{ url('/get/customer') }}" + "/" + user,
             method: "GET",
             beforeSend: function() {
                 $("#editModal").modal('show');
@@ -446,7 +455,6 @@
                 $("#email").val(data.user.email)
                 $("#phone").val(data.phone)
                 $("#address").val(data.address)
-                $("#role").val(data.role.id)
                 // $("#license_expiry").val(data.license_expiry)
 
                 $("#kt_profile_avatar_edit").css('background-image', 'url(' + data.avatar + ')');
@@ -461,7 +469,7 @@
         serverSide: false,
 
         ajax: {
-            url: "{{ url('/employees') }}"
+            url: "{{ url('/customer') }}"
         },
 
         columns: [{
@@ -492,7 +500,7 @@
                 title: '{{__("messages.name")}}'
             },
             {
-                data: 'user',
+                data: 'user_id',
                 title: '{{__("messages.contact")}}',
                 render: function(data, type, row) {
                     let html = ''
@@ -503,12 +511,12 @@
                 }
             },
             {
-                data: 'role',
+                data: 'role_id',
                 title: '{{__("messages.role")}}',
                 render: function(data, type, row) {
                     let html = ''
                     if (data != null)
-                        html += '<span class="font-weight-bold">' + data.name + '</span>'
+                        html += '<span class="font-weight-bold">' + row.role.name + '</span>'
                     else
                         html += '<br><span class="text-danger">  NOT ASSIGNED </span>'
                     return html
@@ -521,7 +529,7 @@
                 render: function(data, type, row) {
                     let permission_icon =
                         `{{ asset('/assets/media/svg/icons/Communication/Shield-user.svg') }}`
-                    // let url = "{{ url('delete/employee') }}" + "/" + data
+                    let url = "{{ url('delete/employee') }}" + "/" + data
                     let html = ''
                     html += '<div class="row">'
 
@@ -530,7 +538,7 @@
 
 
                     html += '@can("update_employee")<a href="javascript:;" user_id=' + data +
-                        ' class="edit-employee btn btn-sm btn-clean btn-icon mr-2" title="Edit details">	                            <span class="svg-icon svg-icon-md">	                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">	                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">	                                        <rect x="0" y="0" width="24" height="24"></rect>	                                        <path d="M8,17.9148182 L8,5.96685884 C8,5.56391781 8.16211443,5.17792052 8.44982609,4.89581508 L10.965708,2.42895648 C11.5426798,1.86322723 12.4640974,1.85620921 13.0496196,2.41308426 L15.5337377,4.77566479 C15.8314604,5.0588212 16,5.45170806 16,5.86258077 L16,17.9148182 C16,18.7432453 15.3284271,19.4148182 14.5,19.4148182 L9.5,19.4148182 C8.67157288,19.4148182 8,18.7432453 8,17.9148182 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000000, 10.707409) rotate(-135.000000) translate(-12.000000, -10.707409) "></path>	                                        <rect fill="#000000" opacity="0.3" x="5" y="20" width="15" height="2" rx="1"></rect>	                                    </g>	                                </svg>	                            </span></a>@endcan'
+                        ' class="edit-customer btn btn-sm btn-clean btn-icon mr-2" title="Edit details">	                            <span class="svg-icon svg-icon-md">	                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">	                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">	                                        <rect x="0" y="0" width="24" height="24"></rect>	                                        <path d="M8,17.9148182 L8,5.96685884 C8,5.56391781 8.16211443,5.17792052 8.44982609,4.89581508 L10.965708,2.42895648 C11.5426798,1.86322723 12.4640974,1.85620921 13.0496196,2.41308426 L15.5337377,4.77566479 C15.8314604,5.0588212 16,5.45170806 16,5.86258077 L16,17.9148182 C16,18.7432453 15.3284271,19.4148182 14.5,19.4148182 L9.5,19.4148182 C8.67157288,19.4148182 8,18.7432453 8,17.9148182 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000000, 10.707409) rotate(-135.000000) translate(-12.000000, -10.707409) "></path>	                                        <rect fill="#000000" opacity="0.3" x="5" y="20" width="15" height="2" rx="1"></rect>	                                    </g>	                                </svg>	                            </span></a>@endcan'
                     // console.log(row.blocked);
                     html +=
                         '&nbsp;@can("update_employee")<a class="change-pass btn btn-sm btn-clean btn-icon mr-2" href="javascript:void(0);" user_id=' +data+' ><span class="svg-icon svg-icon-md"><img title="Change Password" class="cursor-pointer" src="{{ asset('/assets/media/svg/icons/Code/Lock-overturning.svg') }}"/></span></a>@endcan'
