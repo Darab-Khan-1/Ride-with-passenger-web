@@ -34,7 +34,7 @@
                     </div>
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0 counter-mirror">
-                    <h3>{{__('messages.create_trip')}}</h3>
+                    <h3>{{ __('messages.create_trip') }}</h3>
                 </div>
                 <form action="{{ url('trip/create') }}" method="POST" class="counter-mirror">
                     @csrf
@@ -42,61 +42,63 @@
                         <div class="row">
 
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.customer_name')}}:</label>
+                                <label>{{ __('messages.customer_name') }}:</label>
                                 <input type="text" name="customer_name" id="customer_name" required
                                     class="form-control " value="{{ old('customer_name') }}"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.customer_phone')}}:</label>
+                                <label>{{ __('messages.customer_phone') }}:</label>
                                 <input type="text" name="customer_phone" id="customer_phone" required
                                     class="form-control " value="{{ old('customer_phone') }}"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.pickup_date')}}:</label>
+                                <label>{{ __('messages.pickup_date') }}:</label>
                                 <input type="datetime-local" name="pickup_date" id="pickup_date" required
                                     value="{{ old('pickup_date') ? old('pickup_date') : now()->format('Y-m-d H:i') }}"
-                                    class="form-control" placeholder="{{__('messages.enter_value_here')}}" />
+                                    class="form-control" placeholder="{{ __('messages.enter_value_here') }}" />
                                 <br>
 
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.delivery_date')}}:</label>
+                                <label>{{ __('messages.delivery_date') }}:</label>
                                 <input type="datetime-local" name="delivery_date" class="form-control" required
-                                    value="{{ old('delivery_date') }}" placeholder="{{__('messages.enter_value_here')}}" />
+                                    value="{{ old('delivery_date') }}"
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.pickup_location')}}:</label>
+                                <label>{{ __('messages.pickup_location') }}:</label>
                                 <input type="text" name="pickup_location" id="pickup_location"
                                     value="{{ old('pickup_location') }}"
                                     class="form-control form-control-solid start-end-location" required readonly
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.delivery_location')}}:</label>
+                                <label>{{ __('messages.delivery_location') }}:</label>
                                 <input type="text" name="delivery_location" id="delivery_location" readonly required
                                     value="{{ old('delivery_location') }}"
                                     class="form-control-solid form-control start-end-location"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.estimated_distance')}}:</label>
+                                <label>{{ __('messages.estimated_distance') }}:</label>
                                 <input type="text" name="estimated_distance" id="estimated_distance" readonly
                                     required class="form-control form-control-solid"
-                                    value="{{ old('estimated_distance') }}" placeholder="{{__('messages.enter_value_here')}}" />
+                                    value="{{ old('estimated_distance') }}"
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.estimated_time')}}:</label>
+                                <label>{{ __('messages.estimated_time') }}:</label>
                                 <input type="text" name="estimated_time" id="estimated_time" readonly required
                                     class="form-control form-control-solid" value="{{ old('estimated_time') }}"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.assign_driver')}}:</label>
+                                <label>{{ __('messages.assign_driver') }}:</label>
                                 <select class="form-control " name="user_id">
-                                    <option value="" selected>--{{__('messages.select_driver')}}--</option>
+                                    <option value="" selected>--{{ __('messages.select_driver') }}--</option>
                                     @foreach ($drivers as $value)
                                         <option value="{{ $value->user_id }}"
                                             @if (old('user_id') == $value->user_id) selected @endif>{{ $value->name }}
@@ -105,12 +107,13 @@
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.select_driver')}}:</label>
+                                <label>{{ __('messages.select_driver') }}:</label>
                                 <input type="text" name="event_name" id="event_name" required class="form-control "
-                                    value="{{ old('event_name') }}" placeholder="{{__('messages.enter_value_here')}}" />
+                                    value="{{ old('event_name') }}"
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.event_description')}}:</label>
+                                <label>{{ __('messages.event_description') }}:</label>
                                 <textarea class="form-control " required name="description" cols="30" rows="5"></textarea>
                             </div>
 
@@ -119,7 +122,8 @@
                     </div>
                     <div class="card-footer">
                         <input type="hidden" name="stops" id="stops_array" value="{{ old('stops') }}">
-                        <input type="hidden" name="stop_descriptions" id="stop_descriptions" value="{{ old('stop_descriptions') }}">
+                        <input type="hidden" name="stop_descriptions" id="stop_descriptions"
+                            value="{{ old('stop_descriptions') }}">
                         <input type="hidden" name="start_description" id="s_description">
                         <input type="hidden" name="end_description" id="e_description">
                         <input type="hidden" name="lat" id="lat">
@@ -141,45 +145,54 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content counter-mirror">
             <div class="modal-header">
-                <h4 class="modal-title">{{__('messages.select_trip')}}</h4>
+                <h4 class="modal-title">{{ __('messages.select_trip') }}</h4>
             </div>
             <div class="modal-body">
                 <div class="container">
                     <div class="map_box_container">
                         <div class="mb-3">
-                            <label for="start" class="form-label">{{__('messages.start_location')}}:</label>
+                            <label for="start" class="form-label">{{ __('messages.start_location') }}:</label>
                             <input type="text" id="start" class="form-control"
-                                placeholder="Enter start location">
+                                placeholder="{{__('messages.start_location')}}">
                         </div>
                         <div class="mb-3">
-                            <label for="start" class="form-label">{{__('messages.start_desc')}}:</label>
-                            <textarea name="start_description" id="start_description" cols="30" rows="1" class="form-control " placeholder="{{__('messages.enter_start_desc')}}"></textarea>
+                            <label for="start" class="form-label">{{ __('messages.start_desc') }}:</label>
+                            <textarea name="start_description" id="start_description" cols="30" rows="1" class="form-control "
+                                placeholder="{{ __('messages.enter_start_desc') }}"></textarea>
                         </div>
                         <div class="mb-3">
                             <div id="stopsContainer">
                                 <div class="row my-3">
-                                    <label for="stop" class="col-md-1" style="margin-top: 5px;">Stop:</label>
+                                    <label for="stop" class="col-md-1" style="margin-top: 5px;">{{__('messages.stop')}}</label>
                                     <input type="text" class="stop col-md-8 form-control mx-3"
-                                        placeholder="{{__('messages.enter_location')}}" name="stops[]" required>
-                                    <button type="button" class="removeStop btn btn-danger btn-sm col-md-2">{{__('messages.remove_stop')}}</button>
-                                        <label class="col-md-1" ></label><label for="description" class="col-md-2" style="margin-top: 20px;">{{__('messages.description')}}:</label><textarea name="descriptions[]" cols="30" rows="2" class="stop_description form-control col-md-8  mt-2 ml-6" placeholder="Enter description"></textarea>
+                                        placeholder="{{ __('messages.enter_location') }}" name="stops[]" required>
+                                    <button type="button"
+                                        class="removeStop btn btn-danger btn-sm col-md-2">{{ __('messages.remove_stop') }}</button>
+                                    <label class="col-md-1"></label><label for="description" class="col-md-2"
+                                        style="margin-top: 20px;">{{ __('messages.description') }}:</label>
+                                    <textarea name="descriptions[]" cols="30" rows="2"
+                                        class="stop_description form-control col-md-8  mt-2 ml-6" placeholder="{{__('messages.enter_description')}}"></textarea>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="end" class="form-label">{{__('messages.end_location')}}:</label>
+                            <label for="end" class="form-label">{{ __('messages.end_location') }}:</label>
                             <input type="text" id="end" class="form-control"
-                                placeholder="Enter end location">
+                                placeholder="{{__('messages.end_location')}}">
                         </div>
                         <div class="mb-3">
-                            <label for="start" class="form-label">{{__('messages.end_point_desc')}}:</label>
-                            <textarea name="end_description" id="end_description" cols="30" rows="1" class="form-control " placeholder="{{__('messages.end_point_desc')}}"></textarea>
+                            <label for="start" class="form-label">{{ __('messages.end_point_desc') }}:</label>
+                            <textarea name="end_description" id="end_description" cols="30" rows="1" class="form-control "
+                                placeholder="{{ __('messages.end_point_desc') }}"></textarea>
                         </div>
-                        <button type="button" id="addStop" class="btn btn-secondary my-3">{{__('messages.add')}} {{__('messages.stop')}}</button>
-                        <button id="calculate-route" class="btn btn-success m-2">{{__('messages.calculate_route')}}</button>
-                        <div class="mb-3" id="map-overlay">{{__('messages.distance')}}:
+                        <button type="button" id="addStop"
+                            class="btn btn-secondary my-3">{{ __('messages.add') }}
+                            {{ __('messages.stop') }}</button>
+                        <button id="calculate-route"
+                            class="btn btn-success m-2">{{ __('messages.calculate_route') }}</button>
+                        <div class="mb-3" id="map-overlay">{{ __('messages.distance') }}:
                             <br>
-                            {{__('messages.duration')}}:
+                            {{ __('messages.duration') }}:
                         </div>
                         <div id="map"></div>
                     </div>
@@ -253,14 +266,14 @@
         $('#stopsContainer').on('click', '.removeStop', function() {
             $(this).parent().remove();
         });
-
         // Handle form submission
         $('#calculate-route').on('click', function(e) {
             e.preventDefault();
 
             var start = $('#start').val();
             var destination = $('#end').val();
-            var stops = [],stop_descriptions=[];
+            var stops = [],
+                stop_descriptions = [];
 
             $('.stop').each(function() {
                 stops.push($(this).val());
@@ -434,5 +447,4 @@
             return formattedTime;
         }
     }
-
 </script>

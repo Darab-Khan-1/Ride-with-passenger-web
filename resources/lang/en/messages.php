@@ -177,6 +177,15 @@ return [
     "register_customer" => "Register_customer",
     "customer" => "Customers",
     "delete_customer"=>"Are you sure to delete this customer?",
-    "edit_customer"=>"Edit Customer"
-];
+    "edit_customer"=>"Edit Customer",
+    "delete_customer_2" => "Delete customer",
+    "name_location" => "Name",
+    "location" => "Location",
+    "company" => "Company Name",
+    "company_phone" => "Company Phone",
+    "remove" => "Remove",
+    "select_customer" => "Select Customer Location",
+    "enter_description" => "Enter Description",
+    "customer_location" => "Enter customer location" 
+];  
 ?>
