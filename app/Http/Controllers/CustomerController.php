@@ -17,7 +17,7 @@ class CustomerController extends Controller
     public function customerInfo(Request $request)
     {
         if ($request->ajax()) {
-            $customer = Customer::with('user','role')->get();
+            $customer = Customer::with('user', 'role')->get();
             return DataTables::of($customer)->make(true);
         }
         $total = Customer::count();
@@ -44,7 +44,7 @@ class CustomerController extends Controller
         $user->save();
 
         $role = Role::find($request->role_id);
-        // dd($request->role_id);
+        // dd($role);
         if ($role) {
             $user->syncRoles([$role]);
         }
@@ -55,7 +55,10 @@ class CustomerController extends Controller
         $customer->user_id = $user->id;
         $customer->role_id = $request->role_id;
         $customer->address = $request->address;
-        
+        $customer->company_phone = $request->company_phone;
+        $customer->company_name = $request->company;
+        // dd($request->company);
+
         if ($request->file('profile_avatar')) {
             $imageName = time() . '.' . rand(10, 10000) . '.' . $request->file('profile_avatar')->getClientOriginalExtension();
             $directory = public_path('storage/users');
@@ -85,14 +88,14 @@ class CustomerController extends Controller
     {
         $customer = Customer::where('user_id', $id)->first();
         $customer->delete();
-        
+
         $user = User::find($id);
         $user->email = $user->email . "-removed" . $id;
         $user->save();
         $user->delete();
         return redirect('customer')->with('success', 'Customer deleted successfully');
     }
-    
+
     public function get($id)
     {
         $customer = Customer::where('user_id', $id)->with('user')->first();
@@ -109,12 +112,7 @@ class CustomerController extends Controller
         $user->email = $request->email;
         // dd($user);
         $user->save();
-        
-        $role = Role::find($request->role);
-        dd($role);
-        if ($role) {
-            $user->syncRoles([$role]);
-        }
+
         $customer = Customer::where('user_id', $request->user_id)->first();
         // dd($customer);
         $customer->name = $request->name;
@@ -146,16 +144,21 @@ class CustomerController extends Controller
         return redirect('customer')->with('error', 'Some error');
     }
 
-    public function change_password(Request $request) {
+    public function change_password(Request $request)
+    {
         // dd($request->user_id);
         // dd($request->all());
         $user = User::find($request->user_id);
-        $user->tokens->each(function($token, $key) {
+        $user->tokens->each(function ($token, $key) {
             $token->delete();
         });
         $user->password = Hash::make($request->password);
         $user->save();
         return redirect()->back()->with('success', 'Password changed');
     }
-}
 
+    public function customer_location(Request $request){
+        dd($request->all());
+
+    }
+}

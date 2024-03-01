@@ -109,6 +109,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('get/customer/{id}', [CustomerController::class, 'get']);
     Route::post('update/customer', [CustomerController::class, 'update']);
     Route::post('change/customer/password', [CustomerController::class, 'change_password']);
+    Route::post('customer/location', [CustomerController::class, 'customer_location']);
 
     // Route::post('/google/events/update/{eventId}', [TripsController::class, 'updateEvent'])->name('google.events.update');
     // Route::delete('/google/events/delete/{eventId}', [TripsController::class, 'deleteEvent'])->name('google.events.delete');

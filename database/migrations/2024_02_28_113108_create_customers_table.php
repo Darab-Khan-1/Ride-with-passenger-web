@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('avatar')->nullable();
+            $table->string('company_name')->require();
+            $table->string('company_phone');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -177,8 +177,17 @@ return [
 
     // customer
     "customer" => "عملاء",
-    "Are you sure to delete this customer" => "هل أنت متأكد من حذف هذا العميل",
+    "delete_customer" => "هل أنت متأكد من حذف هذا العميل",
     "Edit Customer" => "تحرير العميل",
     "edit_customer_role" => "تحرير دور العميل",
+    "delete_customer_2" => "حذف العميل",
+    "name_location" => "اسم",
+    "location"=> "موقع",
+    "company" => "اسم الشركة",
+    "company_phone" => "هاتف الشركة",
+    "remove" => "يزيل",
+    "select_customer" => "حدد موقع العميل",
+    "enter_description" => "أدخل الوصف",
+    "customer_location" => "أدخل موقع العميل"
 ];
 ?>
