@@ -188,6 +188,7 @@ return [
     "remove" => "يزيل",
     "select_customer" => "حدد موقع العميل",
     "enter_description" => "أدخل الوصف",
-    "customer_location" => "أدخل موقع العميل"
+    "customer_location" => "أدخل موقع العميل",
+    "create_customer" => "إنشاء عميل",
 ];
 ?>

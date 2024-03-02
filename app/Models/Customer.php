@@ -18,4 +18,8 @@ class customer extends Model
     public function role(){
         return $this->hasOne(Role::class,'id','role_id');
     }
+
+    public function locations() {
+        return $this->hasMany(CustomerLocation::class, 'customer_id', 'id');
+    }
 }

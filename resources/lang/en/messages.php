@@ -186,6 +186,7 @@ return [
     "remove" => "Remove",
     "select_customer" => "Select Customer Location",
     "enter_description" => "Enter Description",
-    "customer_location" => "Enter customer location" 
+    "customer_location" => "Enter customer location",
+    "create_customer" => "Create Customer",
 ];  
 ?>

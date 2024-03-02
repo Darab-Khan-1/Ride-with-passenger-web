@@ -104,12 +104,14 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Company 
     Route::get('/customer', [CustomerController::class,'customerInfo']);
-    Route::post('/register/customer', [CustomerController::class,'create']);
+    Route::get('/create/customer', [CustomerController::class,'createcustomer']);
+    Route::post('/store/customer',[CustomerController::class ,'create']);
+    Route::get('/edit/customer/{id}',[CustomerController::class ,'edit']);
     Route::get('/delete/customer/{id}', [CustomerController::class,'delete']);
     Route::get('get/customer/{id}', [CustomerController::class, 'get']);
     Route::post('update/customer', [CustomerController::class, 'update']);
     Route::post('change/customer/password', [CustomerController::class, 'change_password']);
-    Route::post('customer/location', [CustomerController::class, 'customer_location']);
+    // Route::post('customer/location', [CustomerController::class, 'customer_location']);
 
     // Route::post('/google/events/update/{eventId}', [TripsController::class, 'updateEvent'])->name('google.events.update');
     // Route::delete('/google/events/delete/{eventId}', [TripsController::class, 'deleteEvent'])->name('google.events.delete');

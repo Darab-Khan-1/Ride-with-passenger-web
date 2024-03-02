@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Customer_location;
+use App\Models\CustomerLocation;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Support\Facades\File;
@@ -25,11 +27,17 @@ class CustomerController extends Controller
         // $roles = Role::all();
         $roles =  Role::where('name', 'Customer')->first();
         // dd($roles);
-        return view('customer', compact('total', 'roles'));
+        return view('customers.customer', compact('total', 'roles'));
+    }
+
+    public function createCustomer()
+    {
+        return view('customers.create');
     }
 
     public function create(Request $request)
     {
+        // dd($request->all());
         $validation = User::where('email', $request->email)->first();
         // dd($validation);
         if ($validation) {
@@ -43,24 +51,25 @@ class CustomerController extends Controller
         $user->type = 'customer';
         $user->save();
 
-        $role = Role::find($request->role_id);
+        $role = Role::where('name', 'Customer')->first();
         // dd($role);
         if ($role) {
             $user->syncRoles([$role]);
         }
+
         $customer = new Customer();
-        $customer->name = $request->name;
+        $customer->name = $request->customer_name;
         $customer->phone = $request->phone;
-        // dd($request->role_id);
         $customer->user_id = $user->id;
-        $customer->role_id = $request->role_id;
+        $customer->role_id = $role->id;
         $customer->address = $request->address;
         $customer->company_phone = $request->company_phone;
         $customer->company_name = $request->company;
         // dd($request->company);
+        // dd($request->file('profile_avatar'));
 
         if ($request->file('profile_avatar')) {
-            $imageName = time() . '.' . rand(10, 10000) . '.' . $request->file('profile_avatar')->getClientOriginalExtension();
+            $imageName = time() . '.' . $request->file('profile_avatar')->getClientOriginalExtension();
             $directory = public_path('storage/users');
             if (!File::isDirectory($directory)) {
                 File::makeDirectory($directory, 0755, true, true);
@@ -77,6 +86,21 @@ class CustomerController extends Controller
         }
         $customer->avatar = $driver_avatar;
         $customer->save();
+
+        $customer_name = $request->input('name');
+        $customer_latlong = $request->input('latlong');
+        $customer_locations = $request->input('location');
+        // dd($request->customer_id);
+        foreach ($customer_latlong as $key => $value) {
+            $customer_location = new CustomerLocation();
+            $customer_location->customer_id = $customer->id;
+            $customer_location->name = $customer_name[$key];
+            $customer_location->location = $customer_locations[$key];
+            $customer_location->latlng = $customer_latlong[$key];
+            $customer_location->save();
+        }
+
+
         if ($customer->save()) {
             return redirect('customer')->with('success', 'Successfully created');
         } else {
@@ -157,8 +181,12 @@ class CustomerController extends Controller
         return redirect()->back()->with('success', 'Password changed');
     }
 
-    public function customer_location(Request $request){
-        dd($request->all());
-
+    public function edit($id)
+    {
+        // $customer = Customer::find($id);
+        $customer = Customer::where('id', $id)->with('locations','user')->first();
+        // dd($customer_locations);
+        // dd($customer);
+        return view('customers.edit', compact('customer'));
     }
 }
