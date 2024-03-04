@@ -51,6 +51,7 @@ return [
     "are_you_sure_to_delete_this_role?" => "Are you sure to delete this role?",
     "yes" => "Yes",
     "no" => "No",
+    "submit"=>"Submit",
 
     // Uses Management Employees
     "total_employees" => "Total Employees",
@@ -172,7 +173,8 @@ return [
     "pickup_up"=>"Pickup Up",
     "dropoff"=>"Dropoff",
     "in_transit"=>"In-Transit",
-
+    "duplicate" => "Duplicate Trip",
+    
     // customer
     "register_customer" => "Register_customer",
     "customer" => "Customers",
@@ -186,6 +188,7 @@ return [
     "remove" => "Remove",
     "select_customer" => "Select Customer Location",
     "enter_description" => "Enter Description",
-    "customer_location" => "Enter customer location" 
+    "customer_location" => "Enter customer location",
+    "create_customer" => "Create Customer",
 ];  
 ?>
