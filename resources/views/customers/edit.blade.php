@@ -11,7 +11,7 @@
     }
 </style>
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
-    <form action="{{ url('store/customer') }}" method="POST" class="counter-mirror" enctype="multipart/form-data">
+    <form action="{{ url('update/customer') }}" method="POST" class="counter-mirror" enctype="multipart/form-data">
         @csrf
         <div class="card">
             <div class="card-header flex-wrap border-0 pt-6 pb-0 row">
@@ -23,7 +23,7 @@
                 <div class="card-toolbar col-md-2">
                     <!--begin::Button-->
                     <button type="submit" class="btn  mr-2"
-                        style="background: #ffc500">{{ __('messages.register') }}</button>
+                        style="background: #ffc500">{{ __('messages.update') }}</button>
                     <a href="{{ url('/customer') }}" class="btn btn-secondary">{{ __('messages.cancel') }}</a>
 
                     <!--end::Button-->
@@ -53,7 +53,7 @@
                             @endif
                             <div class="card-body">
                                 <div>
-                                    <input type="hidden" name="customer_id" id="{{ $customer->id }}">
+                                    <input type="hidden" name="user_id" id="user_id" value="{{ $customer->user_id }}">
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label>{{ __('messages.full_name') }}:</label>
@@ -63,12 +63,7 @@
                                 <div class="form-group col-md-12">
                                     <label>{{ __('messages.email') }}:</label>
                                     <input type="email" name="email" class="form-control col-md-12" required
-                                        value="{{ $customer->email }}"" />
-                                </div>
-                                <div class="form-group col-md-12">
-                                    <label>{{ __('messages.password') }}:</label>
-                                    <input type="password" name="password" minlength="8" class="form-control col-md-12"
-                                        required value="{{ $customer->password }}" />
+                                        value="{{ $customer->user->email }}"" />
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label>{{ __('messages.phone') }}:</label>
@@ -82,7 +77,7 @@
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label>{{ __('messages.company') }}:</label>
-                                    <input type="text" name="company" class="form-control" required
+                                    <input type="text" name="company_name" class="form-control" required
                                         value="{{ $customer->company_name }}" />
                                 </div>
                                 <div class="form-group col-md-12">
@@ -107,7 +102,7 @@
                                                 <i class="fa fa-pen icon-sm text-muted"></i>
                                                 <input type="file" value="" name="profile_avatar"
                                                     accept=".png, .jpg, .jpeg">
-                                                <input type="hidden" name="profile_avatar_remove">
+                                                <input type="hidden" name="profile_avatar_remove" >
                                             </label>
                                             <span
                                                 class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
@@ -144,8 +139,8 @@
                                             <div id="stopsContainer">
                                                 @foreach ($customer->locations as $customer_location)
                                                 <div class="row my-3">
-                                                        <input type="hidden" name="customer_id"
-                                                            value=="{{ $customer_location->id }}"
+                                                        <input type="hidden" name="location_id[]"
+                                                            value="{{ $customer_location->id }}"
                                                             id="customer_location_id">
                                                         <label for="stop" class="col-md-2"
                                                             style="margin-top: 5px;">{{ __('messages.name') }}</label>
@@ -235,8 +230,8 @@
     $('#addStop').on('click', function() {
         var stopInput = $(
             ` <div class="row my-3">
-                                                    <input type="hidden" name="customer_id"
-                                                        id="customer_location_id">
+                                                    <input type="hidden" name="location_id[]"
+                                                     value="0">
                                                     <label for="stop" class="col-md-2"
                                                         style="margin-top: 5px;">{{ __('messages.name') }}</label>
                                                     <input type="text" class=" col-md-7 form-control mx-3"
@@ -250,7 +245,7 @@
                                                     <input name="location[]" cols="30" rows="2"
                                                         class="stop  form-control col-md-7  mt-2 ml-6"
                                                         placeholder="{{ __('messages.customer_location') }}" required>
-                                                    <input type="hidden" name="latlong[]" class="lat">
+                                                    <input type="hidden" name="latlong[]" class="lat" >
                                                 </div>`
         );
         $('#stopsContainer').append(stopInput);

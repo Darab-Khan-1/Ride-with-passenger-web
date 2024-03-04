@@ -60,6 +60,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('new/trip', [TripsController::class, 'new']);
     Route::post('trip/create', [TripsController::class, 'create']);
     Route::get('edit/trip/{id}', [TripsController::class, 'edit']);
+    Route::get('duplicate/trips', [TripsController::class, 'duplicate']);
     Route::post('trip/update', [TripsController::class, 'update']);
     Route::post('active/trip/update', [TripsController::class, 'activeUpdate']);
     Route::get('delete/trip/{id}', [TripsController::class, 'delete']);
@@ -108,10 +109,8 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('/store/customer',[CustomerController::class ,'create']);
     Route::get('/edit/customer/{id}',[CustomerController::class ,'edit']);
     Route::get('/delete/customer/{id}', [CustomerController::class,'delete']);
-    Route::get('get/customer/{id}', [CustomerController::class, 'get']);
     Route::post('update/customer', [CustomerController::class, 'update']);
     Route::post('change/customer/password', [CustomerController::class, 'change_password']);
-    // Route::post('customer/location', [CustomerController::class, 'customer_location']);
 
     // Route::post('/google/events/update/{eventId}', [TripsController::class, 'updateEvent'])->name('google.events.update');
     // Route::delete('/google/events/delete/{eventId}', [TripsController::class, 'deleteEvent'])->name('google.events.delete');

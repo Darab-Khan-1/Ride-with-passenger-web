@@ -77,8 +77,6 @@
     </div>
     <!--end::Entry-->
 </div>
-
-
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -166,10 +164,7 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
-
             </div>
             <div class="card-footer counter-mirror">
                 <input type="hidden" name="user_id" id="user_id">
@@ -268,10 +263,6 @@
         </div>
     </div>
 </div>
-
-
-
-
 <!--end::Content-->
 @include('includes/footer')
 
@@ -298,7 +289,6 @@
             avatar = new KTImageInput('kt_profile_avatar');
             avatar = new KTImageInput('kt_profile_avatar_edit');
         }
-
         return {
             // public functions
             init: function() {
@@ -307,11 +297,9 @@
             }
         };
     }();
-
     $(document).ready(function() {
         KTProfile.init();
     });
-
     $(document).on('click', '.delete-user', function() {
         let user = $(this).attr('user_id');
         $("#deleteUrl").attr('href', "{{ url('/delete/customer') }}" + "/" + user);
@@ -322,7 +310,6 @@
         $("#changePassUser").val(user);
         $("#passChangeModal").modal('show');
     });
-
     $("#change_password_button").on('click', function() {
         let password = $("#password").val()
         let confirm_password = $("#confirm_password").val()
@@ -354,8 +341,6 @@
     $(document).on('click', '.add_new', function() {
         let role_id = ("#role_id").val()
     })
-
-
     $(document).on('click', '.edit-customer', function() {
         let user = $(this).attr('user_id');
     });

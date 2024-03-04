@@ -172,8 +172,8 @@ class TripsController extends Controller
 
 
             $trips = Trip::where('status', 'available')->orWhereNull('status')->with('stops', 'driver')
-            ->orderby('pickup_date', 'asc')
-            ->get();
+                ->orderby('pickup_date', 'asc')
+                ->get();
             // dd($trips);
             // {{ dd($trips->trips->id) }}
             return DataTables::of($trips)->make(true);
@@ -324,7 +324,7 @@ class TripsController extends Controller
             } else if ($status == 'pick') {
                 $trips = Trip::where('status', 'pickup')->with('stops', 'driver')->orderby('pickup_date', 'asc')->get();
             } else if ($status == 'drop') {
-                $trips = Trip::where('status', 'destination')->with('stops', 'driver')->orderby('pickup_date','asc')->get();
+                $trips = Trip::where('status', 'destination')->with('stops', 'driver')->orderby('pickup_date', 'asc')->get();
             } else if ($status == 'intransit') {
                 $trips = Trip::where('status', 'in-transit')->with('stops', 'driver')->orderby('pickup_date', 'asc')->get();
             }
@@ -360,7 +360,6 @@ class TripsController extends Controller
         $total = Trip::whereNotIn('status', ['available', 'completed'])->whereNotNull('status')->count();
 
         return view('trips.active', compact('total'));
-
     }
 
     public function completed(Request $request)
@@ -399,7 +398,7 @@ class TripsController extends Controller
                     }
                 }
             }
-            $trips = Trip::where('status', 'completed')->with('stops', 'driver') ->orderby('updated_at','desc')->get();
+            $trips = Trip::where('status', 'completed')->with('stops', 'driver')->orderby('updated_at', 'desc')->get();
             return DataTables::of($trips)->make(true);
         }
         if (Auth::user()->type == "superadmin" && (session('allowed_by_google') != null && session('allowed_by_google') > 0)) {
@@ -595,6 +594,12 @@ class TripsController extends Controller
         }
         // dd($trip);
         return view('trips.edit_active', compact('trip'));
+    }
+
+    public function duplicate()
+    {
+        $trip = Trip::with('stops', 'driver')->first();
+        return view('trips.duplicatetrip', compact('trip'));
     }
 
     public function update(Request $request)

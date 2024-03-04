@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('location');
-            $table->string('latlng');
+            $table->string('lat');
+            $table->string('long');
             $table->integer('customer_id');
             $table->timestamps();
         });

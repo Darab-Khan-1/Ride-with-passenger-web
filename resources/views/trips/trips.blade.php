@@ -91,9 +91,11 @@
 
                 <div class="card-header flex-wrap border-0 pt-6 pb-0 counter-mirror">
                     <div class="card-title">
-                        <h3 class="card-label text-success">{{__("messages.available_trips")}} ({{ $data['available'] }})
+                        <h3 class="card-label text-success">{{ __('messages.available_trips') }}
+                            ({{ $data['available'] }})
                         </h3>
-                        <h3 class="card-label text-danger">&nbsp;{{__('messages.incomplete_trips')}} ({{ $data['incomplete'] }})
+                        <h3 class="card-label text-danger">&nbsp;{{ __('messages.incomplete_trips') }}
+                            ({{ $data['incomplete'] }})
                         </h3>
                     </div>
                     <div class="card-toolbar">
@@ -136,18 +138,19 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content counter-mirror">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">{{__('messages.delete')}} {{__('messages.trips')}}</h5>
+                <h5 class="modal-title" id="deleteModalLabel">{{ __('messages.delete') }} {{ __('messages.trips') }}
+                </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p>{{__('messages.delete_trip')}}</p>
+                <p>{{ __('messages.delete_trip') }}</p>
             </div>
             <div class="modal-footer">
-                <a id="deleteUrl" class="btn btn-primary font-weight-bold">{{__('messages.yes')}}</a>
+                <a id="deleteUrl" class="btn btn-primary font-weight-bold">{{ __('messages.yes') }}</a>
                 <button type="button" class="btn btn-light-primary font-weight-bold"
-                    data-dismiss="modal">{{__('messages.no')}}</button>
+                    data-dismiss="modal">{{ __('messages.no') }}</button>
             </div>
         </div>
     </div>
@@ -174,10 +177,9 @@
                 url: "{{ url('/trips') }}"
             },
 
-            columns: [
-                {
+            columns: [{
                     data: 'unique_id',
-                    title: '{{__("messages.trip_id")}}',
+                    title: '{{ __('messages.trip_id') }}',
                     width: '150px',
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
@@ -185,14 +187,14 @@
                 },
                 {
                     data: 'event_name',
-                    title: '{{__("messages.event_name")}}',
+                    title: '{{ __('messages.event_name') }}',
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
                     }
                 },
                 {
                     data: 'driver',
-                    title: '{{__("messages.driver")}}',
+                    title: '{{ __('messages.driver') }}',
                     render: function(data, type, row) {
                         let html =
                             '<span class="font-weight-bold text-danger">NOT&nbsp;ASSIGNED</span>'
@@ -207,50 +209,52 @@
                 {
 
                     data: 'pickup_date',
-                    title: '{{__("messages.pickup_details")}}',
+                    title: '{{ __('messages.pickup_details') }}',
                     width: "250px",
-                                        render: function(data, type, row) {
-                        let no_data = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
+                    render: function(data, type, row) {
+                        let no_data =
+                            '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
                         let html = ''
                         if (row.pickup_location != null) {
                             html += "<b>Location:</b> " + row.pickup_location
                         } else {
                             html += "<b>Location:</b> " + no_data
                         }
-                        if(data != null){
-                            html +=   "<br><b>Date/Time:</b>" + data
-                        }else{
-                            html +=   "<br><b>Date/Time:</b>" + no_data
+                        if (data != null) {
+                            html += "<br><b>Date/Time:</b>" + data
+                        } else {
+                            html += "<br><b>Date/Time:</b>" + no_data
                         }
                         return html
                     }
                 },
                 {
                     data: 'delivery_date',
-                    title: '{{__("messages.delivery_details")}}',
+                    title: '{{ __('messages.delivery_details') }}',
                     width: "250px",
                     render: function(data, tye, row) {
-                        let no_data = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
+                        let no_data =
+                            '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
                         let html = ''
                         if (row.delivery_location != null) {
                             html += "<b>Location:</b> " + row.delivery_location
                         } else {
                             html += "<b>Location:</b> " + no_data
                         }
-                        if(data != null){
-                            html +=   "<br><b>Date/Time:</b>" + data
-                        }else{
-                            html +=   "<br><b>Date/Time:</b>" + no_data
+                        if (data != null) {
+                            html += "<br><b>Date/Time:</b>" + data
+                        } else {
+                            html += "<br><b>Date/Time:</b>" + no_data
                         }
                         return html
                     }
                 },
                 {
                     data: 'estimated_distance',
-                    title: '{{__("messages.details")}}',
+                    title: '{{ __('messages.details') }}',
                     width: "250px",
                     render: function(data, tye, row) {
-                        if(data != null){
+                        if (data != null) {
                             return "<b>Estimated&nbsp;Distance:</b>" + data +
                                 " km<br><b>Estimated&nbsp;Time:</b>" + row.estimated_time
                         }
@@ -259,28 +263,33 @@
                 },
                 {
                     data: 'customer_name',
-                    title: '{{__("messages.customer")}}',
+                    title: '{{ __('messages.customer') }}',
                     width: "250px",
                     render: function(data, tye, row) {
-                        let html = '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
-                        if(data != null){
-                            html =  "<b>Name:</b>" + data + "<br><b>Phone:</b>" + row.customer_phone
+                        let html =
+                            '<span class="font-weight-bold text-danger">NOT&nbsp;SPECIFIED</span>'
+                        if (data != null) {
+                            html = "<b>Name:</b>" + data + "<br><b>Phone:</b>" + row
+                                .customer_phone
                         }
                         return html
                     }
                 },
                 {
                     data: 'stops',
-                    title: '{{__("messages.stops")}}',
+                    title: '{{ __('messages.stops') }}',
                     width: "250px",
                     render: function(data, tye, row) {
                         let html = "";
-                        if(data.length > 2){
-                            data.forEach((element,index) => {
-                                if(index > 0 && index < data.length - 1)
-                                html += '<b>Stop ' + (index - 1) + ':<b> ' + element.location + ( element.description != null ?? "<small>(" + element.description + ")</small>" ) + '<br>'
+                        if (data.length > 2) {
+                            data.forEach((element, index) => {
+                                if (index > 0 && index < data.length - 1)
+                                    html += '<b>Stop ' + (index - 1) + ':<b> ' + element
+                                    .location + (element.description != null ??
+                                        "<small>(" + element.description + ")</small>"
+                                    ) + '<br>'
                             });
-                        }else{
+                        } else {
                             html += "<b>NO&nbsp;STOP<b>"
                         }
                         return html
@@ -288,35 +297,46 @@
                 },
                 {
                     data: 'description',
-                    title: '{{__("messages.description")}}',
+                    title: '{{ __('messages.description') }}',
                     render: function(data, type, row) {
                         return '<span class="font-weight-bold ">' + data + '</span>'
                     }
                 },
                 {
                     data: 'status',
-                    title: '{{__("messages.status")}}',
+                    title: '{{ __('messages.status') }}',
                     render: function(data, type, row) {
-                        let html = '<span class="font-weight-bold text-danger">{{__("messages.incomplete")}}</span>'
-                        if(data != null){
-                            html =  data.toUpperCase()
+                        let html =
+                            '<span class="font-weight-bold text-danger">{{ __('messages.incomplete') }}</span>'
+                        if (data != null) {
+                            html = data.toUpperCase()
                         }
                         return html
                     }
                 },
                 {
                     data: "id",
-                    title: '{{__("messages.action")}}',
+                    title: '{{ __('messages.action') }}',
                     width: 150,
                     render: function(data, type, row) {
                         let url = "{{ url('edit/trip') }}" + "/" + data
                         let html = ''
-                        html += '@can("update_trip") <a href="' + url +
+                        html += '@can('update_trip') <a href="' + url +
                             '" class="edit-load btn btn-sm btn-clean btn-icon mr-2" title="Edit details"><span class="svg-icon svg-icon-md"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><path d="M8,17.9148182 L8,5.96685884 C8,5.56391781 8.16211443,5.17792052 8.44982609,4.89581508 L10.965708,2.42895648 C11.5426798,1.86322723 12.4640974,1.85620921 13.0496196,2.41308426 L15.5337377,4.77566479 C15.8314604,5.0588212 16,5.45170806 16,5.86258077 L16,17.9148182 C16,18.7432453 15.3284271,19.4148182 14.5,19.4148182 L9.5,19.4148182 C8.67157288,19.4148182 8,18.7432453 8,17.9148182 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000000, 10.707409) rotate(-135.000000) translate(-12.000000, -10.707409) "></path><rect fill="#000000" opacity="0.3" x="5" y="20" width="15" height="2" rx="1"></rect></g></svg></span></a> @endcan'
-                        if(row.status == 'available' || row.status == null )
-                        html += '@can("delete_trip") <a href="javascript:void(0);" trip_id="' + data +
+                        if (row.status == 'available' || row.status == null)
+                            html +=
+                            '@can('delete_trip') <a href="javascript:void(0);" trip_id="' +
+                            data +
                             '" class="delete-trip btn btn-sm btn-clean btn-icon" title="Delete">	                            <span class="svg-icon svg-icon-md">	                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">	                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">	                                        <rect x="0" y="0" width="24" height="24"></rect>	                                        <path d="M6,8 L6,20.5 C6,21.3284271 6.67157288,22 7.5,22 L16.5,22 C17.3284271,22 18,21.3284271 18,20.5 L18,8 L6,8 Z" fill="#000000" fill-rule="nonzero"></path>	                                        <path d="M14,4.5 L14,4 C14,3.44771525 13.5522847,3 13,3 L11,3 C10.4477153,3 10,3.44771525 10,4 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"></path>	                                    </g>	                                </svg>	                            </span>	                        </a> @endcan'
 
+                        html +=
+                            `<a href="{{ url('duplicate/trips') }}" class="btn btn-sm btn-icon btn-clean" title="duplicate"> <span class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\General\Duplicate.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect x="0" y="0" width="24" height="24"/>
+        <path d="M15.9956071,6 L9,6 C7.34314575,6 6,7.34314575 6,9 L6,15.9956071 C4.70185442,15.9316381 4,15.1706419 4,13.8181818 L4,6.18181818 C4,4.76751186 4.76751186,4 6.18181818,4 L13.8181818,4 C15.1706419,4 15.9316381,4.70185442 15.9956071,6 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
+        <path d="M10.1818182,8 L17.8181818,8 C19.2324881,8 20,8.76751186 20,10.1818182 L20,17.8181818 C20,19.2324881 19.2324881,20 17.8181818,20 L10.1818182,20 C8.76751186,20 8,19.2324881 8,17.8181818 L8,10.1818182 C8,8.76751186 8.76751186,8 10.1818182,8 Z" fill="#000000"/>
+    </g>
+</svg><!--end::Svg Icon--></span>`
 
                         return html;
                     }
@@ -332,7 +352,7 @@
             dom: 'Bfrtip',
             buttons: [{
                     extend: 'pdfHtml5',
-                    text: '{{__("messages.pdf")}}',
+                    text: '{{ __('messages.pdf') }}',
                     title: $('h3').text(),
                     orientation: 'landscape',
                     pageSize: 'LEGAL',
@@ -350,7 +370,7 @@
                     }
                 }, {
                     extend: 'print',
-                    text: '{{__("messages.print")}}',
+                    text: '{{ __('messages.print') }}',
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -360,7 +380,7 @@
                     }
                 }, {
                     extend: 'excel',
-                    text: '{{__("messages.excel")}}',
+                    text: '{{ __('messages.excel') }}',
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -370,7 +390,7 @@
                     }
                 }, {
                     extend: 'copy',
-                    text: '{{__("messages.copy")}}',
+                    text: '{{ __('messages.copy') }}',
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {
@@ -379,9 +399,9 @@
                         columns: ':visible:not(:last-child)'
                     }
                 },
-                 {
+                {
                     extend: 'csv',
-                    text: '{{__("messages.csv")}}',
+                    text: '{{ __('messages.csv') }}',
                     title: $('h3').text(),
                     exportOptions: {
                         modifier: {

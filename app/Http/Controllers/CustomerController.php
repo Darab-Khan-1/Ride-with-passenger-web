@@ -92,11 +92,13 @@ class CustomerController extends Controller
         $customer_locations = $request->input('location');
         // dd($request->customer_id);
         foreach ($customer_latlong as $key => $value) {
+            $latlng = explode(',', $value);
             $customer_location = new CustomerLocation();
             $customer_location->customer_id = $customer->id;
             $customer_location->name = $customer_name[$key];
             $customer_location->location = $customer_locations[$key];
-            $customer_location->latlng = $customer_latlong[$key];
+            $customer_location->lat = $latlng[0];
+            $customer_location->long = $latlng[1];
             $customer_location->save();
         }
 
@@ -120,30 +122,37 @@ class CustomerController extends Controller
         return redirect('customer')->with('success', 'Customer deleted successfully');
     }
 
-    public function get($id)
-    {
-        $customer = Customer::where('user_id', $id)->with('user')->first();
-        return $customer;
-    }
-
     public function update(Request $request)
     {
+        // dd($request->all());
         $user = User::where('email', $request->email)->whereNot('id', $request->user_id)->first();
         if ($user) {
             return redirect()->back()->with('error', 'Email already exists');
         }
+        // dd($request->user_id);
         $user = User::find($request->user_id);
-        $user->email = $request->email;
         // dd($user);
+        $user->email = $request->email;
+        // dd($user->email);
         $user->save();
 
         $customer = Customer::where('user_id', $request->user_id)->first();
         // dd($customer);
-        $customer->name = $request->name;
+        $customer->name = $request->customer_name;
+        // dd($customer->name);
         $customer->phone = $request->phone;
+        $customer->company_phone = $request->company_phone;
+        $customer->company_name = $request->company_name;
         $customer->user_id = $user->id;
-        // $customer->role_id = $roles->name;
         $customer->address = $request->address;
+
+        // dd($request->profile_avatar_remove == null);
+        if ($request->profile_avatar_remove != null) {
+            $driver_avatar = url('assets/media/users/blank.png');
+            $customer->avatar = $driver_avatar;
+
+        }  
+
         if ($request->file('profile_avatar')) {
             $imageName = time() . "." . rand(10, 10000) . "." . $request->file('profile_avatar')->getClientOriginalExtension();
             $directory = public_path('storage/users');
@@ -157,11 +166,51 @@ class CustomerController extends Controller
             $background->insert($image, 'center');
             $background->save($imagePath);
             $driver_avatar = asset('storage/users') . "/" . $imageName;
-        } else {
-            $driver_avatar = url('assets/media/users/blank.png');
+            $customer->avatar = $driver_avatar;
         }
-        $customer->avatar = $driver_avatar;
+
+
         $customer->save();
+
+        $customer_name = $request->input('name');
+        $customer_latlong = $request->input('latlong');
+        $customer_locations = $request->input('location');
+        $location_ids = $request->input('location_id');
+        // dd($location_ids );
+
+        if ($location_ids == null) {
+            CustomerLocation::where('customer_id', $customer->id)->delete();
+        } else if (count($location_ids) > 0) {
+            CustomerLocation::where('customer_id', $customer->id)->whereNotIn('id', $location_ids)->delete();
+            // dd($testing);
+
+            foreach ($location_ids as $key => $location_id) {
+                // Retrieve the corresponding values from other arrays based on the index
+                $value = $customer_latlong[$key] ?? null;
+                $name = $customer_name[$key] ?? null;
+                $location = $customer_locations[$key] ?? null;
+
+                $latlng = explode(',', $value);
+                if ($location_id == '0') {
+                    $customer_location = new CustomerLocation();
+                } else {
+                    $customer_location = CustomerLocation::find($location_id);
+                }
+
+                $customer_location->name = $name;
+                $customer_location->customer_id = $customer->id;
+                $customer_location->location = $location;
+                $customer_location->lat = $latlng[0] ?? null;
+                $customer_location->long = $latlng[1] ?? null;
+                $customer_location->save();
+                // dd($customer_location);
+
+
+            }
+        }
+
+
+
         if ($customer->save()) {
             return redirect('customer')->with('success', 'Successfully updated');
         }
@@ -170,8 +219,6 @@ class CustomerController extends Controller
 
     public function change_password(Request $request)
     {
-        // dd($request->user_id);
-        // dd($request->all());
         $user = User::find($request->user_id);
         $user->tokens->each(function ($token, $key) {
             $token->delete();
@@ -184,9 +231,7 @@ class CustomerController extends Controller
     public function edit($id)
     {
         // $customer = Customer::find($id);
-        $customer = Customer::where('id', $id)->with('locations','user')->first();
-        // dd($customer_locations);
-        // dd($customer);
+        $customer = Customer::where('id', $id)->with('locations', 'user')->first();
         return view('customers.edit', compact('customer'));
     }
 }
