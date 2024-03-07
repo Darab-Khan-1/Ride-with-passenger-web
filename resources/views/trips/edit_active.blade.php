@@ -179,7 +179,7 @@
                                                 class="stop col-md-8 form-control mx-3 {{ $item->datetime != null ? 'form-control-solid' : '' }}"
                                                 value="{{ $item->location }}" placeholder="Enter stop location"
                                                 {{ $item->datetime == null ? ' name="stops[]" ' : ' readonly ' }} 
-                                                 required>
+                                                 required>  
                                             @if ($item->datetime == null)
                                                 <button type="button"
                                                     class="removeStop btn btn-danger btn-sm col-md-2">{{__('messages.remove_stop')}}</button>

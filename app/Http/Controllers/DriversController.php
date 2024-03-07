@@ -55,7 +55,7 @@ class DriversController extends Controller
         // dd($request->all()); 
         $existing = User::where('email', $request->email)->first();
         if ($existing) {
-            return redirect()->back()->with('error', 'Email already exists');
+            return redirect()->back()->with('error', __('messages.email_already_exists'));
         }
         $user = new User();
         $user->email = $request->email;
@@ -101,10 +101,10 @@ class DriversController extends Controller
             $driver->unique_id = $device_id->uniqueId;
             $driver->save();
         } else {
-            return redirect()->back()->with('error', 'Something went wrong. Try login again');
+            return redirect()->back()->with('error', __('messages.wrong'));
         }
 
-        return redirect('drivers')->with('success', 'Driver created successfully');
+        return redirect('drivers')->with('success', __('messages.driver_created_successfully'));
     }
 
     public function get($id)
@@ -118,7 +118,7 @@ class DriversController extends Controller
 
         $existing = User::where('email', $request->email)->where('id', '!=', $request->user_id)->first();
         if ($existing) {
-            return redirect()->back()->with('error', 'Email already exists');
+            return redirect()->back()->with('error', __('messages.email_already_exists'));
         }
         $user = User::find($request->user_id);
         $user->email = $request->email;
@@ -157,7 +157,7 @@ class DriversController extends Controller
         }
         $driver->save();
 
-        return redirect('drivers')->with('success', 'Driver updated successfully');
+        return redirect('drivers')->with('success', __('messages.driver_updated_successfully'));
     }
 
     // public function approve($id)
@@ -178,7 +178,7 @@ class DriversController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
         
-        return redirect()->back()->with('success', 'Password changed');
+        return redirect()->back()->with('success', __('messages.change_password'));
     }
     public function delete($id)
     {
@@ -189,7 +189,7 @@ class DriversController extends Controller
         $user->email = $user->email . "-removed" . $id;
         $user->save();
         $user->delete();
-        return redirect('drivers')->with('success', 'Driver deleted successfully');
+        return redirect('drivers')->with('success', __('messages.driver_deleted_successfully'));
     }
 
 
@@ -325,6 +325,6 @@ class DriversController extends Controller
                         'user_id'=>$driver->id,
                         'seen'=>0,
                         ]);
-         return back()->with(['success'=>'Successfully notification sent!']);
+         return back()->with(['success'=>__('messages.notification_send')]);
     }
 }

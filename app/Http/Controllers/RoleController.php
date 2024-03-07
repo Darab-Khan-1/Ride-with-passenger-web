@@ -74,7 +74,7 @@ function assignAllPermissionsToUser()
 
         $role = Role::where('name', $request->name)->first();
         if ($role) {
-            return redirect('/roles')->with('error', 'Role ' . $request->name . ' already exists');
+            return redirect('/roles')->with('error', 'Role ' . $request->name . __('messages.already_exists'));
         }
         $role = Role::create(['name' => $request->name]);
 
@@ -89,7 +89,7 @@ function assignAllPermissionsToUser()
         // Assign the permissions to the role
         $role->syncPermissions($permissionNames);
         // dd(Role::with('permissions')->find($role->id));
-        return redirect('roles')->with('success', 'Role created successfully');
+        return redirect('roles')->with('success', __('messages.Role_created_successfully'));
     }
 
     public function get($id)
@@ -120,12 +120,12 @@ function assignAllPermissionsToUser()
         
         // For debugging, you can check the updated permissions
 
-        return redirect('roles')->with('success', $role->name . ' updated successfully');
+        return redirect('roles')->with('success', $role->name . __('messages.role_updated_successfully'));
     }
 
     public function delete($id){
         Employee::where('role_id',$id)->update(['role_id' => null]);
         Role::find($id)->delete();
-        return redirect('roles')->with('success','Role deleted successfully');
+        return redirect('roles')->with('success', __('messages.Role_deleted_successfully'));
     }
 }

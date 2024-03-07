@@ -42,7 +42,7 @@ class CustomerController extends Controller
         // dd($validation);
         if ($validation) {
             // dd('hi');
-            return redirect('customer')->with('error', 'customer already exist');
+            return redirect('customer')->with('error', __('messages.customer_already_exist'));
         }
         // dd($request->email);
         $user = new User();
@@ -104,7 +104,7 @@ class CustomerController extends Controller
 
 
         if ($customer->save()) {
-            return redirect('customer')->with('success', 'Successfully created');
+            return redirect('customer')->with('success', __('messages.customer_created_successfully'));
         } else {
             return redirect('customer')->with('error', 'Not created');
         }
@@ -119,7 +119,7 @@ class CustomerController extends Controller
         $user->email = $user->email . "-removed" . $id;
         $user->save();
         $user->delete();
-        return redirect('customer')->with('success', 'Customer deleted successfully');
+        return redirect('customer')->with('success', __('messages.customer_deleted_successfully'));
     }
 
     public function update(Request $request)
@@ -127,7 +127,7 @@ class CustomerController extends Controller
         // dd($request->all());
         $user = User::where('email', $request->email)->whereNot('id', $request->user_id)->first();
         if ($user) {
-            return redirect()->back()->with('error', 'Email already exists');
+            return redirect()->back()->with('error', __('messages.email_already_exists'));
         }
         // dd($request->user_id);
         $user = User::find($request->user_id);
@@ -212,7 +212,7 @@ class CustomerController extends Controller
 
 
         if ($customer->save()) {
-            return redirect('customer')->with('success', 'Successfully updated');
+            return redirect('customer')->with('success', __('messages.customer_updated_successfully'));
         }
         return redirect('customer')->with('error', 'Some error');
     }
@@ -225,7 +225,7 @@ class CustomerController extends Controller
         });
         $user->password = Hash::make($request->password);
         $user->save();
-        return redirect()->back()->with('success', 'Password changed');
+        return redirect()->back()->with('success', __('messages.change_password'));
     }
 
     public function edit($id)

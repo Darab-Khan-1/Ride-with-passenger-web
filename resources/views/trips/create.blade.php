@@ -40,7 +40,6 @@
                     @csrf
                     <div class="card-body p-5" style="overflow: auto;">
                         <div class="row">
-
                             <div class="form-group col-md-6">
                                 <label>{{ __('messages.customer_name') }}:</label>
                                 <input type="text" name="customer_name" id="customer_name" required
@@ -59,13 +58,12 @@
                                     value="{{ old('pickup_date') ? old('pickup_date') : now()->format('Y-m-d H:i') }}"
                                     class="form-control" placeholder="{{ __('messages.enter_value_here') }}" />
                                 <br>
-
                             </div>
                             <div class="form-group col-md-6">
                                 <label>{{ __('messages.delivery_date') }}:</label>
                                 <input type="datetime-local" name="delivery_date" class="form-control" required
                                     value="{{ old('delivery_date') }}"
-                                    placeholder="{{ __('messages.enter_value_here') }}" />
+                                    placeholder="{{ __('    .enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
                                 <label>{{ __('messages.pickup_location') }}:</label>
@@ -115,9 +113,35 @@
                             <div class="form-group col-md-6">
                                 <label>{{ __('messages.event_description') }}:</label>
                                 <textarea class="form-control " required name="description" cols="30" rows="5"></textarea>
+                            </div><br>
+                        </div>
+                        <div id="tripfields">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <label for="driver">{{ __('messages.driver_value') }}</label>
+                                    <input type="checkbox" class="driver-visible-checkbox"><br>
+                                    <input type="hidden" name="driver_value[]" value="0">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="name">{{ __('messages.name') }}</label>
+                                    <input type="text" name="name[]" class="form-control"
+                                        placeholder="{{ __('messages.name') }}" required /><br>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="values">{{ __('messages.value') }}</label>
+                                    <input type="text" name="value[]" class="form-control"
+                                        placeholder="{{ __('messages.value') }}" required /><br>
+                                </div>
+                                <div class="col-md-3 remove">
+                                    <button type="button"
+                                        class="btn btn-danger btn-clean">{{ __('messages.remove') }}</button><br>
+                                </div>
                             </div>
+                        </div><br>
 
-
+                        <div class="add_trip">
+                            <button type="button" class="btn btn-primary btn-clean"
+                                id="add_fields">{{ __('messages.add') }}</button>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -131,7 +155,7 @@
                         <input type="hidden" name="drop_lat" id="drop_lat">
                         <input type="hidden" name="drop_long" id="drop_long">
                         <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                        <a href="{{ URL::previous() }}" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+                        <a href="{{ url('/trips') }}" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
                     </div>
                 </form>
             </div>
@@ -153,7 +177,7 @@
                         <div class="mb-3">
                             <label for="start" class="form-label">{{ __('messages.start_location') }}:</label>
                             <input type="text" id="start" class="form-control"
-                                placeholder="{{__('messages.start_location')}}">
+                                placeholder="{{ __('messages.start_location') }}">
                         </div>
                         <div class="mb-3">
                             <label for="start" class="form-label">{{ __('messages.start_desc') }}:</label>
@@ -163,7 +187,8 @@
                         <div class="mb-3">
                             <div id="stopsContainer">
                                 <div class="row my-3">
-                                    <label for="stop" class="col-md-1" style="margin-top: 5px;">{{__('messages.stop')}}</label>
+                                    <label for="stop" class="col-md-1"
+                                        style="margin-top: 5px;">{{ __('messages.stop') }}</label>
                                     <input type="text" class="stop col-md-8 form-control mx-3"
                                         placeholder="{{ __('messages.enter_location') }}" name="stops[]" required>
                                     <button type="button"
@@ -171,14 +196,14 @@
                                     <label class="col-md-1"></label><label for="description" class="col-md-2"
                                         style="margin-top: 20px;">{{ __('messages.description') }}:</label>
                                     <textarea name="descriptions[]" cols="30" rows="2"
-                                        class="stop_description form-control col-md-8  mt-2 ml-6" placeholder="{{__('messages.enter_description')}}"></textarea>
+                                        class="stop_description form-control col-md-8  mt-2 ml-6" placeholder="{{ __('messages.enter_description') }}"></textarea>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="end" class="form-label">{{ __('messages.end_location') }}:</label>
                             <input type="text" id="end" class="form-control"
-                                placeholder="{{__('messages.end_location')}}">
+                                placeholder="{{ __('messages.end_location') }}">
                         </div>
                         <div class="mb-3">
                             <label for="start" class="form-label">{{ __('messages.end_point_desc') }}:</label>
@@ -211,6 +236,43 @@
 
 
 <script>
+    $('#add_fields').on('click', function() {
+        let addtrips = $(`<div class="row">
+                                <div class="col-md-1">
+                                    <label for="driver">{{ __('messages.driver_value') }}</label>
+                                    <input type="checkbox" class="driver-visible-checkbox" ><br>
+                                    <input type="hidden" name="driver_value[]" value="0">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="name">{{ __('messages.name') }}</label>
+                                    <input type="text" name="name[]" class="form-control"
+                                        placeholder="{{ __('messages.name') }}" required /><br>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="values">{{ __('messages.value') }}</label>
+                                    <input type="text" name="value[]" class="form-control"
+                                        placeholder="{{ __('messages.value') }}" required /><br>
+                                </div>
+                                <div class="col-md-3 remove">
+                                    <button type="button"
+                                        class="btn btn-danger btn-clean">{{ __('messages.remove') }}</button><br>
+                                </div>
+                            </div>`)
+        $('#tripfields').append(addtrips)
+    })
+
+    $('#tripfields').on('click', '.remove', function() {
+        $(this).parent().remove();
+    });
+
+    $(document).on('change', '.driver-visible-checkbox', function() {
+        var hiddenInput = $(this).closest('.row').find('input[name="driver_value[]"]');
+        console.log(hiddenInput);
+        hiddenInput.val(this.checked ? '1' : '0');
+    });
+
+
+
     $(".trips-nav").click()
     $(".new-trip-nav").addClass("menu-item-active");
 

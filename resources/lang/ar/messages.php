@@ -30,6 +30,7 @@ return [
     "total_roles" => "إجمالي الأدوار",
     "duplicate" => "رحلة مكررة",
     "submit"=>"يُقدِّم",
+    "duplicate_trip"=>"رحلة مكررة",
 
 
     // User Management Roles
@@ -46,6 +47,7 @@ return [
     "live_tracking" => "تتبع حي",
     "play_back" => "تشغيل مرة أخرى",
     "register" => "تسجيل",
+    "Password_Updated_Successfully"=>"تم تحديث كلمة السر بنجاح!",
     "cancel" => "إلغاء",
     "enter_full_name" => "أدخل الاسم الكامل",
     "please_fill_out_this_field" => "الرجاء ملء هذا الحقل",
@@ -54,6 +56,11 @@ return [
     "yes" => "نعم",
     "no" => "لا",
     "edit_role" => "تحرير الدور",
+    "already_exists"=>"موجود أصلا",
+    "Role_created_successfully"=>"تم إنشاء الدور بنجاح",
+    "role_updated_successfully"=>"تم تحديث الدور بنجاح",
+    "Role_deleted_successfully"=>"تم حذف الدور بنجاح",
+
 
     // Uses Management Employees
     "total_employees" => "إجمالي الموظفين",
@@ -65,10 +72,13 @@ return [
     "delete" => "حذف",
     "edit_details" => "تحرير التفاصيل",
     "change" => "يتغير",
+    "Trip_updated_successfully"=>"تم تحديث الرحلة بنجاح",
     "change_password" => "تغيير كلمة المرور",
     "license" => "الترخيص",
     "send_notification" => "إرسال إشعار",
     "create_trip" => "إنشاء رحلة",
+    "Trip_deleted_successfully"=>"تم حذف الرحلة بنجاح",
+    "Trip_added_successfully"=>"تمت إضافة الرحلة بنجاح",
     "customer_name" => "اسم العميل",
     "enter_value_here" => "أدخل القيمة هنا",
     "customer_phone" => "هاتف العميل",
@@ -87,6 +97,11 @@ return [
     "hi" => "مرحبًا",
     "sign_out" => "تسجيل الخروج",
     "employee_deleted" => "هل أنت متأكد؟ هل تريد حذف الموظف",
+    "wrong"=>"هناك خطأ ما. حاول تسجيل الدخول مرة أخرى",
+    "employee_created_successfully"=>"تم إنشاء الموظف بنجاح",
+    "Enter_value_here" => "أدخل القيمة هنا",
+    "employee_updated_successfully"=>"تم تحديث الموظف بنجاح",
+    "employee_deleted"=>"تم حذف الموظف بنجاح",
 
 
     // User Management Drivers
@@ -95,6 +110,10 @@ return [
     "title" => "العنوان",
     "enter_title" => "أدخل العنوان",
     "close" => "إغلاق",
+    "driver_created_successfully"=>"تم إنشاء برنامج التشغيل بنجاح",
+    "driver_updated_successfully"=>"تم تحديث برنامج التشغيل بنجاح",
+    "driver_deleted_successfully"=>"تم حذف برنامج التشغيل بنجاح",
+    "notification_send"=>"تم إرسال الإشعار بنجاح!",
 
     // Trips Management New Trip
     "trips" => "رحلات",
@@ -109,6 +128,11 @@ return [
     "select_driver" => "اختيار السائق",
     "event_name" => "اسم الحدث",
     "event_description" => "وصف الحدث",
+    "value" => "قيمة",
+    "driver_value"=>"مرئية للسائق",
+    "enter_license_no"=>"أدخل رقم الترخيص",
+    "edit_trip"=>"تحرير الرحلة",
+    
 
     // Trips Management Available
     "available_trips" => "الرحلات المتاحة",
@@ -193,4 +217,10 @@ return [
     "enter_description" => "أدخل الوصف",
     "customer_location" => "أدخل موقع العميل",
     "create_customer" => "إنشاء عميل",
+    "customer_deleted_successfully"=> "تم حذف العميل بنجاح",
+    "customer_created_successfully"=>"تم إنشاء العميل بنجاح",
+    "customer_updated_successfully"=>"تم تحديث العميل بنجاح",
+    "change_password"=>"تم تغيير كلمة السر",
+    "customer_already_exist"=>"العميل موجود بالفعل",
+    "email_already_exists"=>"البريد الالكتروني موجود بالفعل",
 ];

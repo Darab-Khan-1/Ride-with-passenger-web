@@ -20,6 +20,7 @@ return [
     "completed" => "Completed",
     "total_trips" => "Total Trips",
     "roles" => "Roles",
+    "already_exists"=>"Already exists",
     "role"=>"Role",
     "manager" => "Manager",
     "viewer" => "Viewer",
@@ -29,6 +30,10 @@ return [
     "admin" => "Admin",
     "total_roles" => "Total Roles",
     "edit_role"=>"Edit Role",
+    "Role_created_successfully"=>"Role created successfully",
+    "role_updated_successfully"=>"Role updated successfully",
+    "Role_deleted_successfully"=>"Role deleted successfully",
+
     // User Management Roles
     "user_management" => "User Management",
     "search" => "Search",
@@ -52,6 +57,8 @@ return [
     "yes" => "Yes",
     "no" => "No",
     "submit"=>"Submit",
+    "wrong"=>"Something went wrong. Try login again",
+    "employee_created_successfully"=>"Employee created successfully",
 
     // Uses Management Employees
     "total_employees" => "Total Employees",
@@ -83,6 +90,8 @@ return [
     "confirm_password" => "Confirm Password",
     "sign_out" => "Sign Out",
     "employee_deleted" => "Are you sure? Do you want to delete employee",
+    "employee_updated_successfully"=>"Employee updated successfully",
+    "employee_deleted"=>"Employee deleted successfuly",
 
     // User Management Drivers
     "show_all" => "Show All",
@@ -90,6 +99,10 @@ return [
     "title" => "Title",
     "enter_title" => "Enter Title",
     "close" => "Close",
+    "driver_created_successfully"=>"Driver created successfully",
+    "driver_updated_successfully"=>"Driver updated successfully",
+    "driver_deleted_successfully"=>"Driver deleted successfully",
+    "notification_send"=>"Successfully notification sent!",
 
     // Trips Management New Trip
     "map"=>"Map",
@@ -104,6 +117,12 @@ return [
     "select_driver" => "Select Driver",
     "event_name" => "Event Name",
     "event_description" => "Event Description",
+    "Trip_added_successfully"=>"Trip added successfully",
+    "Trip_deleted_successfully"=>"Trip deleted successfully",
+    "Trip_updated_successfully"=>"Trip updated successfully",
+    "Enter_value_here" => "Enter value here",
+    "edit_trip"=>"Edit Trip",
+    "duplicate_trip"=>"Duplicate trip",
 
     // Trips Management Available
     "available_trips" => "Available Trips",
@@ -139,6 +158,7 @@ return [
     "excel"=>"EXCEL",
     "copy"=>"COPY",
     "register_driver"=>"Register Driver",
+    "Password_Updated_Successfully!"=>"Password Updated Successfully!",
     "register_employee"=>"Register Employee",
     "approve_driver_con"=>"Are you sure to approve this driver?",
     "approve_driver"=>"Approve driver",
@@ -153,6 +173,8 @@ return [
     "start_location"=>"Start Location",
     "start_desc"=>"Start Point Description",
     "enter_start_desc"=>"Enter start description",
+    "value" => "Value",
+    "driver_value" => "Visible to driver",
     // 
     "enter_location"=>"Enter Location",
     "remove_stop"=>"Remove Stop",
@@ -174,7 +196,7 @@ return [
     "dropoff"=>"Dropoff",
     "in_transit"=>"In-Transit",
     "duplicate" => "Duplicate Trip",
-    
+    "enter_license_no" => "Enter license no",
     // customer
     "register_customer" => "Register_customer",
     "customer" => "Customers",
@@ -190,5 +212,11 @@ return [
     "enter_description" => "Enter Description",
     "customer_location" => "Enter customer location",
     "create_customer" => "Create Customer",
+    "customer_deleted_successfully"=>"customer deleted successfully",
+    "customer_created_successfully"=>"Customer Successfully created",
+    "customer_updated_successfully"=>"Customer successfully updated",
+    "change_password"=>"Password changed",
+    "customer_already_exist"=>"customer already exist",
+    "email_already_exists"=>"Email already exists",
 ];  
 ?>

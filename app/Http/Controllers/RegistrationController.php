@@ -90,7 +90,7 @@ class RegistrationController extends Controller
 
         $password = Hash::make($request->new_password);
         $user->update(['password' => $password]);
-        return redirect('/profile/personal')->with('success', 'Password Updated Successfully!');
+        return redirect('/profile/personal')->with('success', __('messages.Password_Updated_Successfully'));
     }
     public function logout()
     {

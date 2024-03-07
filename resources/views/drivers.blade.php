@@ -584,8 +584,8 @@
                 title: '{{__("messages.contact")}}',
                 render: function(data, type, row) {
                     let html = ''
-                    html += '<span class="font-weight-bold">Email: </span>' + data.email
-                    html += '<br><span class="font-weight-bold">  Phone: </span>' + row.phone
+                    html += '<span class="font-weight-bold">{{__('messages.email')}}: </span>' + data.email
+                    html += '<br><span class="font-weight-bold">  {{__('messages.phone')}}: </span>' + row.phone
                     return html
                 }
             },

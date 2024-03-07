@@ -60,12 +60,11 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('new/trip', [TripsController::class, 'new']);
     Route::post('trip/create', [TripsController::class, 'create']);
     Route::get('edit/trip/{id}', [TripsController::class, 'edit']);
-    Route::get('duplicate/trips', [TripsController::class, 'duplicate']);
+    Route::get('duplicate/trips/{id}', [TripsController::class, 'duplicate']);
     Route::post('trip/update', [TripsController::class, 'update']);
     Route::post('active/trip/update', [TripsController::class, 'activeUpdate']);
     Route::get('delete/trip/{id}', [TripsController::class, 'delete']);
-    // Route::get('all/trips/{from}/{to}', [TripsController::class, 'trips']);
-
+    // Route::get('all/trips/{from}/{to}', [TripsController::class, 'trips'])
     //Tracking
     // Route::get('live', [DriversController::class, 'liveIndex']);
     Route::get('live/location/{device_id}', [DriversController::class, 'live']);

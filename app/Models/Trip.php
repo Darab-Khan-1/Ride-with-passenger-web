@@ -14,4 +14,7 @@ class Trip extends Model
     public function driver(){
         return $this->hasOne(Driver::class,'user_id','user_id');
     }
+    public function attributes(){
+        return $this->hasOne(Attribute::class,'refrence_id','id');
+    }
 }

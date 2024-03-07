@@ -387,9 +387,9 @@
                 title: '{{ __('messages.contact') }}',
                 render: function(data, type, row) {
                     let html = ''
-                    html += '<span class="font-weight-bold">Email: </span>' + row.user.email
-                    html += '<br><span class="font-weight-bold">  Phone: </span>' + row.phone
-                    html += '<br><span class="font-weight-bold">  Address: </span>' + row.address
+                    html += '<span class="font-weight-bold">{{__('messages.email')}}: </span>' + row.user.email
+                    html += '<br><span class="font-weight-bold">  {{__('messages.phone')}}: </span>' + row.phone
+                    html += '<br><span class="font-weight-bold">  {{__('messages.address')}}: </span>' + row.address
                     return html
                 }
             },
@@ -410,9 +410,9 @@
                 title: '{{ __('messages.company') }}',
                 render: function(data, type, row) {
                     let html = ''
-                    html += '<span class="font-weight-bold"> Name: </span>' + row.company_name + '<br>'
+                    html += '<span class="font-weight-bold"> {{__('messages.name')}}: </span>' + row.company_name + '<br>'
                     if (row.company_phone != '')
-                        html += '<span class="font-weight-bold"> Phone: </span>' + row
+                        html += '<span class="font-weight-bold"> {{__('messages.phone')}}: </span>' + row
                         .company_phone
                     return html
                 }
