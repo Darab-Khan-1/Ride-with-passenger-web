@@ -65,7 +65,7 @@ class EmployeeController extends Controller
             $employee->avatar = url('assets/media/users/blank.png');
         }
         $employee->save();
-        return redirect('/employees')->with('success', 'Employee created successfully');
+        return redirect('/employees')->with('success', __('messages.employee_created_successfully'));
     }
 
     public function get($id)
@@ -82,7 +82,7 @@ class EmployeeController extends Controller
 
         $user = User::where('email',$request->email)->whereNot('id',$request->user_id)->first();
         if($user){
-            return redirect()->back()->with('error','Email already exists');
+            return redirect()->back()->with('error', __('messages.email_already_exists'));
         }
         // dd($request->all());
         $user = User::find($request->user_id);
@@ -119,7 +119,7 @@ class EmployeeController extends Controller
                 $employee->avatar = url('assets/media/users/blank.png');
         }
         $employee->save();
-        return redirect('/employees')->with('success', 'Employee updated successfully');
+        return redirect('/employees')->with('success', __('messages.employee_updated_successfully'));
     }
 
     public function delete($id) {
@@ -130,6 +130,6 @@ class EmployeeController extends Controller
         $user->email = $user->email . "-remove" . $id;
         $user->save();
         $user->delete();
-        return redirect('/employees')->with('success', 'Successflly Deleted'); 
+        return redirect('/employees')->with('success', __('messages.employee_deleted')); 
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Driver;
 use App\Models\Stop;
+use App\Models\Attribute;
 use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -581,25 +582,48 @@ class TripsController extends Controller
         }
         $trip->event_id = $event_id;
         $trip->save();
-        return redirect('trips')->with('success', 'Trip added successfully');
+
+
+        $trip_field_name = $request->input('name');
+        $trip_field_value = $request->input('value');
+        $driverValues = $request->input('driver_value');
+
+        // dd($driverValues);
+        if($trip_field_name != null) {
+            foreach ($driverValues as $key => $name) {
+                $attribute = new Attribute();
+                $attribute->value = $trip_field_value[$key];
+                $attribute->type = "trip";
+                $attribute->name = $trip_field_name[$key];
+                $attribute->refrence_id = $trip->id;
+                $attribute->visible_to_driver = $driverValues[$key];
+                $attribute->save();
+            }
+        }
+
+        return redirect('trips')->with('success', __('messages.Trip_added_successfully'));
     }
 
     public function edit($id)
     {
-        $trip = Trip::where('id', $id)->with('stops', 'driver')->first();
+        $trip = Trip::where('id', $id)->with('stops', 'driver', 'attributes')->first();
+        $attributes = Attribute::where('refrence_id', $id)->get();
         $drivers = Driver::where('id', '>', 0)->with('user')->get();
         // dd($trip);
         if ($trip->status == 'available' || $trip->status == null) {
-            return view('trips.edit', compact('trip', 'drivers'));
+            return view('trips.edit', compact('trip', 'drivers', 'attributes'));
         }
         // dd($trip);
         return view('trips.edit_active', compact('trip'));
     }
 
-    public function duplicate()
+    public function duplicate($id)
     {
+        // dd($id);
         $trip = Trip::with('stops', 'driver')->first();
-        return view('trips.duplicatetrip', compact('trip'));
+        $attributes = Attribute::where('refrence_id', $id)->get();
+        $drivers = Driver::where('id', '>', 0)->with('user')->get();
+        return view('trips.duplicatetrip', compact('trip', 'drivers', 'attributes'));
     }
 
     public function update(Request $request)
@@ -608,7 +632,7 @@ class TripsController extends Controller
         $decodedJson = html_entity_decode($request->stops);
         $stops = json_decode($decodedJson, true);
         $stops_descriptions = json_decode($request->stop_descriptions, true);
-
+        // dd($request->trip_id);
         $trip = Trip::find($request->trip_id);
         $trip->user_id = $request->user_id;
         $trip->pickup_date = $request->pickup_date;
@@ -695,7 +719,39 @@ class TripsController extends Controller
             $event->setEnd(new \Google_Service_Calendar_EventDateTime(['dateTime' => $formattedDeliveryDateTime]));
             $service->events->update('rw.passengers@gmail.com', $request->event_id, $event);
         }
-        return redirect('trips')->with('success', 'Trip updated successfully');
+
+
+        $trip_field_name = $request->input('name');
+        $trip_field_value = $request->input('value');
+        $driverValues = $request->input('drivers');
+        $trip_ids = $request->input('attribute_id');
+        // dd($request->input('attribute_id'));
+        Attribute::where('refrence_id', $request->trip_id)
+        ->whereNotIn('id', $trip_ids ?? [])
+        ->delete();
+
+        // Check if there are any attribute IDs
+        if ($trip_ids != null) {
+            foreach ($trip_ids as $key => $id) {
+                $attribute = Attribute::find($id);
+        
+                if (!$attribute) {
+                    $attribute = new Attribute();
+                    $attribute->refrence_id = $request->trip_id;
+                }
+        
+                $attribute->value = $trip_field_value[$key] ?? null;
+                $attribute->name = $trip_field_name[$key] ?? null;
+                $attribute->visible_to_driver = $driverValues[$key];
+        
+                $attribute->save();
+                Attribute::where('refrence_id', $request->trip_id)
+                    ->whereNotIn('id', $trip_ids)
+                    ->delete();
+            }
+        }
+
+        return redirect('trips')->with('success', __('messages.Trip_updated_successfully'));
     }
 
     public function activeUpdate(Request $request)
@@ -837,7 +893,7 @@ class TripsController extends Controller
         }
         Stop::where('trip_id', $id)->delete();
         $trip->delete();
-        return redirect('trips')->with('success', 'Trip deleted successfully');
+        return redirect('trips')->with('success', __('messages.Trip_deleted_successfully'));
     }
     private function sendDriverNotification($id, $data)
     {
