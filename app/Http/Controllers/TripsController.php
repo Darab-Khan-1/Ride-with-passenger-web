@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Driver;
 use App\Models\Stop;
 use App\Models\Attribute;
+use App\Models\Customer;
 use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -297,7 +298,11 @@ class TripsController extends Controller
         if ($request->ajax()) {
             if (Auth::user()->type == "superadmin" && (session('allowed_by_google') != null && session('allowed_by_google') > 0)) {
 
-                $trips = Trip::where('id', '>', 0)->get();
+                $now = new DateTime('now');
+
+                $yesterday = $now->modify('-1 day')->format('Y-m-d');
+                $nextWeek = $now->modify('+3 days')->format('Y-m-d');
+                $trips = Trip::whereBetween('pickup_date', [$yesterday, $nextWeek])->get();
                 $calendarId = 'rw.passengers@gmail.com';
                 foreach ($trips as $key => $value) {
                     if ($value->event_id != null) {
@@ -465,13 +470,16 @@ class TripsController extends Controller
                 }
             }
         }
+        // $customers = User::where('')
         $drivers = Driver::where('id', '>', 0)->with('user')->get();
-        return view('trips.create', compact('drivers'));
+        $customers = Customer::with('locations')->get();
+        // dd($customers);
+        return view('trips.create', compact('drivers','customers'));
     }
 
     public function create(Request $request)
     {
-        // dd($request->all());
+        //    dd($request->all());
         $decodedJson = html_entity_decode($request->stops);
         $stops = json_decode($decodedJson, true);
         $stops_descriptions = json_decode($request->stop_descriptions, true);
@@ -501,6 +509,8 @@ class TripsController extends Controller
         $trip->estimated_time = $request->estimated_time;
         $trip->customer_name = $request->customer_name;
         $trip->customer_phone = $request->customer_phone;
+        $trip->customer_company = $request->customer_company;
+        $trip->customer_id = $request->customer_id;
         $trip->lat = $request->lat;
         $trip->long = $request->long;
         $trip->drop_lat = $request->drop_lat;
@@ -610,11 +620,13 @@ class TripsController extends Controller
         $attributes = Attribute::where('refrence_id', $id)->get();
         $drivers = Driver::where('id', '>', 0)->with('user')->get();
         // dd($trip);
+        $customers = Customer::with('locations')->get();
         if ($trip->status == 'available' || $trip->status == null) {
-            return view('trips.edit', compact('trip', 'drivers', 'attributes'));
+            return view('trips.edit', compact('trip', 'drivers', 'attributes','customers'));
         }
         // dd($trip);
-        return view('trips.edit_active', compact('trip'));
+
+        return view('trips.edit_active', compact('trip','customers','attributes'));
     }
 
     public function duplicate($id)
@@ -643,6 +655,8 @@ class TripsController extends Controller
         $trip->estimated_time = $request->estimated_time;
         $trip->customer_name = $request->customer_name;
         $trip->customer_phone = $request->customer_phone;
+        $trip->customer_company = $request->customer_company;
+        $trip->customer_id = $request->customer_id;
         $trip->lat = $request->lat;
         $trip->long = $request->long;
         $trip->drop_lat = $request->drop_lat;
@@ -771,6 +785,8 @@ class TripsController extends Controller
         $trip->estimated_time = $request->estimated_time;
         $trip->customer_name = $request->customer_name;
         $trip->customer_phone = $request->customer_phone;
+        $trip->customer_company = $request->customer_company;
+        $trip->customer_id = $request->customer_id;
         $trip->lat = $request->lat;
         $trip->long = $request->long;
         $trip->drop_lat = $request->drop_lat;
@@ -875,6 +891,38 @@ class TripsController extends Controller
             $event->setStart(new \Google_Service_Calendar_EventDateTime(['dateTime' => $formattedPickupDateTime]));
             $event->setEnd(new \Google_Service_Calendar_EventDateTime(['dateTime' => $formattedDeliveryDateTime]));
             $service->events->update('rw.passengers@gmail.com', $request->event_id, $event);
+        }
+
+
+
+        $trip_field_name = $request->input('name');
+        $trip_field_value = $request->input('value');
+        $driverValues = $request->input('drivers');
+        $trip_ids = $request->input('attribute_id');
+        // dd($request->input('attribute_id'));
+        Attribute::where('refrence_id', $request->trip_id)
+        ->whereNotIn('id', $trip_ids ?? [])
+        ->delete();
+
+        // Check if there are any attribute IDs
+        if ($trip_ids != null) {
+            foreach ($trip_ids as $key => $id) {
+                $attribute = Attribute::find($id);
+        
+                if (!$attribute) {
+                    $attribute = new Attribute();
+                    $attribute->refrence_id = $request->trip_id;
+                }
+        
+                $attribute->value = $trip_field_value[$key] ?? null;
+                $attribute->name = $trip_field_name[$key] ?? null;
+                $attribute->visible_to_driver = $driverValues[$key];
+        
+                $attribute->save();
+                Attribute::where('refrence_id', $request->trip_id)
+                    ->whereNotIn('id', $trip_ids)
+                    ->delete();
+            }
         }
         return redirect('active/trips/')->with('success', 'Trip updated successfully');
     }

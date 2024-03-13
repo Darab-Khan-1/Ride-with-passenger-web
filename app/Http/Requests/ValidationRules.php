@@ -41,12 +41,21 @@ class ValidationRules
         ];
     }
 
+    public function acceptTripValidationRules(): array
+    {
+        return [
+            'trip_id' => 'required|exists:trips,id',
+            'status' => 'required|in:accepted,rejected',
+        ];
+    }
+
     public function startTripValidationRules(): array
     {
         return [
             'trip_id' => 'required|exists:trips,id',
         ];
     }
+
 
     public function stopTripValidationRules(): array
     {

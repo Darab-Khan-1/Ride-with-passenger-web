@@ -49,6 +49,14 @@ class ValidationMessages
         ]);
     }
 
+    public function acceptTripValidationMessages(): array
+    {
+        return ([
+            'trip_id.required' => "trip id is required",
+            'trip_id.exists' => "trip not found",
+        ]);
+    }
+
     public function stopTripValidationMessages(): array
     {
         return ([

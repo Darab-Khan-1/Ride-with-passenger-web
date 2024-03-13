@@ -42,6 +42,17 @@
                         <div class="row">
 
                             <div class="form-group col-md-6">
+                                <label>{{ __('messages.select_customer') }}:</label>
+                                <select class="form-control " name="customer_id" id="customers">
+                                    <option value="" selected>--{{ __('messages.select_customer') }}--</option>
+                                    @foreach ($customers as $value)
+                                        <option value="{{ $value->user_id }}" data-locations="{{ json_encode($value) }}"
+                                            @if ($trip->customer_id == $value->user_id) selected @endif>{{ $value->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
                                 <label>{{ __('messages.customer_name') }}:</label>
                                 <input type="text" name="customer_name" id="customer_name" required
                                     class="form-control "
@@ -54,6 +65,12 @@
                                     class="form-control "
                                     value="{{ old('customer_phone') ? old('customer_phone') : $trip->customer_phone }}"
                                     placeholder="{{ __('messages.Enter_value_here') }}" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>{{ __('messages.company') }}:</label>
+                                <input type="text" name="customer_company" id="customer_company" required
+                                    class="form-control " value="{{ $trip->customer_company }}"
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
                                 <label>{{ __('messages.pickup_date') }}:
@@ -162,7 +179,7 @@
                         </div><br>
                         <div id="add_fields">
                             <button type="button"
-                                class="btn btn-primary btn-clean">{{ __('messages.add') }}</button>
+                                class="btn btn-primary btn-clean">{{ __('messages.add_field') }}</button>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -201,8 +218,11 @@
                     <div class="map_box_container">
                         <div class="mb-3">
                             <label for="start" class="form-label">{{ __('messages.start_location') }}</label>
-                            <input type="text" id="start" class="form-control"
-                                value="{{ $trip->pickup_location }}" placeholder="Enter start location">
+                            <span class="btn btn-secondary previous-location btn-sm m-1" data-toggle="modal"
+                                data-target="#locationModal"
+                                title="Add from previously saved locations">+</span><input type="text"
+                                id="start" class="form-control" value="{{ $trip->pickup_location }}"
+                                placeholder="Enter start location">
                         </div>
                         <div class="mb-3">
                             <label for="start" class="form-label">{{ __('messages.start_desc') }}</label>
@@ -216,7 +236,10 @@
                                         <div class="row my-3">
                                             <label for="stop" class="col-md-1"
                                                 style="margin-top: 5px;">Stop:</label>
-                                            <input type="text" class="stop col-md-8 form-control mx-3"
+                                            <span class="btn btn-secondary previous-location btn-sm m-1"
+                                                data-toggle="modal" data-target="#locationModal"
+                                                title="Add from previously saved locations">+</span> <input
+                                                type="text" class="stop col-md-8 form-control mx-3"
                                                 value="{{ $item->location }}" placeholder="Enter stop location"
                                                 name="stops[]" required>
                                             <button type="button"
@@ -233,8 +256,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="end" class="form-label">End Location:</label>
-                            <input type="text" id="end" class="form-control"
-                                value="{{ $trip->delivery_location }}" placeholder="Enter end location">
+                            <span class="btn btn-secondary previous-location btn-sm m-1" data-toggle="modal"
+                                data-target="#locationModal"
+                                title="Add from previously saved locations">+</span><input type="text"
+                                id="end" class="form-control" value="{{ $trip->delivery_location }}"
+                                placeholder="Enter end location">
                         </div>
                         <div class="mb-3">
                             <label for="start" class="form-label">End Point Description:</label>
@@ -254,6 +280,26 @@
         </div>
     </div>
 </div>
+
+
+<div id="locationModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content counter-mirror">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ __('messages.location') }}</h4>
+                <button class="close" data-dismiss="modal">&times</button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover text-center">
+                    <tbody id="locations">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!--end::Content-->
 @include('includes/footer')
@@ -304,12 +350,88 @@
         // console.log(hiddenInput);
         hiddenInput.val(this.checked ? '1' : '0');
     });
-</script>
 
-<script>
+
     $(document).ready(function() {
         $('#calculate-route').click();
+        var customer = $('#customers option:selected').attr('data-locations')
+        customer = JSON.parse(customer)
+        console.log(customer);
+        // console.log(JSON.parse(customer));
+        let html = ''
+        $("#customer_phone").val(customer.phone)
+        $("#customer_name").val(customer.name)
+        $("#customer_company").val(customer.company_name)
+        if (customer.locations.length > 0) {
+            customer.locations.forEach(function(item, index) {
+                html +=
+                    `<tr data-dismiss="modal" class="py-3 customer-location-address"><td><b>${item.name}:</b>${item.location}</td></tr>`
+            })
+        } else {
+            html = '<div class="text-center">No Locations found</div>';
+        }
+        $("#locations").html(html)
     })
+
+    $(document).on('change', '#customers', function() {
+        var customer = $('#customers option:selected').attr('data-locations')
+        customer = JSON.parse(customer)
+        console.log(customer);
+        // console.log(JSON.parse(customer));
+        let html = ''
+
+        $("#customer_phone").val(customer.phone)
+        $("#customer_name").val(customer.name)
+        $("#customer_company").val(customer.company_name)
+        if (customer.locations.length > 0) {
+            customer.locations.forEach(function(item, index) {
+                html +=
+                    `<tr data-dismiss="modal" class="py-3 customer-location-address"><td><b>${item.name}:</b>${item.location}</td></tr>`
+            })
+        } else {
+            html = '<div class="text-center">No Locations found</div>';
+        }
+        $("#locations").html(html)
+    });
+
+    var closestInput
+    $(document).on('click', '.customer-location-address', function() {
+        let string = $(this).html();
+        // console.log(html);
+
+        var stringWithoutTags = string.replace(/(<([^>]+)>)/ig, '');
+
+        // Find the position of the colon (:) character
+        var colonPosition = stringWithoutTags.indexOf(':');
+
+        // Extract the location after the colon
+        var location = "";
+        if (colonPosition !== -1) {
+            location = stringWithoutTags.substring(colonPosition + 1).trim();
+            closestInput.value = location;
+            // $("#locationModal").modal('close');
+            $("#locationModal").modal('hide');
+        }
+
+    });
+
+    document.addEventListener('click', function(event) {
+        // Check if the clicked element has the class 'previous-location'
+        if (event.target.classList.contains('previous-location')) {
+            // Find the closest input element within the ancestor form
+            closestInput = event.target.nextElementSibling;
+
+            console.log(closestInput);
+            if (closestInput && closestInput.tagName === 'INPUT') {
+                // Set the value of the closest input element
+                // closestInput.value = 'Your Value Here';
+
+                // Add your additional logic here
+                // For example, you can perform other actions or trigger events
+            }
+        }
+    });
+
 
     function validateForm() {
         var fieldValue = document.getElementById('pickup_location').value;
@@ -366,7 +488,7 @@
         // Add event listener to add stop button
         $('#addStop').on('click', function() {
             var stopInput = $(
-                '<div class="row my-3"><label for="stop" class="col-md-1" style="margin-top: 5px;">Stop:</label><input type="text"  placeholder="Enter stop location" class="stop col-md-8 form-control mx-3" name="stops[]" required><button type="button" class="removeStop btn btn-danger btn-sm col-md-2">Remove Stop</button><label class="col-md-1" ></label><label for="description" class="col-md-2" style="margin-top: 20px;">Description:</label><textarea name="descriptions[]" cols="30" rows="2" class="stop_description form-control col-md-8  mt-2 ml-6" placeholder="Enter description"></textarea></div>'
+                '<div class="row my-3"><label for="stop" class="col-md-1" style="margin-top: 5px;">Stop:</label><span class="btn btn-secondary previous-location btn-sm m-1" data-toggle="modal" data-target="#locationModal" title="Add from previously saved locations">+</span><input type="text"  placeholder="Enter stop location" class="stop col-md-8 form-control mx-3" name="stops[]" required><button type="button" class="removeStop btn btn-danger btn-sm col-md-2">Remove Stop</button><label class="col-md-1" ></label><label for="description" class="col-md-2" style="margin-top: 20px;">Description:</label><textarea name="descriptions[]" cols="30" rows="2" class="stop_description form-control col-md-8  mt-2 ml-6" placeholder="Enter description"></textarea></div>'
             );
             $('#stopsContainer').append(stopInput);
             // Enable autocomplete for the new stop input

@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
-use App\Models\Customer_location;
 use App\Models\CustomerLocation;
-use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -53,6 +51,11 @@ class CustomerController extends Controller
 
         $role = Role::where('name', 'Customer')->first();
         // dd($role);
+        if($role == null){
+            $role = new Role();
+            $role->name = 'Customer';
+            $role->save();
+        }
         if ($role) {
             $user->syncRoles([$role]);
         }

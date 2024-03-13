@@ -8,13 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Trip extends Model
 {
     use HasFactory;
-    public function stops(){
-        return $this->hasMany(Stop::class,'trip_id','id');
+    public function stops()
+    {
+        return $this->hasMany(Stop::class, 'trip_id', 'id');
     }
-    public function driver(){
-        return $this->hasOne(Driver::class,'user_id','user_id');
+    public function driver()
+    {
+        return $this->hasOne(Driver::class, 'user_id', 'user_id');
     }
-    public function attributes(){
-        return $this->hasOne(Attribute::class,'refrence_id','id');
+    public function attributes()
+    {
+        return $this->hasOne(Attribute::class, 'refrence_id', 'id');
+    }
+    public function trackingLinks()
+    {
+        return $this->belongsToMany(TrackingLink::class);
     }
 }
