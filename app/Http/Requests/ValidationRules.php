@@ -57,6 +57,14 @@ class ValidationRules
     }
 
 
+
+    public function deleteStopValidationRules(): array
+    {
+        return [
+            'stop_id' => 'required|exists:stops,id',
+        ];
+    }
+
     public function stopTripValidationRules(): array
     {
         return [

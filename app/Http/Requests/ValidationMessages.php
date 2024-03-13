@@ -49,6 +49,14 @@ class ValidationMessages
         ]);
     }
 
+    public function deleteStopValidationMessages(): array
+    {
+        return ([
+            'stop_id.required' => "stop id is required",
+            'stop_id.exists' => "stop not found",
+        ]);
+    }
+
     public function acceptTripValidationMessages(): array
     {
         return ([
