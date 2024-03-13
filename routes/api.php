@@ -40,6 +40,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/stop/trip', [TripController::class, 'stop']);
     Route::post('/exit/stop', [TripController::class, 'exit']);
     Route::post('/accept/trip', [TripController::class, 'accept']);
+    Route::post('/delete/stop', [TripController::class, 'delete']);
 
     //Notifications
     Route::get('/all/notifications', [NotificationController::class, 'index']);

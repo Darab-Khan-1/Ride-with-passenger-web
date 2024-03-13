@@ -83,7 +83,7 @@ class TripController extends Controller
             $data->drop_long = $trip->drop_long;
             $data->status = (($trip->status == "pickup" || stripos($trip->status, 'stop') !== false) ? 'stopped' : $trip->status);
             $data->stops = $trip->stops;
-            $data->url = url('live/share/location',$trip->slug);
+            $data->url = url('live/share/location', $trip->slug);
             $data->attributes = $trip->attributes;
             $data->current_stop = 0;
             if ($trip->status == 'pickup') {
@@ -179,7 +179,7 @@ class TripController extends Controller
     public function my(Request $request)
     {
         try {
-            $trips = Trip::where('user_id', $request->user()->id)->whereNull('started_at')->where('status','accepted')->with('stops', 'attributes')->get();
+            $trips = Trip::where('user_id', $request->user()->id)->whereNull('started_at')->where('status', 'accepted')->with('stops', 'attributes')->get();
             $response = [];
             foreach ($trips as $value) {
                 $data = new stdClass();
@@ -198,7 +198,7 @@ class TripController extends Controller
                 $data->drop_lat = $value->drop_lat;
                 $data->drop_long = $value->drop_long;
                 $data->stops = $value->stops;
-                $data->url = url('live/share/location',$value->slug);
+                $data->url = url('live/share/location', $value->slug);
                 $data->attributes = $value->attributes;
                 array_push($response, $data);
             }
@@ -221,7 +221,7 @@ class TripController extends Controller
             $trip->user_id = null;
             $trip->save();
             $data = [
-                'message' => 'Trip has been ' . $request->status ,
+                'message' => 'Trip has been ' . $request->status,
                 'title' => 'Trip Update',
                 'sound' => 'anychange.mp3',
             ];
@@ -294,6 +294,24 @@ class TripController extends Controller
         }
     }
 
+
+    public function delete(Request $request, Validate $validate)
+    {
+        $validationErrors = $validate->validate($request, $this->rules->deleteStopValidationRules(), $this->validationMessages->deleteStopValidationMessages());
+        if ($validationErrors) {
+            return (new ErrorResource($validationErrors))->response()->setStatusCode(400);
+        }
+        try {
+            $stop  = Stop::find($request->stop_id);
+            if ($stop->type != 'stop') {
+                return $this->apiJsonResponse(400, "Stop cannot be pickup or dropoff point!", '', "");
+            }
+            $stop->delete();
+            return $this->apiJsonResponse(200, "Stop deleted!", '', "");
+        } catch (\Throwable $e) {
+            return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
+        }
+    }
 
     public function pickup(Request $request, Validate $validate)
     {
