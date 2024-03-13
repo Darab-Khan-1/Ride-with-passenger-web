@@ -11,7 +11,7 @@
     }
 </style>
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
-    <form action="{{ url('store/customer') }}" method="POST" class="counter-mirror" enctype="multipart/form-data">
+    <form action="{{ url('store/customer') }}" id="form" method="POST" class="counter-mirror" enctype="multipart/form-data">
         @csrf
         <div class="card">
             <div class="card-header flex-wrap border-0 pt-6 pb-0 row">
@@ -130,7 +130,7 @@
                         <div class="card card-custom">
                             <div>
                                 <h4 class="modal-title" style="text-align: center">
-                                    {{ __('messages.select_customer') }}</h4>
+                                    {{ __('messages.select_customer_location') }}</h4>
                                 <div class="container">
                                     <div class="map_box_container">
                                         <div class="mb-3" id="map-overlay">
@@ -189,9 +189,7 @@
 
 
 <script>
-
-    
-var KTProfile = function() {
+    var KTProfile = function() {
         // Elements
         var avatar;
         // Private functions
@@ -222,7 +220,7 @@ var KTProfile = function() {
     $(document).ready(function() {
         KTProfile.init();
     });
-    
+
     $('#addStop').on('click', function() {
         var stopInput = $(
             ` <div class="row my-3">
@@ -305,4 +303,19 @@ var KTProfile = function() {
         $('#customer_location_id').val(id)
         console.log(id);
     });
+    document.addEventListener('DOMContentLoaded', function() {
+    // Find the form element by its ID or any other suitable method
+    var form = document.getElementById('form');
+
+    // Attach an event listener to the form for the 'keyup' event
+    form.addEventListener('keyup', function(event) {
+        // Check if the pressed key is Enter (key code 13)
+        if (event.keyCode === 13) {
+            // Prevent form submission
+            event.preventDefault();
+            // Optionally, you can add custom logic here to handle the Enter key press
+            console.log('Enter key pressed but form submission prevented.');
+        }
+    });
+});
 </script>

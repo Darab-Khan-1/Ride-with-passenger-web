@@ -34,88 +34,151 @@
                     </div>
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0 counter-mirror">
-                    <h3>{{__('messages.edit_active_trip')}}</h3>
+                    <h3>{{ __('messages.edit_active_trip') }}</h3>
                 </div>
                 <form action="{{ url('active/trip/update') }}" method="POST" onsubmit="return validateForm()">
                     @csrf
                     <div class="card-body p-5 counter-mirror" style="overflow: auto;">
                         <div class="row">
 
+                            <div class="form-group col-md-6">
+                                <label>{{ __('messages.select_customer') }}:</label>
+                                <select class="form-control " name="customer_id" id="customers">
+                                    <option value="" selected>--{{ __('messages.select_customer') }}--</option>
+                                    @foreach ($customers as $value)
+                                        <option value="{{ $value->user_id }}" data-locations="{{ json_encode($value) }}"
+                                            @if ($trip->customer_id == $value->user_id) selected @endif>{{ $value->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="form-group col-md-6 ">
-                                <label>{{__('messages.customer_name')}}:</label>
+                                <label>{{ __('messages.customer_name') }}:</label>
                                 <input type="text" name="customer_name" id="customer_name" required
                                     class="form-control "
                                     value="{{ old('customer_name') ? old('customer_name') : $trip->customer_name }}"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.customer_phone')}}:</label>
+                                <label>{{ __('messages.customer_phone') }}:</label>
                                 <input type="text" name="customer_phone" id="customer_phone" required
                                     class="form-control "
                                     value="{{ old('customer_phone') ? old('customer_phone') : $trip->customer_phone }}"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.piuckup_date')}}:
+                                <label>{{ __('messages.company') }}:</label>
+                                <input type="text" name="customer_company" id="customer_company" required
+                                    class="form-control " value="{{ $trip->customer_company }}"
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>{{ __('messages.piuckup_date') }}:
                                 </label>
                                 <input type="datetime-local" name="pickup_date" id="pickup_date" required
                                     value="{{ old('pickup_date') ? old('pickup_date') : $trip->pickup_date }}"
-                                    class="form-control" placeholder="{{__('messages.enter_value_here')}}" />
+                                    class="form-control" placeholder="{{ __('messages.enter_value_here') }}" />
                                 <br>
 
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.delivery_date')}}:</label>
+                                <label>{{ __('messages.delivery_date') }}:</label>
                                 <input type="datetime-local" name="delivery_date" class="form-control" required
                                     value="{{ old('delivery_date') ? old('delivery_date') : $trip->delivery_date }}"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.pickup_location')}}:</label>
+                                <label>{{ __('messages.pickup_location') }}:</label>
                                 <input type="text" name="pickup_location" id="pickup_location"
                                     value="{{ old('pickup_location') ? old('pickup_location') : $trip->pickup_location }}"
                                     class="form-control form-control-solid start-end-location" required readonly
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.delivery_location')}}:</label>
+                                <label>{{ __('messages.delivery_location') }}:</label>
                                 <input type="text" name="delivery_location" id="delivery_location" readonly required
                                     value="{{ old('delivery_location') ? old('delivery_location') : $trip->delivery_location }}"
                                     class="form-control-solid form-control start-end-location"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.estimated_distance')}}:</label>
+                                <label>{{ __('messages.estimated_distance') }}:</label>
                                 <input type="text" name="estimated_distance" id="estimated_distance" readonly
                                     required class="form-control form-control-solid"
                                     value="{{ old('estimated_distance') ? old('estimated_distance') : $trip->estimated_distance }}"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.estimated_time')}}:</label>
+                                <label>{{ __('messages.estimated_time') }}:</label>
                                 <input type="text" name="estimated_time" id="estimated_time" readonly required
                                     class="form-control form-control-solid"
                                     value="{{ old('estimated_time') ? old('estimated_time') : $trip->estimated_time }}"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.assigned_driver')}} <small  class="text-danger">(Cannot be updated once trip is started)</small> :</label>
-                                <input type="text" readonly  class="form-control form-control-solid"
+                                <label>{{ __('messages.assigned_driver') }} <small class="text-danger">(Cannot be
+                                        updated once trip is started)</small> :</label>
+                                <input type="text" readonly class="form-control form-control-solid"
                                     value="{{ $trip->driver->name }}"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.event_name')}}:</label>
-                                <input type="text" name="event_name" id="event_name" required class="form-control "
+                                <label>{{ __('messages.event_name') }}:</label>
+                                <input type="text" name="event_name" id="event_name" required
+                                    class="form-control "
                                     value="{{ old('event_name') ? old('event_name') : $trip->event_name }}"
-                                    placeholder="{{__('messages.enter_value_here')}}" />
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{__('messages.event_description')}}:</label>
+                                <label>{{ __('messages.event_description') }}:</label>
                                 <textarea class="form-control " required name="description" cols="30" rows="5">{{ $trip->description }}</textarea>
                             </div>
 
+                            <div  class="form-group col-md-12" id="tripstop">
+                                @foreach ($attributes as $attribute)
+                                    <div class="row">
+                                        <div>
+                                            <input type="hidden" name="attribute_id[]"
+                                                value="{{ $attribute->id }}">
+                                        </div>
+                                        @if ($attribute->visible_to_driver == 1)
+                                            <div class="col-md-1">
+                                                <label for="driver">{{ __('messages.driver_value') }}</label><br>
+                                                <input type="checkbox" class="driver-visible-checkbox"
+                                                    value="{{ $attribute->visible_to_driver }}" checked />
+                                                <input type="hidden" name="drivers[]" value="1">
+                                            </div>
+                                        @endif
+                                        @if ($attribute->visible_to_driver == 0)
+                                            <div class="col-md-1">
+                                                <label for="driver">{{ __('messages.driver_value') }}</label><br>
+                                                <input type="checkbox" class="driver-visible-checkbox"
+                                                    value="{{ $attribute->visible_to_driver }}" />
+                                                <input type="hidden" name="drivers[]" value="0">
+                                            </div>
+                                        @endif
+                                        <div class="col-md-3">
+                                            <label for="name">{{ __('messages.name') }}</label>
+                                            <input type="text" name="name[]" class="form-control"
+                                                value="{{ $attribute->name }}" required /><br>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="values">{{ __('messages.value') }}</label>
+                                            <input type="text" name="value[]" class="form-control"
+                                                value="{{ $attribute->value }}" required /><br>
+                                        </div>
+                                        <div class="col-md-3 remove">
+                                            <button type="button"
+                                                class="btn btn-danger btn-clean">{{ __('messages.remove') }}</button><br>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div><br>
+                            <div id="add_fields">
+                                <button type="button"
+                                    class="btn btn-primary btn-clean">{{ __('messages.add_field') }}</button>
+                            </div>
 
 
                         </div>
@@ -134,8 +197,10 @@
                         <input type="hidden" name="trip_id" value="{{ $trip->id }}">
                         <input type="hidden" name="event_id" value="{{ $trip->event_id }}">
                         <input type="hidden" name="user_id" value="{{ $trip->user_id }}">
-                        <button type="submit" class="btn btn-primary mr-2 counter-mirror">{{__('messages.update')}}</button>
-                        <a href="{{ URL::previous() }}" class="btn btn-secondary counter-mirror" data-dismiss="modal">{{__('messages.cancel')}}</a>
+                        <button type="submit"
+                            class="btn btn-primary mr-2 counter-mirror">{{ __('messages.update') }}</button>
+                        <a href="{{ URL::previous() }}" class="btn btn-secondary counter-mirror"
+                            data-dismiss="modal">{{ __('messages.cancel') }}</a>
                     </div>
                 </form>
             </div>
@@ -149,24 +214,26 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content counter-mirror">
             <div class="modal-header">
-                <h4 class="modal-title">{{__('messages.select_trip')}}</h4>
+                <h4 class="modal-title">{{ __('messages.select_trip') }}</h4>
             </div>
             <div class="modal-body">
                 <div class="container">
                     <div class="map_box_container">
                         <div class="mb-3">
-                            <label for="start" class="form-label">{{__('messages.start_location')}}:</label>
-                            <input type="text" id="start"
+                            <label for="start" class="form-label">{{ __('messages.start_location') }}:</label>
+                            <span class="btn btn-secondary previous-location btn-sm m-1"
+                            data-toggle="modal" data-target="#locationModal"
+                            title="Add from previously saved locations">+</span> <input type="text" id="start"
                                 class="form-control {{ $trip->status != 'started' ? 'form-control-solid' : '' }}"
                                 value="{{ $trip->pickup_location }}"
-                                {{ $trip->status != 'started' ? 'readonly' : '' }} placeholder="{{__('messages.enter_location')}}">
+                                {{ $trip->status != 'started' ? 'readonly' : '' }}
+                                placeholder="{{ __('messages.enter_location') }}">
                         </div>
                         <div class="mb-3">
-                            <label for="start" class="form-label">{{__('messages.start_desc')}}:</label>
-                            <textarea name="start_description" id="start_description" cols="30" rows="1" 
-                            class="form-control {{ $trip->status != 'started' ? 'form-control-solid' : '' }} "  
-                            {{ $trip->status != 'started' ? 'readonly' : '' }}
-                                placeholder="Enter start description">{{ $trip->status != null ? $trip->stops[0]->description : '' }}</textarea>
+                            <label for="start" class="form-label">{{ __('messages.start_desc') }}:</label>
+                            <textarea name="start_description" id="start_description" cols="30" rows="1"
+                                class="form-control {{ $trip->status != 'started' ? 'form-control-solid' : '' }} "
+                                {{ $trip->status != 'started' ? 'readonly' : '' }} placeholder="Enter start description">{{ $trip->status != null ? $trip->stops[0]->description : '' }}</textarea>
                         </div>
                         <div class="mb-3">
                             <div id="stopsContainer">
@@ -174,44 +241,50 @@
                                     @if ($item->type == 'stop')
                                         <div class="row my-3">
                                             <label for="stop" class="col-md-1"
-                                                style="margin-top: 5px;">{{__('messages.stops')}}:</label>
-                                            <input type="text"
+                                                style="margin-top: 5px;">{{ __('messages.stops') }}:</label>
+                                                <span class="btn btn-secondary previous-location btn-sm m-1"
+                                                data-toggle="modal" data-target="#locationModal"
+                                                title="Add from previously saved locations">+</span> <input type="text"
                                                 class="stop col-md-8 form-control mx-3 {{ $item->datetime != null ? 'form-control-solid' : '' }}"
                                                 value="{{ $item->location }}" placeholder="Enter stop location"
-                                                {{ $item->datetime == null ? ' name="stops[]" ' : ' readonly ' }} 
-                                                 required>  
+                                                {{ $item->datetime == null ? ' name="stops[]" ' : ' readonly ' }}
+                                                required>
                                             @if ($item->datetime == null)
                                                 <button type="button"
-                                                    class="removeStop btn btn-danger btn-sm col-md-2">{{__('messages.remove_stop')}}</button>
+                                                    class="removeStop btn btn-danger btn-sm col-md-2">{{ __('messages.remove_stop') }}</button>
                                             @endif
                                             <label class="col-md-1"></label><label for="description" class="col-md-2"
-                                                style="margin-top: 20px;">{{__('messages.description')}}:</label>
-                                            <textarea   {{ $item->datetime == null ? 'name="descriptions[]"' : ' readonly ' }}  cols="30" rows="2"
-                                                class="stop_description form-control col-md-8  mt-2 ml-6  {{ $item->datetime != null ? 'form-control-solid' : '' }}"  placeholder="Enter description">{{ $item->description }}</textarea>
+                                                style="margin-top: 20px;">{{ __('messages.description') }}:</label>
+                                            <textarea {{ $item->datetime == null ? 'name="descriptions[]"' : ' readonly ' }} cols="30" rows="2"
+                                                class="stop_description form-control col-md-8  mt-2 ml-6  {{ $item->datetime != null ? 'form-control-solid' : '' }}"
+                                                placeholder="Enter description">{{ $item->description }}</textarea>
                                         </div>
                                     @endif
                                 @endforeach
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="end" class="form-label">{{__('messages.end_location')}}:</label>
-                            <input type="text" id="end" 
-                            class="form-control {{ $trip->status == 'destination' ? ' form-control-solid ' : '' }}"
+                            <label for="end" class="form-label">{{ __('messages.end_location') }}:</label>
+                            <span class="btn btn-secondary previous-location btn-sm m-1"
+                            data-toggle="modal" data-target="#locationModal"
+                            title="Add from previously saved locations">+</span> <input type="text" id="end"
+                                class="form-control {{ $trip->status == 'destination' ? ' form-control-solid ' : '' }}"
                                 {{ $trip->status == 'destination' ? 'readonly' : '' }}
                                 value="{{ $trip->delivery_location }}" placeholder="Enter end location">
                         </div>
                         <div class="mb-3">
-                            <label for="start" class="form-label">{{__('messages.end_point_desc')}}:</label>
+                            <label for="start" class="form-label">{{ __('messages.end_point_desc') }}:</label>
                             <textarea name="end_description" id="end_description" cols="30" rows="1"
-                             class="form-control  {{ $trip->status == 'destination' ? 'form-control-solid' : '' }} "  
-                             {{ $trip->status == 'destination' ? 'readonly' : '' }}
-                                placeholder="Enter end description">{{ $trip->status != null ? $trip->stops[count($trip->stops) - 1]->description : '' }}</textarea>
+                                class="form-control  {{ $trip->status == 'destination' ? 'form-control-solid' : '' }} "
+                                {{ $trip->status == 'destination' ? 'readonly' : '' }} placeholder="Enter end description">{{ $trip->status != null ? $trip->stops[count($trip->stops) - 1]->description : '' }}</textarea>
                         </div>
-                        <button type="button" id="addStop" class="btn btn-secondary my-3">{{__('messages.add_stop')}}</button>
-                        <button id="calculate-route" class="btn btn-success m-2">{{__('messages.calculate_route')}}</button>
-                        <div class="mb-3" id="map-overlay">{{__('messages.distance')}}:
+                        <button type="button" id="addStop"
+                            class="btn btn-secondary my-3">{{ __('messages.add_stop') }}</button>
+                        <button id="calculate-route"
+                            class="btn btn-success m-2">{{ __('messages.calculate_route') }}</button>
+                        <div class="mb-3" id="map-overlay">{{ __('messages.distance') }}:
                             <br>
-                            {{__('messages.duration')}}:
+                            {{ __('messages.duration') }}:
                         </div>
                         <div id="map"></div>
                     </div>
@@ -221,6 +294,24 @@
     </div>
 </div>
 
+
+<div id="locationModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content counter-mirror">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ __('messages.location') }}</h4>
+                <button class="close" data-dismiss="modal">&times</button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover text-center">
+                    <tbody id="locations">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 <!--end::Content-->
 @include('includes/footer')
 
@@ -231,7 +322,119 @@
 <script>
     $(document).ready(function() {
         $('#calculate-route').click();
+        var customer = $('#customers option:selected').attr('data-locations')
+        customer = JSON.parse(customer)
+        console.log(customer);
+        // console.log(JSON.parse(customer));
+        let html = ''
+        $("#customer_phone").val(customer.phone)
+        $("#customer_name").val(customer.name)
+        $("#customer_company").val(customer.company_name)
+        if (customer.locations.length > 0) {
+            customer.locations.forEach(function(item, index) {
+                html +=
+                    `<tr data-dismiss="modal" class="py-3 customer-location-address"><td><b>${item.name}:</b>${item.location}</td></tr>`
+            })
+        } else {
+            html = '<div class="text-center">No Locations found</div>';
+        }
+        $("#locations").html(html)
+
     })
+    $(document).ready(function() {
+        $('#add_fields').on('click', function() {
+            let addtrips = $(`<div class="row">
+                                <div>
+                                    <input type="hidden" name="attribute_id[]">
+                                </div>
+                            <div class="col-md-1">
+                                <label for="driver">{{ __('messages.driver_value') }}</label><br>
+                                <input type="checkbox" class="driver-visible-checkbox"/>
+                                <input type="hidden" name="drivers[]" value="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="name">{{ __('messages.name') }}</label>
+                                <input type="text" name="name[]" class="form-control"
+                                    placeholder="{{ __('messages.name') }}" required /><br>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="values">{{ __('messages.value') }}</label>
+                                <input type="text" name="value[]" class="form-control"
+                                    placeholder="{{ __('messages.value') }}" required /><br>
+                            </div>
+                            <div class="col-md-3 remove">
+                                <button type="button"
+                                    class="btn btn-danger btn-clean">{{ __('messages.remove') }}</button><br>
+                            </div>
+                        </div>`);
+
+            $('#tripstop').append(addtrips);
+        });
+
+        $('#tripstop').on('click', '.remove', function() {
+            $(this).parent().remove();
+        });
+    });
+
+    $(document).on('change', '#customers', function() {
+        var customer = $('#customers option:selected').attr('data-locations')
+        customer = JSON.parse(customer)
+        console.log(customer);
+        // console.log(JSON.parse(customer));
+        let html = ''
+
+        $("#customer_phone").val(customer.phone)
+        $("#customer_name").val(customer.name)
+        $("#customer_company").val(customer.company_name)
+        if (customer.locations.length > 0) {
+            customer.locations.forEach(function(item, index) {
+                html +=
+                    `<tr data-dismiss="modal" class="py-3 customer-location-address"><td><b>${item.name}:</b>${item.location}</td></tr>`
+            })
+        } else {
+            html = '<div class="text-center">No Locations found</div>';
+        }
+        $("#locations").html(html)
+    });
+
+    var closestInput
+    $(document).on('click', '.customer-location-address', function() {
+        let string = $(this).html();
+        // console.log(html);
+
+        var stringWithoutTags = string.replace(/(<([^>]+)>)/ig, '');
+
+        // Find the position of the colon (:) character
+        var colonPosition = stringWithoutTags.indexOf(':');
+
+        // Extract the location after the colon
+        var location = "";
+        if (colonPosition !== -1) {
+            location = stringWithoutTags.substring(colonPosition + 1).trim();
+            closestInput.value = location;
+            // $("#locationModal").modal('close');
+            $("#locationModal").modal('hide');
+        }
+
+    });
+
+    document.addEventListener('click', function(event) {
+        // Check if the clicked element has the class 'previous-location'
+        if (event.target.classList.contains('previous-location')) {
+            // Find the closest input element within the ancestor form
+            closestInput = event.target.nextElementSibling;
+
+            console.log(closestInput);
+            if (closestInput && closestInput.tagName === 'INPUT') {
+                // Set the value of the closest input element
+                // closestInput.value = 'Your Value Here';
+
+                // Add your additional logic here
+                // For example, you can perform other actions or trigger events
+            }
+        }
+    });
+
 
     function validateForm() {
         var fieldValue = document.getElementById('pickup_location').value;

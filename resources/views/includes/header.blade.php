@@ -464,6 +464,12 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     </a>
                                                 </li>
                                                 @endcan
+                                                <li class="menu-item completed-trips-nav" aria-haspopup="true">
+                                                    <a href="{{ url('links') }}" class="menu-link">
+                                                        <span class="menu-text counter-mirror">{{
+                                                            __('messages.links') }}</span>
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>

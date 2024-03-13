@@ -129,7 +129,7 @@
                         <div class="card card-custom">
                             <div>
                                 <h4 class="modal-title" style="text-align: center">
-                                    {{ __('messages.select_customer') }}</h4>
+                                    {{ __('messages.select_customer_location') }}</h4>
                                 <div class="container">
                                     <div class="map_box_container">
                                         <div class="mb-3" id="map-overlay">

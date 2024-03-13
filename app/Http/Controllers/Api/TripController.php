@@ -17,6 +17,7 @@ use App\Models\Stop;
 use App\Services\DeviceService;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Config;
+use Lcobucci\JWT\Validation\ValidAt;
 use stdClass;
 
 class TripController extends Controller
@@ -28,7 +29,7 @@ class TripController extends Controller
     protected $DeviceService;
     protected $NotificationService;
 
-    public function __construct(ValidationRules $rules, ValidationMessages $validationMessages, DeviceService $DeviceService,NotificationService $NotificationService)
+    public function __construct(ValidationRules $rules, ValidationMessages $validationMessages, DeviceService $DeviceService, NotificationService $NotificationService)
     {
         $this->rules = $rules;
         $this->validationMessages = $validationMessages;
@@ -60,7 +61,7 @@ class TripController extends Controller
     public function ongoing(Request $request)
     {
         try {
-            $trip = Trip::where('user_id', $request->user()->id)->whereNotNull('started_at')->whereNull('completed_at')->with('stops')->first();
+            $trip = Trip::where('user_id', $request->user()->id)->whereNotNull('started_at')->whereNull('completed_at')->with('stops', 'attributes')->first();
             if ($trip == null) {
                 return $this->apiJsonResponse(200, "No ongoing trip found!", '', "");
             }
@@ -82,6 +83,8 @@ class TripController extends Controller
             $data->drop_long = $trip->drop_long;
             $data->status = (($trip->status == "pickup" || stripos($trip->status, 'stop') !== false) ? 'stopped' : $trip->status);
             $data->stops = $trip->stops;
+            $data->url = url('live/share/location',$trip->slug);
+            $data->attributes = $trip->attributes;
             $data->current_stop = 0;
             if ($trip->status == 'pickup') {
                 // dd($trip->stops[0]->id);
@@ -106,7 +109,7 @@ class TripController extends Controller
                 $data->next_stop = $array;
             } else if (count($trip->stops) > 2) {
                 $array['stop'] = 1;
-                $array['stop_id'] = $trip->stops[count($trip->stops) -1]->id;
+                $array['stop_id'] = $trip->stops[count($trip->stops) - 1]->id;
                 $array['type'] = "destination";
                 $array['lat'] = $trip->drop_lat;
                 $array['long'] = $trip->drop_long;
@@ -128,7 +131,7 @@ class TripController extends Controller
                 }
             } else {
                 $array['stop'] = 1;
-                $array['stop_id'] = $trip->stops[count($trip->stops) -1]->id;
+                $array['stop_id'] = $trip->stops[count($trip->stops) - 1]->id;
                 $array['type'] = "destination";
                 $array['lat'] = $trip->drop_lat;
                 $array['long'] = $trip->drop_long;
@@ -145,7 +148,7 @@ class TripController extends Controller
     public function all(Request $request)
     {
         try {
-            $trips = Trip::where('user_id', $request->user()->id)->whereNull('started_at')->with('stops')->get();
+            $trips = Trip::where('user_id', $request->user()->id)->whereNull('started_at')->with('stops', 'attributes')->get();
             $response = [];
             foreach ($trips as $value) {
                 $data = new stdClass();
@@ -164,6 +167,7 @@ class TripController extends Controller
                 $data->drop_lat = $value->drop_lat;
                 $data->drop_long = $value->drop_long;
                 $data->stops = $value->stops;
+                $data->attributes = $value->attributes;
                 array_push($response, $data);
             }
             return $this->apiJsonResponse(200, "Trips found!", $response, "");
@@ -172,10 +176,10 @@ class TripController extends Controller
         }
     }
 
-    public function completed(Request $request)
+    public function my(Request $request)
     {
         try {
-            $trips = Trip::where('user_id', $request->user()->id)->whereNotNull('completed_at')->with('stops')->get();
+            $trips = Trip::where('user_id', $request->user()->id)->whereNull('started_at')->where('status','accepted')->with('stops', 'attributes')->get();
             $response = [];
             foreach ($trips as $value) {
                 $data = new stdClass();
@@ -194,6 +198,63 @@ class TripController extends Controller
                 $data->drop_lat = $value->drop_lat;
                 $data->drop_long = $value->drop_long;
                 $data->stops = $value->stops;
+                $data->url = url('live/share/location',$value->slug);
+                $data->attributes = $value->attributes;
+                array_push($response, $data);
+            }
+            return $this->apiJsonResponse(200, "Trips found!", $response, "");
+        } catch (\Throwable $e) {
+            return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
+        }
+    }
+
+
+    public function accept(Request $request, Validate $validate)
+    {
+        $validationErrors = $validate->validate($request, $this->rules->acceptTripValidationRules(), $this->validationMessages->acceptTripValidationMessages());
+        if ($validationErrors) {
+            return (new ErrorResource($validationErrors))->response()->setStatusCode(400);
+        }
+        try {
+            $trip = Trip::find($request->trip_id);
+            $trip->status = $request->status;
+            $trip->user_id = null;
+            $trip->save();
+            $data = [
+                'message' => 'Trip has been ' . $request->status ,
+                'title' => 'Trip Update',
+                'sound' => 'anychange.mp3',
+            ];
+            $this->sendAdminNotification($data);
+            return $this->apiJsonResponse(200, "Trip status updated!", '', "");
+        } catch (\Throwable $e) {
+            return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
+        }
+    }
+
+    public function completed(Request $request)
+    {
+        try {
+            $trips = Trip::where('user_id', $request->user()->id)->whereNotNull('completed_at')->with('stops', 'attributes')->get();
+            $response = [];
+            foreach ($trips as $value) {
+                $data = new stdClass();
+                $data->id = $value->id;
+                $data->unique_id = $value->unique_id;
+                $data->pickup_location = $value->pickup_location;
+                $data->pickup_date = $value->pickup_date;
+                $data->delivery_date = $value->delivery_date;
+                $data->delivery_location = $value->delivery_location;
+                $data->estimated_distance = $value->estimated_distance;
+                $data->estimated_time = $value->estimated_time;
+                $data->customer_name = $value->customer_name;
+                $data->customer_phone = $value->customer_phone;
+                $data->lat = $value->lat;
+                $data->long = $value->long;
+                $data->drop_lat = $value->drop_lat;
+                $data->drop_long = $value->drop_long;
+                $data->stops = $value->stops;
+                $data->attributes = $value->attributes;
                 array_push($response, $data);
             }
             return $this->apiJsonResponse(200, "Trips found!", $response, "");
@@ -221,10 +282,10 @@ class TripController extends Controller
             $trip->started_at = date('Y-m-d H:i:s', strtotime('now'));
             $trip->status = 'started';
             $trip->save();
-            $data=[
-                'message'=>'Trip has been started',
-                'title'=>'Trip Update',
-                'sound'=>'anychange.mp3',
+            $data = [
+                'message' => 'Trip has been started',
+                'title' => 'Trip Update',
+                'sound' => 'anychange.mp3',
             ];
             $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Trip started!", '', "");
@@ -255,10 +316,10 @@ class TripController extends Controller
             $stop = Stop::where('type', 'pickup')->where('trip_id', $request->trip_id)->first();
             $stop->datetime = date('Y-m-d H:i:s', strtotime('now'));
             $stop->save();
-            $data=[
-                'message'=>'Passenger picked up!',
-                'title'=>'Trip Update',
-                'sound'=>'anychange.mp3',
+            $data = [
+                'message' => 'Passenger picked up!',
+                'title' => 'Trip Update',
+                'sound' => 'anychange.mp3',
             ];
             $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Trip status updated!", '', "");
@@ -299,11 +360,20 @@ class TripController extends Controller
                 }
             }
             $stop->datetime = date('Y-m-d H:i:s', strtotime('now'));
+            if ($request->lat) {
+                $stop->lat = $request->lat;
+            }
+            if ($request->long) {
+                $stop->long = $request->long;
+            }
+            if ($request->location) {
+                $stop->location = $request->location;
+            }
             $stop->save();
-            $data=[
-                'message'=>'Enter to stop',
-                'title'=>'Trip Update',
-                'sound'=>'anychange.mp3',
+            $data = [
+                'message' => 'Enter to stop',
+                'title' => 'Trip Update',
+                'sound' => 'anychange.mp3',
             ];
             $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Status updated!", '', "");
@@ -340,10 +410,10 @@ class TripController extends Controller
             }
             $stop->exit_time = date('Y-m-d H:i:s', strtotime('now'));
             $stop->save();
-            $data=[
-                'message'=>'Exit from stop',
-                'title'=>'Trip Update',
-                'sound'=>'anychange.mp3',
+            $data = [
+                'message' => 'Exit from stop',
+                'title' => 'Trip Update',
+                'sound' => 'anychange.mp3',
             ];
             $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Status updated!", '', "");
@@ -370,10 +440,10 @@ class TripController extends Controller
             $stop = Stop::where('trip_id', $request->trip_id)->where('type', 'destination')->first();
             $stop->exit_time =  date('Y-m-d H:i:s', strtotime('now'));
             $stop->save();
-            $data=[
-                'message'=>'Trip has been ended',
-                'title'=>'Trip Update',
-                'sound'=>'anychange.mp3',
+            $data = [
+                'message' => 'Trip has been ended',
+                'title' => 'Trip Update',
+                'sound' => 'anychange.mp3',
             ];
             $this->sendAdminNotification($data);
             return $this->apiJsonResponse(200, "Trip ended!", '', "");
@@ -381,17 +451,19 @@ class TripController extends Controller
             return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
         }
     }
-    private function sendAdminNotification($data)  {
-        $users=User::where('type','superadmin')->select('fcm_token','id')->get(); 
+    private function sendAdminNotification($data)
+    {
+        $users = User::where('type', 'superadmin')->select('fcm_token', 'id')->get();
         foreach ($users as $key => $user) {
-            if($user->fcm_token!=null){
-                $this->NotificationService->sendNotification($user->fcm_token,$data,'driver');
+            if ($user->fcm_token != null) {
+                $this->NotificationService->sendNotification($user->fcm_token, $data, 'driver');
             }
         }
-        Notification::create(['title'=>$data['title'],
-                'notification'=>$data['message'],
-                'type'=>'web',
-                'seen'=>0,
+        Notification::create([
+            'title' => $data['title'],
+            'notification' => $data['message'],
+            'type' => 'web',
+            'seen' => 0,
         ]);
     }
 }

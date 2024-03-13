@@ -31,6 +31,7 @@ Route::middleware('auth:api')->group(function () {
 
 
     Route::get('/all/trips', [TripController::class, 'all']);
+    Route::get('/my/trips', [TripController::class, 'my']);
     Route::get('/completed/trips', [TripController::class, 'completed']);
     Route::get('/ongoing/trip', [TripController::class, 'ongoing']);
     Route::post('/start/trip', [TripController::class, 'start']);
@@ -38,6 +39,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/end/trip', [TripController::class, 'end']);
     Route::post('/stop/trip', [TripController::class, 'stop']);
     Route::post('/exit/stop', [TripController::class, 'exit']);
+    Route::post('/accept/trip', [TripController::class, 'accept']);
 
     //Notifications
     Route::get('/all/notifications', [NotificationController::class, 'index']);

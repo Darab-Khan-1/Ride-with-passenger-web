@@ -17,6 +17,7 @@ use GuzzleHttp\RedirectMiddleware;
 use App\Services\NotificationService;
 use PDO;
 use App\Helpers\Curl;
+use App\Models\TrackingLink;
 use stdClass;
 use Config;
 
@@ -32,7 +33,8 @@ class DriversController extends Controller
     }
 
 
-    public function adminLogin(){
+    public function adminLogin()
+    {
         $adminEmail =  Config::get('constants.Constants.adminEmail');
         $adminPassword = Config::get('constants.Constants.adminPassword');
         $data = 'email=' . $adminEmail . '&password=' . $adminPassword;
@@ -77,7 +79,7 @@ class DriversController extends Controller
             $imagePath = $directory . '/' . $imageFileName;
             $image = Image::make($request->file('profile_avatar'));
             $side = max($image->width(), $image->height());
-            $background = Image::canvas($side, $side, '#ffffff'); 
+            $background = Image::canvas($side, $side, '#ffffff');
             $background->insert($image, 'center');
             $background->save($imagePath);
             $driver_avatar = asset('/storage/users') . '/' . $imageFileName;
@@ -172,12 +174,12 @@ class DriversController extends Controller
     {
         // dd($request->all());
         $user = User::find($request->user_id);
-        $user->tokens->each(function($token, $key) {
+        $user->tokens->each(function ($token, $key) {
             $token->delete();
         });
         $user->password = Hash::make($request->password);
         $user->save();
-        
+
         return redirect()->back()->with('success', __('messages.change_password'));
     }
     public function delete($id)
@@ -232,15 +234,15 @@ class DriversController extends Controller
             // }else{
             //     $timeDifference = 6;
             // }
-            $data['driver'] = Driver::where('device_id',$id)->first();
-            $data['slug'] = Trip::where('user_id',$data['driver']->user_id)->where('status','!=','available')->where('status','!=','completed')->select('slug')->first();
+            $data['driver'] = Driver::where('device_id', $id)->first();
+            $data['slug'] = Trip::where('user_id', $data['driver']->user_id)->where('status', '!=', 'available')->where('status', '!=', 'completed')->select('slug')->first();
             $basePath = url('/');
-            if($data['slug']!=null){
-                $data['slug']=$basePath.'/live/share/location/'.$data['slug']->slug;
-            }else{
-                $data['slug']='';
+            if ($data['slug'] != null) {
+                $data['slug'] = $basePath . '/live/share/location/' . $data['slug']->slug;
+            } else {
+                $data['slug'] = '';
             }
-            
+
             $data['position'] = $position = $this->DeviceService->live($id);
             // dd($position);
             if (isset($position[0])) {
@@ -252,10 +254,10 @@ class DriversController extends Controller
         $drivers = Driver::all();
         $positions = $this->DeviceService->allLive();
         // dd($positions);
-        foreach($drivers as &$driver){
+        foreach ($drivers as &$driver) {
             $driver->address = "N/A";
-            foreach($positions as $value){
-                if($value->deviceId == $driver->device_id){
+            foreach ($positions as $value) {
+                if ($value->deviceId == $driver->device_id) {
                     $driver->address = $value->address != null ? $value->address : "N/A";
                 }
             }
@@ -263,13 +265,14 @@ class DriversController extends Controller
         // dd($drivers);
         return view('live', compact('drivers', 'id'));
     }
-    public function liveshare(Request $request,$slug=null)  {
+    public function liveshare(Request $request, $slug = null)
+    {
         $this->adminLogin();
-        $trip_details=Trip::with('driver')->where('status','!=','available')->where('status','!=','completed')->where('slug',$slug)->first();
-        if($trip_details!=null){
+        $trip_details = Trip::with('driver')->where('status', '!=', 'available')->where('status', '!=', 'completed')->where('slug', $slug)->first();
+        if ($trip_details != null) {
             $data['driver'] = $trip_details->driver;
             if ($request->ajax()) {
-                if($trip_details->driver!=null){
+                if ($trip_details->driver != null) {
                     $data['position'] = $position = $this->DeviceService->live($trip_details->driver->device_id);
                     // dd($position);
                     if (isset($position[0])) {
@@ -279,13 +282,37 @@ class DriversController extends Controller
                 }
                 return $data;
             }
-            $id=$slug;
-            return view('liveshare', compact('id','trip_details'));
-        }else{
+            $id = $slug;
+            return view('liveshare', compact('id', 'trip_details'));
+        } else {
             return view('expired');
         }
-        
-        
+    }
+    public function groupShare(Request $request, $slug = null)
+    {
+        $this->adminLogin();
+        // $trip_details = Trip::with('driver')->where('status', '!=', 'available')->where('status', '!=', 'completed')->where('slug', $slug)->first();
+        $link = TrackingLink::where('slug',$slug)->with('trips','trips.driver')->first();
+        if (isset($link->trips[0]) ) {
+            $trip_details = $link->trips[0];
+            // dd($trip_details);
+            $data['driver'] = $trip_details->driver;
+            if ($request->ajax()) {
+                if ($trip_details->driver != null) {
+                    $data['position'] = $position = $this->DeviceService->live($trip_details->driver->device_id);
+                    // dd($position);
+                    if (isset($position[0])) {
+                        $position[0]->serverTime = date('h:i A d M, Y', strtotime($position[0]->serverTime));
+                        $data['position'] = $position[0];
+                    }
+                }
+                return $data;
+            }
+            $id = $slug;
+            return view('groupshare', compact('id', 'trip_details','link'));
+        } else {
+            return view('expired');
+        }
     }
     public function playbackIndex($service_id)
     {
@@ -302,29 +329,31 @@ class DriversController extends Controller
         $response = $this->DeviceService->playback($id, $from, $to);
         return $response;
     }
-    public function customNotification(Request $request,$driverId) {
-        $this->validate($request,[
-            'notification'=>'required',
-            'title'=>'required'
-         ],[
-            'notification.required'=>'Notification message is required',
-            'title.required'=>'Title is required',
-         ]);
-         $data=[
-            'title'=>$request->title,
-            'message'=>$request->notification,
-            'sound'=>'notificationfromplatform.mp3',
-         ];
-         $driver=User::find($driverId);
-         if($driver->fcm_token!=null){
-            (new NotificationService)->sendNotification($driver->fcm_token,$data,'admin');
-         }
-         Notification::create(['title'=>$request->title,
-                        'notification'=>$request->notification,
-                        'type'=>'message',
-                        'user_id'=>$driver->id,
-                        'seen'=>0,
-                        ]);
-         return back()->with(['success'=>__('messages.notification_send')]);
+    public function customNotification(Request $request, $driverId)
+    {
+        $this->validate($request, [
+            'notification' => 'required',
+            'title' => 'required'
+        ], [
+            'notification.required' => 'Notification message is required',
+            'title.required' => 'Title is required',
+        ]);
+        $data = [
+            'title' => $request->title,
+            'message' => $request->notification,
+            'sound' => 'notificationfromplatform.mp3',
+        ];
+        $driver = User::find($driverId);
+        if ($driver->fcm_token != null) {
+            (new NotificationService)->sendNotification($driver->fcm_token, $data, 'admin');
+        }
+        Notification::create([
+            'title' => $request->title,
+            'notification' => $request->notification,
+            'type' => 'message',
+            'user_id' => $driver->id,
+            'seen' => 0,
+        ]);
+        return back()->with(['success' => __('messages.notification_send')]);
     }
 }

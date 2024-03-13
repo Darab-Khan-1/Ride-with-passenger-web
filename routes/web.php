@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 
 use App\Http\Controllers\DriversController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LinksController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TripsController;
 use App\Http\Controllers\NotificationController;
@@ -32,6 +33,7 @@ use App\Http\Controllers\NotificationController;
 
 Route::get('/', [RegistrationController::class, 'index']);
 Route::post('/login', [RegistrationController::class, 'login']);
+Route::get('/live/track/events/{sluf}', [DriversController::class, 'groupShare']);
 
 Route::get('/web', [RegistrationController::class, 'web']);
 Route::get('live/share/location/{slug}', [DriversController::class, 'liveshare']);
@@ -64,9 +66,16 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('trip/update', [TripsController::class, 'update']);
     Route::post('active/trip/update', [TripsController::class, 'activeUpdate']);
     Route::get('delete/trip/{id}', [TripsController::class, 'delete']);
-    // Route::get('all/trips/{from}/{to}', [TripsController::class, 'trips'])
-    //Tracking
-    // Route::get('live', [DriversController::class, 'liveIndex']);
+
+    //Links
+    Route::get('links', [LinksController::class, 'index']);
+    Route::get('/new/link', [LinksController::class, 'add']);
+    Route::get('/edit/link/{id}', [LinksController::class, 'edit']);
+    Route::post('/register/link', [LinksController::class, 'create']);
+    Route::post('/update/link', [LinksController::class, 'update']);
+    Route::get('/delete/link/{id}', [LinksController::class, 'delete']);
+    
+
     Route::get('live/location/{device_id}', [DriversController::class, 'live']);
     Route::get('all/live/location', [DriversController::class, 'allLocations']);
     
