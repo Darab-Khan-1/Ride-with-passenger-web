@@ -277,7 +277,7 @@ class TripController extends Controller
                 return $this->apiJsonResponse(400, "You have an ongoing trip. Please end it first", '', "");
             }
             $trip = Trip::find($request->trip_id);
-            if ($trip->status != 'available') {
+            if ($trip->status != 'accepted') {
                 return $this->apiJsonResponse(400, "This trip cannot be started", '', "");
             }
             $trip->started_at = date('Y-m-d H:i:s', strtotime('now'));
