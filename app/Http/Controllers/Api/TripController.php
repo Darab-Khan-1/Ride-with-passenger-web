@@ -218,7 +218,8 @@ class TripController extends Controller
         try {
             $trip = Trip::find($request->trip_id);
             $trip->status = $request->status;
-            $trip->user_id = null;
+            if ($request->status == 'rejected')
+                $trip->user_id = null;
             $trip->save();
             $data = [
                 'message' => 'Trip has been ' . $request->status,
