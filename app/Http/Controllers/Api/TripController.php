@@ -325,7 +325,7 @@ class TripController extends Controller
                     $stop->location = $value->location;
                     $stop->lat = $value->lat;
                     $stop->long = $value->long;
-                    $stop->type = 'stop';
+                    $stop->type = $value->type;
                     $stop->description = $value->description;
                     $stop->save();
                 }
