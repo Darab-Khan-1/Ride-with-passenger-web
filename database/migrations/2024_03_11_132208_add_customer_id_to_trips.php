@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('trips', function (Blueprint $table) {
             $table->integer('customer_id')->after('customer_phone')->nullable();
-            $table->integer('customer_company')->after('customer_phone')->nullable();
+            $table->string('customer_company')->after('customer_phone')->nullable();
             
         });
     }
