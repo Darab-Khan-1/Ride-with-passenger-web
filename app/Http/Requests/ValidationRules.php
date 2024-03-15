@@ -65,6 +65,18 @@ class ValidationRules
         ];
     }
 
+
+    public function addStopValidationRules(): array
+    {
+        return [
+            'trip_id' => 'required|exists:trips,id',
+            'location' => 'required',
+            'lat' => 'required',
+            'long' => 'required',
+            'description' => 'required',
+        ];
+    }
+
     public function stopTripValidationRules(): array
     {
         return [

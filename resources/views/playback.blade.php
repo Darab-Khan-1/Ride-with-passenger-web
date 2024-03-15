@@ -139,9 +139,36 @@
                                                         <img src="{{ $value->avatar }}" alt="Profile Image"
                                                             class="user-avatar">
                                                     </div>
-                                                    <div class="user-details">
-                                                        <p class="user-name">{{ $value->name }}</p>
-                                                        <p class="user-number">{{ $value->phone }}</p>
+                                                    <div class="user-details row">
+                                                        <div class="col-md-10">
+                                                            <p class="user-name">{{ $value->name }}</p>
+                                                            <p class="user-number">{{ $value->phone }}</p>
+
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="dropdown dropdown-inline">
+                                                                <a href="#" class="btn btn-clean btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    <i class="ki ki-bold-more-hor"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-md dropdown-menu-right" style="">
+                                                                    <!--begin::Naviigation-->
+                                                                    <ul class="navi">
+                                                                        @foreach ($value->trips as $trip)
+                                                                        <li class="navi-item">
+                                                                            <a href="{{ url('playback/index',$trip->id) }}" class="navi-link">
+                                                                                <span class="navi-icon">
+                                                                                    <img src="{{ asset('assets/media/svg/icons/Navigation/Route.svg') }}"/>
+                                                                                </span>
+                                                                                <span class="navi-text">{{ $trip->unique_id . ' - ' . $trip->event_name }}</span>
+                                                                            </a>
+                                                                        </li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                    <!--end::Naviigation-->
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
                                                     </div>
                                                 </li>
                                             @endforeach

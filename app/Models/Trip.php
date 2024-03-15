@@ -22,6 +22,6 @@ class Trip extends Model
     }
     public function trackingLinks()
     {
-        return $this->belongsToMany(TrackingLink::class);
+        return $this->belongsToMany(TrackingLink::class,'tracking_links_trips');
     }
 }

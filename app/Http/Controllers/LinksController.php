@@ -22,7 +22,7 @@ class LinksController extends Controller
 
     public function add()
     {
-        $trips = Trip::whereIn('status', ['available', 'active'])->get();
+        $trips = Trip::whereIn('status', ['available', 'active'])->with('driver')->get();
         // dd($trips);
         return view('links.create', compact('trips'));
     }

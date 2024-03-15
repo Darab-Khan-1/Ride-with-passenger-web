@@ -214,6 +214,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card card-custom  my-5" id="estimated_times"
+                            style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;display:none">
+                            <div class="card-body p-5">
+                                <div id="times_all" class="row">
+
+                                </div>
+                            </div>
+                            {{-- <div class="card-footer">
+                        </div> --}}
+                        </div>
                         <div class="card card-custom  my-5" style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                             <div class="card-body p-5">
                                 <div id="map" style="height: 85vh"></div>
@@ -351,8 +361,12 @@
             map: googleMap,
             icon: {
                 url: 'data:image/svg+xml,' + encodeURIComponent(svgContent),
-                size: new google.maps.Size(24, 24) // Set the size
-            }
+                size: new google.maps.Size(4, 4) // Set the size
+            },
+            label: {
+                text: '-', // Label text from the data
+                className: 'badge badge-sm badge-warning  custom-marker-label', // Custom class name for the label
+            },
 
         });
 
@@ -378,7 +392,7 @@
                 },
                 icon: {
                     url: 'data:image/svg+xml,' + encodeURIComponent(svgContent),
-                    size: new google.maps.Size(24, 24) // Set the size
+                    size: new google.maps.Size(4, 4) // Set the size
                 }
 
             });
@@ -439,6 +453,28 @@
                         lat: data.latitude,
                         lng: data.longitude
                     });
+
+                    // Example usage
+                    var driverLat = data.latitude; // Driver's latitude
+                    var driverLng = data.longitude; // Driver's longitude
+                    var stops = response.trip.stops
+
+                    calculateEstimatedTime(driverLat, driverLng, stops)
+                        .then(function(estimatedTimes) {
+                            // console.log('Estimated times:', estimatedTimes);
+                            let html = ''
+                            if (estimatedTimes.length > 0) {
+                                estimatedTimes.forEach((element,index) => {
+                                    html += `<span class="col-md-3 px-2">${element.stop.substring(0,25)}...ETA ${element.estimatedTime}</span>`
+                                })
+                                $("#estimated_times").show()
+                                $("#times_all").html(html)
+                            }
+                        })
+                        .catch(function(error) {
+                            console.error('Error calculating estimated times:', error);
+                        });
+
                 } else {
                     clearInterval(interval); // Clear previous interval
                     toastr.error("<span class='counter-mirror'>Driver data not found.</span>");
@@ -468,82 +504,6 @@
 `;
 
 
-    // function showAll() {
-
-    //     document.getElementById("driver_info").innerHTML = '-'
-    //     // document.getElementById("time_info").innerHTML = '-'
-    //     document.getElementById("position_info").innerHTML = '-'
-    //     clearInterval(interval);
-    //     refreshMap()
-    //     clearMarkers()
-    //     markers = [];
-    //     $.ajax({
-    //         url: "{{ url('all/live/location/') }}",
-    //         method: "GET",
-    //         success: function(dataArray) {
-    //             if (dataArray.length > 0) {
-    //                 dataArray.forEach(function(data) {
-    //                     var marker = new google.maps.Marker({
-    //                         position: {
-    //                             lat: data.latitude,
-    //                             lng: data.longitude
-    //                         },
-    //                         icon: {
-    //                             url: 'data:image/svg+xml,' + encodeURIComponent(svgContent),
-    //                             size: new google.maps.Size(24, 24) // Set the size
-    //                         },
-    //                         map: googleMap,
-    //                     });
-
-    //                     markers.push(marker)
-
-    //                     let online = '<span class="status-dot offline"></span>'
-    //                     if (data.online) {
-    //                         online = '<span class="status-dot online"></span>'
-    //                     }
-    //                     // Replace placeholders in the popup template with data
-    //                     var popupContent = popupTemplate
-    //                         // .replace('{online}', online)
-    //                         .replace('{href}', "{{ url('live/location') }}" + "/" + data.device_id)
-    //                         .replace('{avatar}', data.avatar)
-    //                         .replace('{name}', data.name)
-    //                         .replace('{phone}', data.phone)
-    //                         .replace('{speed}', (data.speed * 1.85).toFixed(1) + " kph")
-    //                         .replace('{time}', data.serverTime)
-    //                         .replace('{address}', data.address);
-
-    //                     // Create a popup for the marker
-    //                     var infowindow = new google.maps.InfoWindow({
-    //                         content: popupContent,
-    //                     });
-
-    //                     // Add a click event to open the popup when the marker is clicked
-    //                     marker.addListener('click', function() {
-    //                         infowindow.open(googleMap, marker);
-    //                     });
-    //                 });
-
-    //                 var bounds = new google.maps.LatLngBounds();
-
-    //                 // Loop through the markers and extend the bounds for each marker's position
-    //                 markers.forEach(function(marker) {
-    //                     bounds.extend(marker.getPosition());
-    //                 });
-
-    //                 // Fit the map to the bounds
-    //                 googleMap.fitBounds(bounds);
-    //             } else {
-    //                 clearInterval(interval); // Clear previous interval
-    //                 console.log("No data found.");
-    //             }
-    //         },
-    //         error: function() {
-    //             clearInterval(interval); // Clear previous interval
-    //             toastr.error("Driver data not found")
-
-    //         }
-    //     });
-    // }
 
 
     const driverMarkersMap = new Map();
@@ -585,7 +545,8 @@
                             infowindow.setContent(popupContent);
                         } else {
                             // Create a new marker for the driver
-                            // const marker = new google.maps.Marker({
+                            var userImageURL = data.avatar;
+                            //  marker = new google.maps.Marker({
                             //     position: {
                             //         lat: data.latitude,
                             //         lng: data.longitude
@@ -593,11 +554,12 @@
                             //     icon: {
                             //         url: 'data:image/svg+xml,' + encodeURIComponent(
                             //             svgContent),
-                            //         size: new google.maps.Size(24, 24)
+                            //         size: new google.maps.Size(4, 4)
                             //     },
+
+
                             //     map: googleMap,
                             // });
-                            var userImageURL = data.avatar;
                             // userImageURL = `<svg xmlns="http://www.w3.org/2000/svg"
                             //         xmlns:xlink="http://www.w3.org/1999/xlink">
                             //     <image width="80" height="80"
@@ -613,12 +575,11 @@
                                 type: "poly",
                             };
                             console.log(userImageURL);
-                            var markerSize = 30; // Size of the marker icon
+                            // var markerSize = 30; // Size of the marker icon
 
                             // Create the round marker icon
-                            var roundMarkerIcon = createRoundMarkerIcon(userImageURL, markerSize);
+                            // var roundMarkerIcon = createRoundMarkerIcon(userImageURL, markerSize);
 
-                            console.log(roundMarkerIcon);
                             // Create the marker using the round marker icon
                             const marker = new google.maps.Marker({
                                 position: {
@@ -627,13 +588,19 @@
                                 },
                                 map: googleMap,
                                 icon: {
-                                    url: roundMarkerIcon, // Use the round marker icon
-                                    scaledSize: new google.maps.Size(markerSize,
-                                        markerSize), // Adjust the size of the image
-                                    anchor: new google.maps.Point(markerSize / 2,
-                                        markerSize / 2), // Center the image as the marker
+                                    // url: 'data:image/svg+xml,' + encodeURIComponent(svgContent),
+                                    url: data.avatar,
+                                    scaledSize: new google.maps.Size(40, 40),
                                 },
-                                title: 'User Marker', // Set a title for the marker
+                                label: {
+                                    // text: `<img src="${userImageURL}" width="20" height="20">`, // Label text from the data
+                                    text: `-`, // Label text from the data
+                                    className: 'badge badge-sm badge-warning  custom-marker-label', // Custom class name for the label
+                                },
+                                // labelContent: `<img src="${userImageURL}" width="20" height="20">`, // HTML content for the label
+                                // labelClass: 'custom-marker-label', // Custom class name for the label
+
+                                // title: 'User Marker', // Set a title for the marker
 
                                 // icon: {
                                 //     url: userImageURL,
@@ -784,5 +751,52 @@
 
         // Clear the markers map
         driverMarkersMap.clear();
+    }
+
+
+
+    function calculateDuration(start, end) {
+        return new Promise(function(resolve, reject) {
+            var request = {
+                origin: start,
+                destination: end,
+                travelMode: 'DRIVING'
+            };
+
+            var directionsService = new google.maps.DirectionsService();
+            directionsService.route(request, function(result, status) {
+                if (status == 'OK') {
+                    var route = result.routes[0];
+                    var duration = route.legs[0].duration.text; // Duration in human-readable format
+                    resolve(duration);
+                } else {
+                    console.error('Error calculating duration:', status);
+                    reject('Error'); // Pass error message if there's an error
+                }
+            });
+        });
+    }
+
+    // Function to calculate the estimated time to reach each stop from the driver's position
+    async function calculateEstimatedTime(driverLat, driverLng, stops) {
+        var estimatedTimes = [];
+
+        for (let i = 0; i < stops.length; i++) {
+            if (stops[i].datetime === null) {
+                try {
+                    let duration = await calculateDuration(driverLat + ',' + driverLng, stops[i].lat + ',' + stops[
+                        i].long);
+                    estimatedTimes.push({
+                        stop: stops[i].location,
+                        estimatedTime: duration
+                    });
+                } catch (error) {
+                    console.error('Error calculating estimated time:', error);
+                    // Handle error
+                }
+            }
+        }
+
+        return estimatedTimes;
     }
 </script>

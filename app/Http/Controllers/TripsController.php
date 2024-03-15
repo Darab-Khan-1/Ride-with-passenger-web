@@ -98,166 +98,22 @@ class TripsController extends Controller
             $client->setAccessToken($accessToken);
             $service = new Google_Service_Calendar($client);
         }
-        if ($request->ajax()) {
-            if (Auth::user()->type == "superadmin" && (session('allowed_by_google') != null && session('allowed_by_google') > 0)) {
-
-                $now = new DateTime('now');
-                $yesterday = $now->modify('-1 day')->format('Y-m-d');
-                $nextWeek = $now->modify('+3 days')->format('Y-m-d');
-                $trips = Trip::whereBetween('pickup_date', [$yesterday, $nextWeek])->get();
-                // dd(count($trips));
-                $calendarId = 'rw.passengers@gmail.com';
-
-                // $batchRequests = [];
-
-                // foreach ($trips as $trip) {
-                //     if ($trip->event_id !== null) {
-                //         // Add batch request to fetch event details for the trip
-                //         $batchRequests[$trip->id] = $service->events->get($calendarId, $trip->event_id);
-                //     }
-                // }
-
-                // // Execute batch requests
-                // $batchResults = $service->events->executeBatch($batchRequests);
-
-                // foreach ($trips as $trip) {
-                //     if (isset($batchResults[$trip->id])) {
-                //         $event = $batchResults[$trip->id];
-                //         // Extract event details
-                //         $startTime = $event->start->dateTime;
-                //         $endTime = $event->end->dateTime;
-                //         $startTime = str_replace('T', " ", $startTime);
-                //         $startTime = str_replace('Z', "", $startTime);
-                //         $endTime = str_replace('T', " ", $endTime);
-                //         $endTime = str_replace('Z', "", $endTime);
-
-                //         $event_name = $event->getSummary();
-                //         $description = $event->getDescription();
-
-                //         // Check if trip details need to be updated
-                //         if ($startTime !== $trip->pickup_date || $endTime !== $trip->delivery_date || $description !== $trip->description || $event_name !== $trip->event_name) {
-                //             // Update trip details
-                //             $trip->pickup_date = ($startTime === "1970-01-01 00:00:00" ? now() : date('Y-m-d H:i:s', strtotime($startTime)));
-                //             $trip->delivery_date = ($endTime === "1970-01-01 00:00:00" ? now() : date('Y-m-d H:i:s', strtotime($endTime)));
-                //             $trip->description = $description;
-                //             $trip->event_name = $event_name;
-                //             $trip->save();
-                //         }
-                //     }
-                // }
-                foreach ($trips as $key => &$value) {
-                    if ($value->event_id != null) {
-                        $eventId = $value->event_id;
-                        $event = $service->events->get($calendarId, $eventId);
-                        // dd("HI");
-                        $startTime = $event->start->dateTime;
-                        $endTime = $event->end->dateTime;
-                        $startTime = str_replace('T', " ", $startTime);
-                        $startTime = str_replace('Z', "", $startTime);
-                        $endTime = str_replace('T', " ", $endTime);
-                        $endTime = str_replace('Z', "", $endTime);
-
-                        $event_name = $event->getSummary();
-                        $description = $event->getDescription();
-                        if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
-                            $startTime = (date('Y-m-d H:i:s', strtotime($startTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s', strtotime('now')) : date('Y-m-d H:i:s', strtotime($startTime)));
-                            $endTime = (date('Y-m-d H:i:s', strtotime($endTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s', strtotime('now')) : date('Y-m-d H:i:s', strtotime($endTime)));
-                            $value->pickup_date = $startTime;
-                            $value->delivery_date = $endTime;
-                            $value->description = $description;
-                            $value->event_name = $event_name;
-                            $value->save();
-                        }
-                    }
-                }
-            }
-
-
-            $trips = Trip::where('status', 'available')->orWhereNull('status')->with('stops', 'driver')
-                ->orderby('pickup_date', 'asc')
-                ->get();
-            // dd($trips);
-            // {{ dd($trips->trips->id) }}
-            return DataTables::of($trips)->make(true);
-        }
         if (Auth::user()->type == "superadmin" && (session('allowed_by_google') != null && session('allowed_by_google') > 0)) {
 
             try {
-                // $events = $service->events->listEvents('rw.passengers@gmail.com');
-                // dd($events);
-                // dd($events->getItems(3)[0]->getId());
                 $events = [];
                 $pageToken = NULL;
                 $now = new DateTime('now');
                 $yesterday = $now->modify('-1 day')->format('Y-m-d');
-                $nextWeek = $now->modify('+3 days')->format('Y-m-d');
-
-                do {
-                    $calendarEvents = $service->events->listEvents('rw.passengers@gmail.com', [
-                        'timeMin' => $yesterday . 'T00:00:00Z', // Events starting from yesterday
-                        'timeMax' => $nextWeek . 'T23:59:59Z',   // Events until next 7 days
-                        'pageToken' => $pageToken
-                    ]);
-
-                    $events = array_merge($events, $calendarEvents->getItems());
-                    $pageToken = $calendarEvents->getNextPageToken();
-                } while ($pageToken);
-
-
-                foreach ($events as $key => $event) {
-                    $trip = Trip::where('event_id', $event->getId())->first();
-                    if ($trip == null) {
-                        $last = Trip::latest()->first();
-                        if ($last == null) {
-                            $unique = "GO-00001";
-                        } else {
-                            $last = $last->unique_id;
-                            $numericPart = substr($last, 3);
-                            $nextNumericPart = str_pad((int)$numericPart + 1, strlen($numericPart), '0', STR_PAD_LEFT);
-                            $unique = 'GO-' . $nextNumericPart;
-                        }
-                        $startTime = str_replace('T', " ", $event->getStart()->getDateTime());
-                        $startTime = str_replace('Z', "", $startTime);
-                        $endTime = str_replace('T', " ", $event->getEnd()->getDateTime());
-                        $endTime = str_replace('Z', "", $endTime);
-                        $new = new Trip();
-                        $new->unique_id = $unique;
-                        $new->event_id = $event->getId();
-                        $new->pickup_date = (date('Y-m-d H:i:s', strtotime($startTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s', strtotime('now')) : date('Y-m-d H:i:s', strtotime($startTime)));
-                        $new->delivery_date = (date('Y-m-d H:i:s', strtotime($endTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s', strtotime('now')) : date('Y-m-d H:i:s', strtotime($endTime)));
-                        $new->event_name = $event->getSummary();
-                        $new->description = $event->getDescription();
-                        $new->save();
-                    }
-                }
-
-
-                $trips = Trip::where('status', 'available')->whereNull('event_id')->get();
-                foreach ($trips as &$trip) {
-                    $pickupDateTime = new DateTime($trip->pickup_date);
-                    $formattedPickupDateTime = $pickupDateTime->format('Y-m-d\TH:i:s\Z');
-                    $deliveryDateTime = new DateTime($trip->delivery_date);
-                    $formattedDeliveryDateTime = $deliveryDateTime->format('Y-m-d\TH:i:s\Z');
-
-                    $event = new Google_Service_Calendar_Event([
-                        'summary' => $request->event_name,
-                        'description' => $trip->description,
-                        'start' => [
-                            'dateTime' => $formattedPickupDateTime,
-                            'timeZone' => 'UTC', // Adjust as needed
-                        ],
-                        'end' => [
-                            'dateTime' => $formattedDeliveryDateTime,
-                            'timeZone' => 'UTC', // Adjust as needed
-                        ],
-                    ]);
-                    $calendarId = 'rw.passengers@gmail.com';
-                    // $calendarId = 'primary';
-                    $event = $service->events->insert($calendarId, $event);
-                    $trip->event_id  = $event->getId();
-                    $trip->save();
-                    session(['allowed_by_google' => 3]);
-                }
+                $nextWeek = $now->modify('now')->format('Y-m-d');
+                $calendarEvents = $service->events->listEvents('rw.passengers@gmail.com', [
+                    'timeMin' => $yesterday . 'T00:00:00Z',
+                    'timeMax' => $nextWeek . 'T23:59:59Z',
+                    'pageToken' => $pageToken
+                ]);
+                $events = array_merge($events, $calendarEvents->getItems());
+                $pageToken = $calendarEvents->getNextPageToken();
+                session(['allowed_by_google' => 3]);
             } catch (\Exception $e) {
                 $error = json_decode($e->getMessage(), true);
                 // dd($e);
@@ -282,7 +138,152 @@ class TripsController extends Controller
         }
         $data['available'] = Trip::whereIn('status', ['available'])->count();
         $data['incomplete'] = Trip::whereNull('status')->count();
-        return view('trips.trips', compact('data'));
+        $customers = Customer::all();
+        return view('trips.trips', compact('data', 'customers'));
+    }
+
+    public function sync(Request $request)
+    {
+
+        if (Auth::user()->type == "superadmin" && (session('allowed_by_google') != null && session('allowed_by_google') > 0)) {
+
+            $user = User::where('type', 'superadmin')->first();
+            $accessToken = $user->access_token;
+            $client = $this->getClient();
+            $client->setAccessToken($accessToken);
+            $service = new Google_Service_Calendar($client);
+
+            $from = new DateTime($request->from);
+            $to = new DateTime($request->to);
+            $yesterday = $from->modify('-1 day')->format('Y-m-d');
+            $nextWeek = $to->modify('+3 days')->format('Y-m-d');
+            $trips = Trip::whereBetween('pickup_date', [$yesterday, $nextWeek])->get();
+            // dd(count($trips));
+            $calendarId = 'rw.passengers@gmail.com';
+
+            foreach ($trips as $key => &$value) {
+                if ($value->event_id != null) {
+                    $eventId = $value->event_id;
+                    $event = $service->events->get($calendarId, $eventId);
+                    // dd("HI");
+                    $startTime = $event->start->dateTime;
+                    $endTime = $event->end->dateTime;
+                    $startTime = str_replace('T', " ", $startTime);
+                    $startTime = str_replace('Z', "", $startTime);
+                    $endTime = str_replace('T', " ", $endTime);
+                    $endTime = str_replace('Z', "", $endTime);
+
+                    $event_name = $event->getSummary();
+                    $description = $event->getDescription();
+                    if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
+                        $startTime = (date('Y-m-d H:i:s', strtotime($startTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s', strtotime('now')) : date('Y-m-d H:i:s', strtotime($startTime)));
+                        $endTime = (date('Y-m-d H:i:s', strtotime($endTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s', strtotime('now')) : date('Y-m-d H:i:s', strtotime($endTime)));
+                        $value->pickup_date = $startTime;
+                        $value->delivery_date = $endTime;
+                        $value->description = $description;
+                        $value->event_name = $event_name;
+                        $value->save();
+                    }
+                }
+            }
+
+
+
+            $events = [];
+            $pageToken = NULL;
+            $from = new DateTime($request->from);
+            $to = new DateTime($request->to);
+            $yesterday = $from->modify('-1 day')->format('Y-m-d');
+            $nextWeek = $to->modify('+3 days')->format('Y-m-d');
+
+            do {
+                $calendarEvents = $service->events->listEvents('rw.passengers@gmail.com', [
+                    'timeMin' => $yesterday . 'T00:00:00Z', // Events starting from yesterday
+                    'timeMax' => $nextWeek . 'T23:59:59Z',   // Events until next 7 days
+                    'pageToken' => $pageToken
+                ]);
+
+                $events = array_merge($events, $calendarEvents->getItems());
+                $pageToken = $calendarEvents->getNextPageToken();
+            } while ($pageToken);
+
+
+            foreach ($events as $key => $event) {
+                $trip = Trip::where('event_id', $event->getId())->first();
+                if ($trip == null) {
+                    $last = Trip::latest()->first();
+                    if ($last == null) {
+                        $unique = "GO-00001";
+                    } else {
+                        $last = $last->unique_id;
+                        $numericPart = substr($last, 3);
+                        $nextNumericPart = str_pad((int)$numericPart + 1, strlen($numericPart), '0', STR_PAD_LEFT);
+                        $unique = 'GO-' . $nextNumericPart;
+                    }
+                    $startTime = str_replace('T', " ", $event->getStart()->getDateTime());
+                    $startTime = str_replace('Z', "", $startTime);
+                    $endTime = str_replace('T', " ", $event->getEnd()->getDateTime());
+                    $endTime = str_replace('Z', "", $endTime);
+                    $new = new Trip();
+                    $new->unique_id = $unique;
+                    $new->event_id = $event->getId();
+                    $new->pickup_date = (date('Y-m-d H:i:s', strtotime($startTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s', strtotime('now')) : date('Y-m-d H:i:s', strtotime($startTime)));
+                    $new->delivery_date = (date('Y-m-d H:i:s', strtotime($endTime)) == "1970-01-01 00:00:00" ? date('Y-m-d H:i:s', strtotime('now')) : date('Y-m-d H:i:s', strtotime($endTime)));
+                    $new->event_name = $event->getSummary();
+                    $new->description = $event->getDescription();
+                    $new->save();
+                }
+            }
+
+
+            $trips = Trip::where('status', 'available')->whereNull('event_id')->get();
+            foreach ($trips as &$trip) {
+                $pickupDateTime = new DateTime($trip->pickup_date);
+                $formattedPickupDateTime = $pickupDateTime->format('Y-m-d\TH:i:s\Z');
+                $deliveryDateTime = new DateTime($trip->delivery_date);
+                $formattedDeliveryDateTime = $deliveryDateTime->format('Y-m-d\TH:i:s\Z');
+
+                $event = new Google_Service_Calendar_Event([
+                    'summary' => $request->event_name,
+                    'description' => $trip->description,
+                    'start' => [
+                        'dateTime' => $formattedPickupDateTime,
+                        'timeZone' => 'UTC', // Adjust as needed
+                    ],
+                    'end' => [
+                        'dateTime' => $formattedDeliveryDateTime,
+                        'timeZone' => 'UTC', // Adjust as needed
+                    ],
+                ]);
+                $calendarId = 'rw.passengers@gmail.com';
+                // $calendarId = 'primary';
+                $event = $service->events->insert($calendarId, $event);
+                $trip->event_id  = $event->getId();
+                $trip->save();
+            }
+            return response()->json(['response' => 'success']);
+        } else {
+            return response()->json(['response' => 'unauthorized']);
+        }
+    }
+    public function availableTrips($from, $to, $customer)
+    {
+        // if ($request->ajax()) {
+
+
+        $trips = Trip::where('status', 'available')
+            ->whereBetween('pickup_date', [$from, $to])
+            ->orWhereNull('status')->with('stops', 'driver','trackingLinks');
+
+        if ($customer != '0' && $customer != "undefined") {
+            $trips->where('customer_id', $customer);
+        }
+        $trips = $trips->orderby('pickup_date', 'asc');
+        $trips = $trips->get();
+        // dd($trips);
+        // {{ dd($trips->trips->id) }}
+        return DataTables::of($trips)->make(true);
+        // }
     }
 
     public function active(Request $request, $status = 'all')
@@ -298,11 +299,7 @@ class TripsController extends Controller
         if ($request->ajax()) {
             if (Auth::user()->type == "superadmin" && (session('allowed_by_google') != null && session('allowed_by_google') > 0)) {
 
-                $now = new DateTime('now');
-
-                $yesterday = $now->modify('-1 day')->format('Y-m-d');
-                $nextWeek = $now->modify('+3 days')->format('Y-m-d');
-                $trips = Trip::whereBetween('pickup_date', [$yesterday, $nextWeek])->get();
+                $trips = Trip::whereNotIn('status', ['available', 'completed'])->whereNotNull('status')->get();
                 $calendarId = 'rw.passengers@gmail.com';
                 foreach ($trips as $key => $value) {
                     if ($value->event_id != null) {
@@ -326,13 +323,13 @@ class TripsController extends Controller
                 }
             }
             if ($status == 'all') {
-                $trips = Trip::whereNotIn('status', ['available', 'completed'])->whereNotNull('status')->with('stops', 'driver')->orderby('pickup_date', 'asc')->get();
+                $trips = Trip::whereNotIn('status', ['available', 'completed'])->whereNotNull('status')->with('trackingLinks', 'stops', 'driver')->orderby('pickup_date', 'asc')->get();
             } else if ($status == 'pick') {
-                $trips = Trip::where('status', 'pickup')->with('stops', 'driver')->orderby('pickup_date', 'asc')->get();
+                $trips = Trip::where('status', 'pickup')->with('trackingLinks', 'stops', 'driver')->orderby('pickup_date', 'asc')->get();
             } else if ($status == 'drop') {
-                $trips = Trip::where('status', 'destination')->with('stops', 'driver')->orderby('pickup_date', 'asc')->get();
+                $trips = Trip::where('status', 'destination')->with('trackingLinks', 'stops', 'driver')->orderby('pickup_date', 'asc')->get();
             } else if ($status == 'intransit') {
-                $trips = Trip::where('status', 'in-transit')->with('stops', 'driver')->orderby('pickup_date', 'asc')->get();
+                $trips = Trip::where('status', 'in-transit')->with('trackingLinks', 'stops', 'driver')->orderby('pickup_date', 'asc')->get();
             }
 
             return DataTables::of($trips)->make(true);
@@ -379,31 +376,31 @@ class TripsController extends Controller
             $service = new Google_Service_Calendar($client);
         }
         if ($request->ajax()) {
-            if (Auth::user()->type == "superadmin" && (session('allowed_by_google') != null && session('allowed_by_google') > 0)) {
+            // if (Auth::user()->type == "superadmin" && (session('allowed_by_google') != null && session('allowed_by_google') > 0)) {
 
-                $trips = Trip::where('id', '>', 0)->get();
-                $calendarId = 'rw.passengers@gmail.com';
-                foreach ($trips as $key => $value) {
-                    if ($value->event_id != null) {
+            //     $trips = Trip::where('id', '>', 0)->get();
+            //     $calendarId = 'rw.passengers@gmail.com';
+            //     foreach ($trips as $key => $value) {
+            //         if ($value->event_id != null) {
 
-                        $eventId = $value->event_id;
-                        $event = $service->events->get($calendarId, $eventId);
-                        // dd("HI");
-                        $startTime = $event->start->dateTime;
-                        $endTime = $event->end->dateTime;
-                        $startTime = str_replace('T', " ", $startTime);
-                        $startTime = str_replace('Z', "", $startTime);
-                        $endTime = str_replace('T', " ", $endTime);
-                        $endTime = str_replace('Z', "", $endTime);
+            //             $eventId = $value->event_id;
+            //             $event = $service->events->get($calendarId, $eventId);
+            //             // dd("HI");
+            //             $startTime = $event->start->dateTime;
+            //             $endTime = $event->end->dateTime;
+            //             $startTime = str_replace('T', " ", $startTime);
+            //             $startTime = str_replace('Z', "", $startTime);
+            //             $endTime = str_replace('T', " ", $endTime);
+            //             $endTime = str_replace('Z', "", $endTime);
 
-                        $event_name = $event->getSummary();
-                        $description = $event->getDescription();
-                        if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
-                            Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
-                        }
-                    }
-                }
-            }
+            //             $event_name = $event->getSummary();
+            //             $description = $event->getDescription();
+            //             if ($startTime != $value->pickup_date || $endTime != $value->delivery_date || $description != $value->description || $event_name != $value->event_name) {
+            //                 Trip::where('id', $value->id)->update(['pickup_date' => $startTime, 'delivery_date' => $endTime, 'description' => $description, 'event_name' => $event_name]);
+            //             }
+            //         }
+            //     }
+            // }
             $trips = Trip::where('status', 'completed')->with('stops', 'driver')->orderby('updated_at', 'desc')->get();
             return DataTables::of($trips)->make(true);
         }
@@ -474,7 +471,7 @@ class TripsController extends Controller
         $drivers = Driver::where('id', '>', 0)->with('user')->get();
         $customers = Customer::with('locations')->get();
         // dd($customers);
-        return view('trips.create', compact('drivers','customers'));
+        return view('trips.create', compact('drivers', 'customers'));
     }
 
     public function create(Request $request)
@@ -517,6 +514,7 @@ class TripsController extends Controller
         $trip->drop_long = $request->drop_long;
         $trip->event_name = $request->event_name;
         $trip->description = $request->description;
+        $trip->reminder_time = $request->reminder_time;
         $trip->slug = $uniqueRandomSlug;
         $trip->status = 'available';
         $trip->save();
@@ -599,7 +597,7 @@ class TripsController extends Controller
         $driverValues = $request->input('driver_value');
 
         // dd($driverValues);
-        if($trip_field_name != null) {
+        if ($trip_field_name != null) {
             foreach ($driverValues as $key => $name) {
                 $attribute = new Attribute();
                 $attribute->value = $trip_field_value[$key];
@@ -622,11 +620,11 @@ class TripsController extends Controller
         // dd($trip);
         $customers = Customer::with('locations')->get();
         if ($trip->status == 'available' || $trip->status == null) {
-            return view('trips.edit', compact('trip', 'drivers', 'attributes','customers'));
+            return view('trips.edit', compact('trip', 'drivers', 'attributes', 'customers'));
         }
         // dd($trip);
 
-        return view('trips.edit_active', compact('trip','customers','attributes'));
+        return view('trips.edit_active', compact('trip', 'customers', 'attributes', 'drivers'));
     }
 
     public function duplicate($id)
@@ -662,6 +660,7 @@ class TripsController extends Controller
         $trip->drop_lat = $request->drop_lat;
         $trip->drop_long = $request->drop_long;
         $trip->event_name = $request->event_name;
+        $trip->reminder_time = $request->reminder_time;
         $trip->description = $request->description;
         $randomSlug = Str::random(8);
         $uniqueRandomSlug = $randomSlug . '_' . time();
@@ -741,23 +740,23 @@ class TripsController extends Controller
         $trip_ids = $request->input('attribute_id');
         // dd($request->input('attribute_id'));
         Attribute::where('refrence_id', $request->trip_id)
-        ->whereNotIn('id', $trip_ids ?? [])
-        ->delete();
+            ->whereNotIn('id', $trip_ids ?? [])
+            ->delete();
 
         // Check if there are any attribute IDs
         if ($trip_ids != null) {
             foreach ($trip_ids as $key => $id) {
                 $attribute = Attribute::find($id);
-        
+
                 if (!$attribute) {
                     $attribute = new Attribute();
                     $attribute->refrence_id = $request->trip_id;
                 }
-        
+
                 $attribute->value = $trip_field_value[$key] ?? null;
                 $attribute->name = $trip_field_name[$key] ?? null;
                 $attribute->visible_to_driver = $driverValues[$key];
-        
+
                 $attribute->save();
                 Attribute::where('refrence_id', $request->trip_id)
                     ->whereNotIn('id', $trip_ids)
@@ -770,12 +769,12 @@ class TripsController extends Controller
 
     public function activeUpdate(Request $request)
     {
-        // dd($request->all());
         $decodedJson = html_entity_decode($request->stops);
         $stops = json_decode($decodedJson, true);
         $stops_descriptions = json_decode($request->stop_descriptions, true);
 
         $trip = Trip::find($request->trip_id);
+        // dd($request->user_id != $trip->user_id);
         // $trip->user_id = $request->user_id;
         $trip->pickup_date = $request->pickup_date;
         $trip->delivery_date = $request->delivery_date;
@@ -791,8 +790,15 @@ class TripsController extends Controller
         $trip->long = $request->long;
         $trip->drop_lat = $request->drop_lat;
         $trip->drop_long = $request->drop_long;
+        $trip->reminder_time = $request->reminder_time;
         $trip->event_name = $request->event_name;
         $trip->description = $request->description;
+
+        if ($request->user_id != $trip->user_id) {
+            $trip->old_user = $trip->user_id;
+            $trip->old_user_removed_at = now()->format("Y-m-d H:i:s");
+            $trip->user_id = $request->user_id;
+        }
         // if ($trip->status == null) {
         //     $trip->status = 'available';
         // }
@@ -901,23 +907,23 @@ class TripsController extends Controller
         $trip_ids = $request->input('attribute_id');
         // dd($request->input('attribute_id'));
         Attribute::where('refrence_id', $request->trip_id)
-        ->whereNotIn('id', $trip_ids ?? [])
-        ->delete();
+            ->whereNotIn('id', $trip_ids ?? [])
+            ->delete();
 
         // Check if there are any attribute IDs
         if ($trip_ids != null) {
             foreach ($trip_ids as $key => $id) {
                 $attribute = Attribute::find($id);
-        
+
                 if (!$attribute) {
                     $attribute = new Attribute();
                     $attribute->refrence_id = $request->trip_id;
                 }
-        
+
                 $attribute->value = $trip_field_value[$key] ?? null;
                 $attribute->name = $trip_field_name[$key] ?? null;
                 $attribute->visible_to_driver = $driverValues[$key];
-        
+
                 $attribute->save();
                 Attribute::where('refrence_id', $request->trip_id)
                     ->whereNotIn('id', $trip_ids)
