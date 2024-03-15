@@ -33,7 +33,8 @@ use App\Http\Controllers\NotificationController;
 
 Route::get('/', [RegistrationController::class, 'index']);
 Route::post('/login', [RegistrationController::class, 'login']);
-Route::get('/live/track/events/{sluf}', [DriversController::class, 'groupShare']);
+Route::get('/live/track/events/{slug}', [DriversController::class, 'groupShare']);
+Route::get('/live/track/trip/{slug}/{id}', [DriversController::class, 'liveGroup']);
 
 Route::get('/web', [RegistrationController::class, 'web']);
 Route::get('live/share/location/{slug}', [DriversController::class, 'liveshare']);
@@ -43,9 +44,11 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('profile/password/update', [RegistrationController::class, 'updatePassword']);
     Route::get('logout', [RegistrationController::class, 'logout']);
     Route::get('dashboard', [DashboardController::class, 'index']);
+
+    Route::post('sync/events', [TripsController::class, 'sync']);
     // Langauge
     Route::get('change/lang', [DashboardController::class, 'lang_change'])->name('User.LangChange');
-        
+
     //Drivers
     Route::get('drivers', [DriversController::class, 'index']);
     Route::post('register/driver', [DriversController::class, 'create']);
@@ -55,8 +58,10 @@ Route::group(['middleware' => 'admin'], function () {
     // Route::get('approve/driver/{id}', [DriversController::class, 'approve']);
     Route::post('change/password', [DriversController::class, 'changePassword']);
 
+    
     // Trips
     Route::get('trips', [TripsController::class, 'available']);
+    Route::get('available/trips/{from}/{to}/{customer}', [TripsController::class, 'availableTrips']);
     Route::get('active/trips/{status?}', [TripsController::class, 'active']);
     Route::get('completed/trips', [TripsController::class, 'completed']);
     Route::get('new/trip', [TripsController::class, 'new']);

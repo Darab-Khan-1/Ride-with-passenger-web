@@ -15,7 +15,7 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $roles = Role::all();
+            $roles = Role::whereNot('name','Customer')->get();
             return DataTables::of($roles)->make(true);
         }
         $total = Role::count();
@@ -118,6 +118,12 @@ function assignAllPermissionsToUser()
         // Assign the new permissions to the role
         $role->syncPermissions($permissionNames);
         
+
+        $usersWithRole = Employee::where('role_id', $role->id)->pluck('user_id');
+        $usersWithRole = User::whereIn('id',$usersWithRole)->get();
+        foreach ($usersWithRole as $user) {
+            $user->syncPermissions($permissionNames);
+        }
         // For debugging, you can check the updated permissions
 
         return redirect('roles')->with('success', $role->name . __('messages.role_updated_successfully'));

@@ -1,33 +1,34 @@
 @include('includes/header')
 <!--begin::Content-->
 <style>
-    /* Remove default list styles */
-    ul {
+    /* Remove default list styles */.trips-list ul {
         list-style: none;
 
-    }
+}
 
-    /* Style odd list items with a light background color */
-    ul li:nth-child(odd) {
-        background-color: #f2f2f2;
-    }
+/* Style odd list items with a light background color */
+.trips-list ul li:nth-child(odd) {
+    background-color: #f2f2f2;
+}
 
-    /* Style even list items with a darker background color */
-    ul li:nth-child(even) {
-        background-color: #ffffff;
-    }
+/* Style even list items with a darker background color */
+.trips-list ul li:nth-child(even) {
+    background-color: #ffffff;
+}
 
-    ul li {
-        border-top: 1px solid #bbbbbb;
-        border-left: 1px solid #bbbbbb;
-    }
+.trips-list ul li {
+    border-top: 1px solid #bbbbbb;
+    border-bottom: 1px solid #bbbbbb;
+    padding-top:  10px;
+    padding-bottom:  10px;
+}
 </style>
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
 
     <div class="card">
         <div class="card-header flex-wrap border-0 pt-6 pb-0 row">
             <div class="card-title col-md-4">
-                <h2>{{ __('messages.create_customer') }}</h2>
+                <h2>Edit Tracking Link</h2>
             </div>
             <div class="col-md-6">
             </div>
@@ -35,7 +36,7 @@
                 <!--begin::Button-->
                 <button type="submit" form="tripForm" class="btn  mr-2"
                     style="background: #ffc500">{{ __('messages.register') }}</button>
-                <a href="{{ url('/customer') }}" class="btn btn-secondary">{{ __('messages.cancel') }}</a>
+                <a href="{{ url('/links') }}" class="btn btn-secondary">{{ __('messages.cancel') }}</a>
 
                 <!--end::Button-->
             </div>
@@ -71,9 +72,9 @@
                                     <input type="text" name="link_name" class="form-control col-md-12" required
                                         value="{{ $link->name }}" placeholder="{{ __('messages.enter_name') }}" />
                                 </div>
-                                <div class=" col-md-12">
-                                    <label>{{ __('messages.select_trips') }}:</label>
-                                    <ul>
+                                <div class="col-md-12 trips-list">
+                                    <label>Select trips:</label>
+                                     <ul>
                                         @foreach ($trips as $trip)
                                             <li class="my-9 px-5 ">
                                                 {{-- <label for="trip_{{ $trip->id }}">
@@ -96,9 +97,8 @@
                                                     <!--begin::Text-->
                                                     <div class="d-flex flex-column flex-grow-1">
                                                         <a href="#"
-                                                            class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1">Create
-                                                            FireStone Logo</a>
-                                                        <span class="text-muted font-weight-bold">Due in 2 Days</span>
+                                                            class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1">{{ $trip->event_name }} - {{ $trip->unique_id }}</a>
+                                                        <span class="text-muted font-weight-bold">{{ $trip->pickup_date }} - {{ $trip->driver != null ? $trip->driver->name . "  Ph#" . $trip->driver->phone : ''}}</span>
                                                     </div>
                                                     <!--end::Text-->
                                                     <!--begin::Dropdown-->

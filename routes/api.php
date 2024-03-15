@@ -29,7 +29,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/update/profile', [RegistrationController::class, 'updateProfile']);
     Route::post('/change/password', [RegistrationController::class, 'changePassword']);
 
-
     Route::get('/all/trips', [TripController::class, 'all']);
     Route::get('/my/trips', [TripController::class, 'my']);
     Route::get('/completed/trips', [TripController::class, 'completed']);
@@ -41,6 +40,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/exit/stop', [TripController::class, 'exit']);
     Route::post('/accept/trip', [TripController::class, 'accept']);
     Route::post('/delete/stop', [TripController::class, 'delete']);
+    Route::post('/add/new/stop', [TripController::class, 'addStop']);
 
     //Notifications
     Route::get('/all/notifications', [NotificationController::class, 'index']);

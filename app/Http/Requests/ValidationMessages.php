@@ -57,6 +57,18 @@ class ValidationMessages
         ]);
     }
 
+    public function addStopValidationMessages(): array
+    {
+        return ([
+            'location.required' => "location is required",
+            'lat.required' => "lat is required",
+            'long.required' => "long is required",
+            'description.required' => "description is required",
+            'trip_id.required' => "trip_id is required",
+        ]);
+    }
+
+
     public function acceptTripValidationMessages(): array
     {
         return ([

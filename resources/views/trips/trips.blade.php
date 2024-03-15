@@ -13,124 +13,62 @@
 <!--begin::Content-->
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
     <!--begin::Entry-->
-    <div>
-        <!--begin::Container-->
-        <div class="px-5">
-            {{-- <div class="card card-custom">
-                <div class="card-body p-5">
-                    <div class="row">
-                        <div class="col-xl-3">
-                            <!--begin::Tiles Widget 12-->
-                            <div class="card card-custom gutter-b" style="height: 150px">
-                                <div class="card-body">
-                                    <span
-                                        class="svg-icon svg-icon-3x"><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\Layout\Layout-grid.svg--><svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px"
-                                            viewBox="0 0 24 24" version="1.1">
-                                            <g stroke="none" stroke-width="1" fill="#ffffff" fill-rule="evenodd">
-                                                <rect x="0" y="0" width="24" height="24" />
-                                                <rect fill="#000000" opacity="0.3" x="4" y="4" width="4"
-                                                    height="4" rx="1" />
-                                                <path
-                                                    d="M5,10 L7,10 C7.55228475,10 8,10.4477153 8,11 L8,13 C8,13.5522847 7.55228475,14 7,14 L5,14 C4.44771525,14 4,13.5522847 4,13 L4,11 C4,10.4477153 4.44771525,10 5,10 Z M11,4 L13,4 C13.5522847,4 14,4.44771525 14,5 L14,7 C14,7.55228475 13.5522847,8 13,8 L11,8 C10.4477153,8 10,7.55228475 10,7 L10,5 C10,4.44771525 10.4477153,4 11,4 Z M11,10 L13,10 C13.5522847,10 14,10.4477153 14,11 L14,13 C14,13.5522847 13.5522847,14 13,14 L11,14 C10.4477153,14 10,13.5522847 10,13 L10,11 C10,10.4477153 10.4477153,10 11,10 Z M17,4 L19,4 C19.5522847,4 20,4.44771525 20,5 L20,7 C20,7.55228475 19.5522847,8 19,8 L17,8 C16.4477153,8 16,7.55228475 16,7 L16,5 C16,4.44771525 16.4477153,4 17,4 Z M17,10 L19,10 C19.5522847,10 20,10.4477153 20,11 L20,13 C20,13.5522847 19.5522847,14 19,14 L17,14 C16.4477153,14 16,13.5522847 16,13 L16,11 C16,10.4477153 16.4477153,10 17,10 Z M5,16 L7,16 C7.55228475,16 8,16.4477153 8,17 L8,19 C8,19.5522847 7.55228475,20 7,20 L5,20 C4.44771525,20 4,19.5522847 4,19 L4,17 C4,16.4477153 4.44771525,16 5,16 Z M11,16 L13,16 C13.5522847,16 14,16.4477153 14,17 L14,19 C14,19.5522847 13.5522847,20 13,20 L11,20 C10.4477153,20 10,19.5522847 10,19 L10,17 C10,16.4477153 10.4477153,16 11,16 Z M17,16 L19,16 C19.5522847,16 20,16.4477153 20,17 L20,19 C20,19.5522847 19.5522847,20 19,20 L17,20 C16.4477153,20 16,19.5522847 16,19 L16,17 C16,16.4477153 16.4477153,16 17,16 Z"
-                                                    fill="#000000" />
-                                            </g>
-                                        </svg><!--end::Svg Icon--></span>
-                                    <div class="text-dark font-weight-bolder font-size-h2 mt-3">{{ $total }}
-                                    </div>
-                                    <a href="#"
-                                        class="text-muted text-hover-primary font-weight-bold font-size-lg mt-1">Total
-                                        Trips</a>
-                                </div>
-                            </div>
-                            <!--end::Tiles Widget 12-->
-                        </div>
-                    </div>
+    <!--begin::Container-->
+
+    <div class="px-5">
+        <div class="card card-custom my-5">
+            @if (session('success'))
+                <div class="alert alert-success m-2">
+                    {{ session('success') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div> --}}
-            {{-- <div class="card card-custom mt-5" style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                <div class="card-body p-5">
-                    <div class="row px-5">
-
-                        <input type="hidden" value="{{ isset($service->id) ? $service->driver->device_id : '' }}"
-                            id="device_id">
-
-                        <label for="" style="margin-top: 12px;">From</label>
-                        <input type="date" class="col-md-5 m-1 form-control" id="from"
-                            value="{{ date('Y-m-d', strtotime('-2 days')) }}">
-                        <label for="" style="margin-top: 12px;">To</label>
-                        <input type="date" class="col-md-5 m-1 form-control" id="to"
-                            value="{{ date('Y-m-d', strtotime('now')) }}">
-
-                        <button class="m-1 btn btn-primary text-light" id="fetchAndPlayButton" style="width: 130px;"
-                            onclick="getReport()">&nbsp;Search</button>
-                        <span style="padding-top: 15px;"><i style="display: none" id="spinner"
-                                class="fas fa-spinner fa-spin"></i></span>
-
-                    </div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-danger m-2">
+                    {{ session('error') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div> --}}
-            <div class="card card-custom my-5">
-                @if (session('success'))
-                    <div class="alert alert-success m-2">
-                        {{ session('success') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+            @endif
+
+            <div class="card-header flex-wrap border-0 pt-6 pb-0 counter-mirror">
+                <div class="card-title">
+                    <h3 class="card-label text-success">{{ __('messages.available_trips') }}
+                        ({{ $data['available'] }})
+                    </h3>
+                    <h3 class="card-label text-danger">&nbsp;{{ __('messages.incomplete_trips') }}
+                        ({{ $data['incomplete'] }})
+                    </h3>
+                </div>
+                <div class="card-toolbar col-md-12">
+                    @can('create_trip')
+                        <button class="menu-link btn btn-warning mx-2 " style="width: 150px; height:35px;"
+                            data-toggle="modal" data-target="#syncEventsModal" id="openSyncModal">
+                            <span class="menu-text counter-mirror ">
+                                Sync Events</span>
                         </button>
-                    </div>
-                @endif
-                @if (session('error'))
-                    <div class="alert alert-danger m-2">
-                        {{ session('error') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                @endif
-
-                <div class="card-header flex-wrap border-0 pt-6 pb-0 counter-mirror">
-                    <div class="card-title">
-                        <h3 class="card-label text-success">{{ __('messages.available_trips') }}
-                            ({{ $data['available'] }})
-                        </h3>
-                        <h3 class="card-label text-danger">&nbsp;{{ __('messages.incomplete_trips') }}
-                            ({{ $data['incomplete'] }})
-                        </h3>
-                    </div>
-                    <div class="card-toolbar">
-                        <!--begin::Button-->
-                        {{-- <a href="{{ url('new/trip') }}" class="btn  font-weight-bolder" style="background: #ffc500">
-                            <span class="svg-icon svg-icon-md">
-                                <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Flatten.svg-->
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                        <rect x="0" y="0" width="24" height="24"></rect>
-                                        <circle fill="#000000" cx="9" cy="15" r="6"></circle>
-                                        <path
-                                            d="M8.8012943,7.00241953 C9.83837775,5.20768121 11.7781543,4 14,4 C17.3137085,4 20,6.6862915 20,10 C20,12.2218457 18.7923188,14.1616223 16.9975805,15.1987057 C16.9991904,15.1326658 17,15.0664274 17,15 C17,10.581722 13.418278,7 9,7 C8.93357256,7 8.86733422,7.00080962 8.8012943,7.00241953 Z"
-                                            fill="#000000" opacity="0.3"></path>
-                                    </g>
-                                </svg>
-                                <!--end::Svg Icon-->
-                            </span>Add New
-                        </a> --}}
-
-                        <!--end::Button-->
-                    </div>
+                    @endcan
+                    <select id="customer" class="select2 form-control mx-1" style="width: 300px">
+                        <option value="0">-- All Customers --</option>
+                        @foreach ($customers as $customer)
+                            <option value="{{ $customer->user_id }}">{{ $customer->name }}</option>
+                        @endforeach
+                    </select>
+                    <input type="date" class="form-control col-md-4" id="from" style="width: 300px"
+                        value="{{ date('Y-m-d', strtotime('-1 day')) }}">
+                    <input type="date" class="form-control col-md-4" id="to" style="width: 300px"
+                        value="{{ date('Y-m-d', strtotime('now')) }}">
                 </div>
-                <div class="card-body p-5 counter-mirror" style="overflow-x: scroll;">
+            </div>
+            <div class="card-body p-5 counter-mirror" style="overflow-x: scroll;">
 
-                    <table class="table" id="table"></table>
-                </div>
-                {{-- <div class="card-footer">
-                </div> --}}
+                <table class="table" id="table"></table>
             </div>
         </div>
-        <!--end::Container-->
     </div>
-    <!--end::Entry-->
 </div>
 
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
@@ -174,7 +112,8 @@
             serverSide: false,
 
             ajax: {
-                url: "{{ url('/trips') }}"
+                url: "{{ url('available/trips') }}" + "/" + $('#from').val() + "/" + $('#to').val() +
+                    "/" + $('#customer').val()
             },
 
             columns: [{
@@ -332,17 +271,36 @@
 
                         html +=
                             `<a href="${dupplicate_url}" class="btn btn-sm btn-icon btn-clean" title="duplicate"> <span class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\General\Duplicate.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <rect x="0" y="0" width="24" height="24"/>
-        <path d="M15.9956071,6 L9,6 C7.34314575,6 6,7.34314575 6,9 L6,15.9956071 C4.70185442,15.9316381 4,15.1706419 4,13.8181818 L4,6.18181818 C4,4.76751186 4.76751186,4 6.18181818,4 L13.8181818,4 C15.1706419,4 15.9316381,4.70185442 15.9956071,6 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
-        <path d="M10.1818182,8 L17.8181818,8 C19.2324881,8 20,8.76751186 20,10.1818182 L20,17.8181818 C20,19.2324881 19.2324881,20 17.8181818,20 L10.1818182,20 C8.76751186,20 8,19.2324881 8,17.8181818 L8,10.1818182 C8,8.76751186 8.76751186,8 10.1818182,8 Z" fill="#000000"/>
-    </g>
-</svg><!--end::Svg Icon--></span>`
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <rect x="0" y="0" width="24" height="24"/>
+                                    <path d="M15.9956071,6 L9,6 C7.34314575,6 6,7.34314575 6,9 L6,15.9956071 C4.70185442,15.9316381 4,15.1706419 4,13.8181818 L4,6.18181818 C4,4.76751186 4.76751186,4 6.18181818,4 L13.8181818,4 C15.1706419,4 15.9316381,4.70185442 15.9956071,6 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
+                                    <path d="M10.1818182,8 L17.8181818,8 C19.2324881,8 20,8.76751186 20,10.1818182 L20,17.8181818 C20,19.2324881 19.2324881,20 17.8181818,20 L10.1818182,20 C8.76751186,20 8,19.2324881 8,17.8181818 L8,10.1818182 C8,8.76751186 8.76751186,8 10.1818182,8 Z" fill="#000000"/>
+                                </g>
+                            </svg><!--end::Svg Icon--></span>`
+
+                        if (row.tracking_links.length > 0) {
+
+                            let id = 'copy_url' + row.id
+                            html +=
+                                `<span onclick="copyToClipboard('${id}-copy')" class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo7\dist/../src/media/svg/icons\General\Clipboard.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <rect x="0" y="0" width="24" height="24"/>
+                                        <path d="M8,3 L8,3.5 C8,4.32842712 8.67157288,5 9.5,5 L14.5,5 C15.3284271,5 16,4.32842712 16,3.5 L16,3 L18,3 C19.1045695,3 20,3.8954305 20,5 L20,21 C20,22.1045695 19.1045695,23 18,23 L6,23 C4.8954305,23 4,22.1045695 4,21 L4,5 C4,3.8954305 4.8954305,3 6,3 L8,3 Z" fill="#000000" opacity="0.3"/>
+                                        <path d="M11,2 C11,1.44771525 11.4477153,1 12,1 C12.5522847,1 13,1.44771525 13,2 L14.5,2 C14.7761424,2 15,2.22385763 15,2.5 L15,3.5 C15,3.77614237 14.7761424,4 14.5,4 L9.5,4 C9.22385763,4 9,3.77614237 9,3.5 L9,2.5 C9,2.22385763 9.22385763,2 9.5,2 L11,2 Z" fill="#000000"/>
+                                        <rect fill="#000000" opacity="0.3" x="7" y="10" width="5" height="2" rx="1"/>
+                                        <rect fill="#000000" opacity="0.3" x="7" y="14" width="9" height="2" rx="1"/>
+                                    </g>
+                                </svg><!--end::Svg Icon--></span><span style="display:none;position:absolute" class="btn btn-sm btn-info" id="${id}-copy">${row.tracking_links[0].url}</span>`;
+                        }
 
                         return html;
                     }
                 }
             ],
+
+            rowCallback: function(row, data) {
+                $(row).addClass('kt_demo_panel_toggle');
+            },
             "autoWidth": false,
             "ordering": false,
 
@@ -414,17 +372,156 @@
 
             ]
         });
-    });
 
-    $(document).on('click', '.delete-trip', function() {
-        let trip = $(this).attr('trip_id');
-        $("#deleteUrl").attr('href', "{{ url('/delete/trip') }}" + "/" + trip);
-        $("#deleteModal").modal('show');
-    });
 
-    function getReport() {
-        let newUrl = "{{ url('all/trips') }}" + "/" + $("#from").val() + "/" + $("#to").val()
-        table.ajax.url(newUrl).load();
+        $('#customer, #from, #to').on('change', function() {
+            // alert()
+            table.ajax.url("{{ url('available/trips') }}" + "/" + $('#from').val() + "/" + $('#to')
+                .val() + "/" + $('#customer').val()).load()
+        });
+
+
+
+    function copyToClipboard(elementId) {
+        var element = document.getElementById(elementId);
+        navigator.clipboard.writeText(element.innerText)
+            .then(() => {
+                toastr.success("Text copied to clipboard");
+            })
+            .catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
     }
-</script>
 
+
+
+        $(document).on('click', '.delete-trip', function() {
+            let trip = $(this).attr('trip_id');
+            $("#deleteUrl").attr('href', "{{ url('/delete/trip') }}" + "/" + trip);
+            $("#deleteModal").modal('show');
+        });
+
+        function getReport() {
+            let newUrl = "{{ url('all/trips') }}" + "/" + $("#from").val() + "/" + $("#to").val()
+            table.ajax.url(newUrl).load();
+        }
+
+        $(document).on('click', '#kt_demo_panel_close', function() {
+            // alert()
+            $("#kt_demo_panel").removeClass('offcanvas-on')
+            // var rowData = table.row(this).data();
+            // renderPanel(rowData);
+        });
+
+        // Toggle panel upon row click
+        $(document).on('click', '.kt_demo_panel_toggle', function() {
+            $("#kt_demo_panel").addClass('offcanvas-on')
+
+            $('#table tbody tr').removeClass('active');
+            $(this).addClass('active');
+
+            var rowData = table.row(this).data();
+            renderPanel(rowData);
+        });
+
+        function renderPanel(rowData) {
+            console.log(rowData);
+            $('#panel').empty();
+
+            // Create HTML for table
+            var tableHTML = '<table class="table">';
+            tableHTML += '<tr><th>Field</th><th>Value</th></tr>';
+            for (var key in rowData) {
+                if (rowData.hasOwnProperty(key)) {
+                    tableHTML += '<tr><td>' + key + '</td><td>' + (rowData[key] ? rowData[key] : 'N/A') +
+                        '</td></tr>';
+                }
+            }
+            tableHTML += '</table>';
+
+            // Append table to panel
+            $('#panel').html(tableHTML);
+            // Update other table cells similarly
+        }
+
+        var rowData
+        // Function to handle the click event on a row
+        $(document).on('click', '#table tbody tr', function() {
+            // Remove 'active' class from all rows
+            $('#table tbody tr').removeClass('active');
+
+            // Add 'active' class to the clicked row
+            $(this).addClass('active');
+
+            // Get data for the clicked row
+            var rowData = table.row(this).data();
+
+            // Update panel with data from the clicked row
+            renderPanel(rowData);
+
+            // Update DataTable's page number to match the clicked row
+            var clickedRowIndex = table.row(this).index();
+            var currentPage = Math.floor(clickedRowIndex / table.page.info().length);
+            table.page(currentPage).draw(false);
+        });
+        // Function to handle the click event on the previous button
+        $(document).on('click', '#previousBtn', function() {
+            // Get data for the previous row
+            var prevRowData = getPreviousRowData();
+
+            // Update panel with data from the previous row
+            if (prevRowData) {
+                // Render the panel with the previous row data
+                renderPanel(prevRowData);
+
+                // Highlight the corresponding row in the table
+                var prevRowIndex = table.row('.active').index() - 1;
+                $('#table tbody tr').removeClass('active');
+                table.row(prevRowIndex).nodes().to$().addClass('active');
+            }
+        });
+
+        // Function to handle the click event on the next button
+        $(document).on('click', '#nextBtn', function() {
+            // Get data for the next row
+            var nextRowData = getNextRowData();
+
+            // Update panel with data from the next row
+            if (nextRowData) {
+                // Render the panel with the next row data
+                renderPanel(nextRowData);
+
+                // Highlight the corresponding row in the table
+                var nextRowIndex = table.row('.active').index() + 1;
+                $('#table tbody tr').removeClass('active');
+                table.row(nextRowIndex).nodes().to$().addClass('active');
+            }
+        });
+
+
+        // Function to update table rows with data
+        function updateTableRows(rowData) {
+            $('#pickup_location').text(rowData.pickup_location);
+            $('#pickup_date').text(rowData.pickup_date);
+            // Update other table cells similarly
+        }
+
+        // Function to get data for the previous row
+        function getPreviousRowData() {
+            var prevRowIndex = table.row('.active').index() - 1;
+            if (prevRowIndex >= 0) {
+                return table.row(prevRowIndex).data();
+            }
+            return null;
+        }
+
+        // Function to get data for the next row
+        function getNextRowData() {
+            var nextRowIndex = table.row('.active').index() + 1;
+            if (nextRowIndex < table.rows().count()) {
+                return table.row(nextRowIndex).data();
+            }
+            return null;
+        }
+    });
+</script>

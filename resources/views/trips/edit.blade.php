@@ -134,6 +134,12 @@
                                     placeholder="{{ __('messages.Enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
+                                <label>{{ __('messages.reminder_time') }}:</label>
+                                <input type="number" name="reminder_time" id="reminder_time" required class="form-control "
+                                    value="{{ $trip->reminder_time ? $trip->reminder_time : 15 }}"
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
+                            </div>
+                            <div class="form-group col-md-6">
                                 <label>{{ __('messages.event_description') }}:</label>
                                 <textarea class="form-control " required name="description" cols="30" rows="5">{{ $trip->description }}</textarea>
                             </div>

@@ -117,17 +117,27 @@
                                     placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
-                                <label>{{ __('messages.assigned_driver') }} <small class="text-danger">(Cannot be
-                                        updated once trip is started)</small> :</label>
-                                <input type="text" readonly class="form-control form-control-solid"
-                                    value="{{ $trip->driver->name }}"
-                                    placeholder="{{ __('messages.enter_value_here') }}" />
+                                <label>{{ __('messages.assigned_driver') }} :</label>
+                                        <select class="form-control " name="user_id" id="drivers">
+                                            <option value="" selected>--No Driver Attached--</option>
+                                            @foreach ($drivers as $value)
+                                                <option value="{{ $value->user_id }}"
+                                                    @if ($trip->user_id == $value->user_id) selected @endif>{{ $value->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                             </div>
                             <div class="form-group col-md-6">
                                 <label>{{ __('messages.event_name') }}:</label>
                                 <input type="text" name="event_name" id="event_name" required
                                     class="form-control "
                                     value="{{ old('event_name') ? old('event_name') : $trip->event_name }}"
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>{{ __('messages.reminder_time') }}:</label>
+                                <input type="number" name="reminder_time" id="reminder_time" required class="form-control "
+                                    value="{{ $trip->reminder_time ? $trip->reminder_time : 15 }}"
                                     placeholder="{{ __('messages.enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
@@ -376,6 +386,12 @@
         });
     });
 
+    $(document).on('change', '#drivers', function() {
+        let id = $(this).val()
+        if(parseInt("{{ $trip->user_id }}") != id){
+            toastr.warning("New driver assigned to the trip");
+        }
+    })
     $(document).on('change', '#customers', function() {
         var customer = $('#customers option:selected').attr('data-locations')
         customer = JSON.parse(customer)

@@ -296,6 +296,47 @@ class TripController extends Controller
     }
 
 
+    public function addStop(Request $request, Validate $validate)
+    {
+        $validationErrors = $validate->validate($request, $this->rules->addStopValidationRules(), $this->validationMessages->addStopValidationMessages());
+        if ($validationErrors) {
+            return (new ErrorResource($validationErrors))->response()->setStatusCode(400);
+        }
+        try {
+            // $trip = Trip::find($request->trip_id);
+
+            $stops = Stop::where('trip_id',$request->trip_id)->get();
+
+            Stop::where('trip_id',$request->trip_id)->whereNull('datetime')->delete();
+
+            $stop = new Stop();
+            $stop->trip_id = $request->trip_id;
+            $stop->location = $request->location;
+            $stop->lat = $request->lat;
+            $stop->long = $request->long;
+            $stop->type = 'stop';
+            $stop->description = $request->description;
+            $stop->save();
+
+            foreach ($stops as $value){
+                $stop = new Stop();
+                $stop->trip_id = $request->trip_id;
+                $stop->location = $value->location;
+                $stop->lat = $value->lat;
+                $stop->long = $value->long;
+                $stop->type = 'stop';
+                $stop->description = $value->description;
+                $stop->save();
+            }
+            
+            return $this->apiJsonResponse(200, "Stop added!", '', "");
+        } catch (\Throwable $e) {
+            return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
+        }
+    }
+
+
+
     public function delete(Request $request, Validate $validate)
     {
         $validationErrors = $validate->validate($request, $this->rules->deleteStopValidationRules(), $this->validationMessages->deleteStopValidationMessages());

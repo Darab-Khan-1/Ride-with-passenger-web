@@ -235,7 +235,8 @@ class DriversController extends Controller
             //     $timeDifference = 6;
             // }
             $data['driver'] = Driver::where('device_id', $id)->first();
-            $data['slug'] = Trip::where('user_id', $data['driver']->user_id)->where('status', '!=', 'available')->where('status', '!=', 'completed')->select('slug')->first();
+            $data['trip'] = Trip::where('user_id', $data['driver']->user_id)->where('status', '!=', 'available')->where('status', '!=', 'completed')->with('stops')->first();
+            $data['slug'] = $data['trip']->slug;
             $basePath = url('/');
             if ($data['slug'] != null) {
                 $data['slug'] = $basePath . '/live/share/location/' . $data['slug']->slug;
@@ -291,15 +292,40 @@ class DriversController extends Controller
     public function groupShare(Request $request, $slug = null)
     {
         $this->adminLogin();
-        // $trip_details = Trip::with('driver')->where('status', '!=', 'available')->where('status', '!=', 'completed')->where('slug', $slug)->first();
-        $link = TrackingLink::where('slug',$slug)->with('trips','trips.driver')->first();
-        if (isset($link->trips[0]) ) {
+        $link = TrackingLink::where('slug', $slug)->with('trips', 'trips.driver')->first();
+        // dd($link);
+        if (isset($link->trips[0])) {
             $trip_details = $link->trips[0];
-            // dd($trip_details);
+            return redirect('live/track/trip/' . $slug . '/' . $trip_details->id);
+            // return view('groupshare', compact('id', 'trip_details', 'link'));
+        } else {
+            return view('expired');
+        }
+    }
+
+    public function liveGroup(Request $request, $slug = null,$id)
+    {
+        if($id == 'null'){
+            return view('not_started');
+        }
+        $this->adminLogin();
+        $link = TrackingLink::where('slug', $slug)->with('trips', 'trips.driver','trips.stops')->first();
+        // dd($link);
+        if (isset($link->trips[0])) {
+            if ($id != null) {
+                $trip_details = Trip::with('driver')->where('status', '!=', 'completed')->where('id', $id)->with('stops')->first();
+            } else {
+                $trip_details = $link->trips[0];
+            }
+            if ($trip_details->status == 'available') {
+                // dd($trip_details);
+                // return redirect()->with('error', 'Trip Not started Yet');
+            }
             $data['driver'] = $trip_details->driver;
             if ($request->ajax()) {
                 if ($trip_details->driver != null) {
                     $data['position'] = $position = $this->DeviceService->live($trip_details->driver->device_id);
+                    $data['trip'] = $trip_details;
                     // dd($position);
                     if (isset($position[0])) {
                         $position[0]->serverTime = date('h:i A d M, Y', strtotime($position[0]->serverTime));
@@ -308,19 +334,21 @@ class DriversController extends Controller
                 }
                 return $data;
             }
-            $id = $slug;
-            return view('groupshare', compact('id', 'trip_details','link'));
+            // $id = $slug;
+            return view('groupshare', compact('id', 'trip_details', 'link'));
         } else {
             return view('expired');
         }
     }
+
     public function playbackIndex($service_id)
     {
         $service = null;
         if ($service_id != 0) {
             $service = Trip::where('id', $service_id)->with('driver')->first();
         }
-        $drivers = Driver::all();
+        $drivers = Driver::with('trips')->get();
+        // dd($drivers);
         return view('playback', compact('drivers', 'service'));
     }
 

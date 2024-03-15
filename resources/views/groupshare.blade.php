@@ -1,18 +1,5 @@
 <!DOCTYPE html>
-<!--
-Template Name: Metronic - Bootstrap 4 HTML, React, Angular 9 & VueJS Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://1.envato.market/EA4JP
-Renew Support: https://1.envato.market/EA4JP
-License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
--->
 <html lang="en">
-<!--begin::Head-->
 
 <head>
     <base href="">
@@ -21,21 +8,13 @@ License: You must have a valid license purchased only from themeforest(the above
     <meta name="description" content="Updates and statistics" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!--begin::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
-    <!--end::Fonts-->
-    <!--begin::Page Vendors Styles(used by this page)-->
     <link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css?v=7.0.5') }}" rel="stylesheet"
         type="text/css" />
-    <!--end::Page Vendors Styles-->
-    <!--begin::Global Theme Styles(used by all pages)-->
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css?v=7.0.5') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/plugins/custom/prismjs/prismjs.bundle.css?v=7.0.5') }}" rel="stylesheet"
         type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css?v=7.0.5') }}" rel="stylesheet" type="text/css" />
-    <!--end::Global Theme Styles-->
-    <!--begin::Layout Themes(used by all pages)-->
-    <!--end::Layout Themes-->
     <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
@@ -47,24 +26,17 @@ License: You must have a valid license purchased only from themeforest(the above
         .image-wrapper {
             position: relative;
             display: inline-block;
-            /* Ensures the div only takes up the space it needs */
         }
 
         .status-dot {
             position: absolute;
             top: 0;
-            /* Position at the top of the image */
             left: 0;
-            /* Position at the left of the image */
             width: 12px;
-            /* Adjust the width as needed */
             height: 12px;
-            /* Adjust the height as needed */
             border-radius: 50%;
-            /* Creates a circular dot */
             margin-top: -5px;
             margin-left: -5px;
-            /* Adds some space between the dot and the image */
         }
 
         .user-list {
@@ -80,21 +52,15 @@ License: You must have a valid license purchased only from themeforest(the above
             border-top: 1px solid #ccc;
             padding: 10px;
             cursor: pointer;
-            /* Add pointer cursor */
             transition: background-color 0.3s;
-            /* Add a smooth transition for background color */
         }
 
         .user-item:hover {
             background-color: #dbdbdb;
-            /* Change background color on hover */
         }
 
-        /* Apply a different style when the item is clicked */
         .user-item.active {
             background-color: #dcdcdc;
-            /* Change background color on click */
-            /* color: #000000; Change text color on click */
         }
 
 
@@ -132,115 +98,136 @@ License: You must have a valid license purchased only from themeforest(the above
             top: 8px;
             left: 8px;
             width: 10px;
-            /* Adjust the size as needed */
             height: 10px;
-            /* Adjust the size as needed */
             border-radius: 50%;
         }
 
         .online {
             background-color: lime;
-            /* Set the online status color */
         }
 
         .offline {
             background-color: red;
-            /* Set the offline status color */
         }
     </style>
 </head>
-<!--end::Head-->
-<!--begin::Body-->
 
 <body id="kt_body" class="header-fixed header-mobile-fixed page-loading">
-
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> --}}
-
-
-    {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" /> --}}
     <link
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"
         rel="stylesheet" />
-    <!--begin::Content-->
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
-        <!--begin::Entry-->
         <div>
-            <!--begin::Container-->
-
-
             <div class="row">
-
                 <div class="col-md-12">
                     <div class="card card-custom" id="infoCard"
                         style="display:none;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                         <div class="card-body p-5">
                             <div class="row">
-                                <div class="col-xl-12" style="margin-bottom: -15px;">
-                                    <!--begin::Tiles Widget 12-->
-                                    <div class="card card-custom  gutter-b"
-                                        style="height: 150px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                                        <div class="card-body">
-                                            <div class="text-dark font-weight-bolder font-size-h4 mt-3">
+                                @if (session('success'))
+                                    <div class="alert alert-success m-2">
+                                        {{ session('success') }}
+                                        <button type="button" class="close counter-mirror" data-dismiss="alert"
+                                            aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                @endif
+                                @if (session('error'))
+                                    <div class="alert alert-danger m-2">
+                                        {{ session('error') }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                @endif
+                                <div class="col-xl-12">
+                                    {{-- <div class="card card-custom  gutter-b" --}}
+                                        {{-- style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;"> --}}
+                                        {{-- <div class="card-body"> --}}
+                                            <div class="text-dark font-weight-bolder my-2">
                                                 <div class="row">
 
-                                                    @foreach($link->trips as $trip)
-                                                    <div class="col-md-2 p-3 text-center bg-secondary m-1">
-                                                        {{ $trip->unique_id }} - {{ $trip->event_name }} 
-                                                    </div>
+                                                    @foreach ($link->trips as $trip)
+                                                        <div class="col-md-2 p-3 text-center  font-weight-bolder @if ($trip->status == 'available') bg-secondary text-white @else bg-secondary text-dark @endif mx-auto m-1"
+                                                            style="    border-radius: 25px;">
+                                                            <a class=" @if ($trip->status == 'available') text-dark @else text-dark @endif"
+                                                                @if ($trip->status == 'available') href="javascript:void(0)" onclick="toastr.error('Trip not started yet!')"
+                                                                @else
+                                                                href="{{ url('live/track/trip/' . $link->slug . '/' . $trip->id) }}" @endif>
+                                                                {{ date("d M h:i a",strtotime($trip->pickup_date)) }}
+                                                                @if ($trip->status == 'available')
+                                                                    <span class="badge badge-danger">NOT
+                                                                        STARTED</span>
+                                                                @else
+                                                                    <span class="badge badge-success">STARTED</span>
+                                                                @endif <br>
+                                                                {{ $trip->unique_id }} - {{ $trip->event_name }}
+
+                                                            </a>
+                                                        </div>
                                                     @endforeach
                                                 </div>
-                                            </div>
-                                            {{-- <a href="#"
-                                                    class="text-muted text-hover-primary font-weight-bold font-size-lg mt-1">Driver</a> --}}
-                                        </div>
+                                            {{-- </div>
+                                        </div> --}}
                                     </div>
-                                    <!--end::Tiles Widget 12-->
                                 </div>
-                                <div class="col-xl-4" style="margin-bottom: -25px;">
-                                    <!--begin::Tiles Widget 12-->
-                                    <div class="card card-custom  gutter-b"
-                                        style="height: 150px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                                        <div class="card-body">
-                                            <div class="text-dark font-weight-bolder font-size-h4 mt-3"
-                                                id="driver_info">-
-                                            </div>
-                                            {{-- <a href="#"
-                                                    class="text-muted text-hover-primary font-weight-bold font-size-lg mt-1">Driver</a> --}}
-                                        </div>
-                                    </div>
-                                    <!--end::Tiles Widget 12-->
-                                </div>
-                                <div class="col-xl-8" style="margin-bottom: -25px;">
-                                    <!--begin::Tiles Widget 12-->
-                                    <div class="card card-custom  gutter-b"
-                                        style="height: 150px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                                        <div class="card-body">
-                                            <div class="text-dark font-weight-bolder font-size-h4 mt-3"
-                                                id="position_info">-
-                                            </div>
-                                            {{-- <a href="#"
-                                                    class="text-muted text-hover-primary font-weight-bold font-size-lg mt-1">Position</a> --}}
-                                        </div>
-                                    </div>
-                                    <!--end::Tiles Widget 12-->
-                                </div>
-                                {{-- <div class="col-xl-4" style="margin-bottom: -25px;">
-                                        <div class="card card-custom  gutter-b"
-                                            style="height: 150px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                                            <div class="card-body">
-                                                <div class="text-dark font-weight-bolder font-size-h4 mt-3"
-                                                    id="time_info"> -
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--end::Tiles Widget 12-->
-                                    </div> --}}
+
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-12">
+
                     <div class="card card-custom  my-5" style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                         <div class="card-body p-5">
-                            <div id="map" style="height: 85vh"></div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="col-xl-12">
+                                        <div class="card card-custom  gutter-b"
+                                            style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                                            <div class="card-header">
+                                                <div class="card-title">
+                                                    <h4>Trip Details</h4>
+
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <h4>Driver Details</h4>
+                                                <div class="row">
+                                                    <div class="col-md-6 text-dark font-weight-bolder mt-3"
+                                                        id="driver_info">-
+                                                    </div>
+                                                    <div class="col-md-6 text-dark font-weight-bolder mt-3"
+                                                        id="position_info">-
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <h4>Trip Details</h4>
+                                                <div id="load_details">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12">
+                                        <div class="card card-custom  gutter-b"
+                                            style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                                            <div class="card-body">
+                                                <div id="estimated_times">
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div id="map" style="height: 900px"></div>
+                                </div>
+
+
+                            </div>
                         </div>
                         {{-- <div class="card-footer">
                         </div> --}}
@@ -295,7 +282,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 element.addClass("active");
 
                 firstCall = true
-                document.getElementById("map").style.height = '60vh'
+                // document.getElementById("map").style.height = '1000px;'
                 document.getElementById("infoCard").style.display = 'block'
                 var name = '';
                 var phone = '';
@@ -396,6 +383,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
                 });
 
+                googleMap.setZoom(16)
                 polyline = new google.maps.Polyline({
                     map: googleMap,
                     strokeColor: '#FF0000',
@@ -417,9 +405,12 @@ License: You must have a valid license purchased only from themeforest(the above
             }, 5000); // Update every 5 seconds
         }
 
+
+        var link = {!! json_encode($link) !!}
+
         function ajaxCall(driver) {
             $.ajax({
-                url: "{{ url('live/share/location') }}" + "/" + driver,
+                url: "{{ url('live/track/trip') }}" + "/" + link.slug + "/" + driver,
                 method: "GET",
                 success: function(response) {
                     let data = response['position']
@@ -440,6 +431,33 @@ License: You must have a valid license purchased only from themeforest(the above
                         table += "</table>";
 
                         positionInfoDiv.innerHTML = table;
+
+
+                        var tripInfoDiv = document.getElementById("load_details");
+                        // var timeInfoDiv = document.getElementById("time_info");
+
+                        var table = "<table class='table'><tbody>";
+                        // for (var key in data) {
+                        //     if (data.hasOwnProperty(key)) {
+                        //     }
+                        // }
+                        table += "<tr><td colspan='2'><b>Customer Company:</b>" + (response['trip'].customer_company) +
+                            "</td></tr>";
+                        table += "<tr><td><b>Customer Name:</b>" + (response['trip'].customer_name) +
+                            " </td><td><b>Customer Phone:</b>" + (response['trip'].customer_phone) +
+                            "</td></tr>";
+                        table += "<tr><td><b>Pickup Date:</b>" + (response['trip'].pickup_date) +
+                            " </td><td><b>Location:</b>" + (response['trip'].pickup_location) + "</td></tr>";
+                        table += "<tr><td><b>Delivery Date :</b>" + (response['trip'].delivery_date) +
+                            " </td><td><b>Location:</b>" + (response['trip'].delivery_location) + "</td></tr>";
+                        table += "<tr><td><b>Event Name :</b>" + (response['trip'].event_name) +
+                            " </td><td><b>Stops:</b>" + (response['trip'].stops.length) + "</td></tr>";
+                        table += "<tr><td><b>Description :</b>" + (response['trip'].description) +
+                            " </td><td><b>Status:</b>" + (response['trip'].status.toUpperCase()) + "</td></tr>";
+
+                        table += "</tbody></table>";
+
+                        tripInfoDiv.innerHTML = table;
                         // timeInfoDiv.textContent = data.serverTime;
                         updateMarker(data.latitude, data.longitude);
                         googleMap.setCenter(marker.getPosition());
@@ -449,6 +467,46 @@ License: You must have a valid license purchased only from themeforest(the above
                             lat: data.latitude,
                             lng: data.longitude
                         });
+
+                        var driverLat = data.latitude; // Driver's latitude
+                        var driverLng = data.longitude; // Driver's longitude
+                        var stops = response.trip.stops
+
+                        calculateEstimatedTime(driverLat, driverLng, stops)
+                            .then(function(estimatedTimes) {
+                                // console.log('Estimated times:', estimatedTimes);
+                                let html = '<table class="table table-striped"><tbody>'
+                                if (estimatedTimes.length > 0) {
+                                    estimatedTimes.forEach((element, index) => {
+                                        let des
+                                        console.log(element);
+                                        if (element.trip_stop.datetime != null) {
+                                            if (element.trip_stop.exit_time == null) {
+                                                des =
+                                                    `<span title="${element.stop}" class="text-warning">${element.stop.substring(0, 20)}... </span><b>Reached:${element.trip_stop.datetime}</b>`
+                                            } else {
+                                                des =
+                                                    `<span title="${element.stop}" class="text-success">${element.stop.substring(0, 20)}... </span><b>${element.trip_stop.datetime} / ${element.trip_stop.exit_time}</b>`
+                                            }
+                                        } else {
+                                            des = `<span title="${element.stop}">` + element.stop
+                                                .substring(0, 20) +
+                                                `... <b>ETA: ${element.estimatedTime}</b></span>`
+                                        }
+                                        html +=
+                                            `<tr><th class="">${element.trip_stop.type.toUpperCase()}:</th><td>${des}</td></tr>`
+                                    })
+                                    html += '<tbody></table>'
+                                    $("#estimated_times").html(html)
+                                    console.log(html);
+                                }
+                            })
+                            .catch(function(error) {
+                                console.error('Error calculating estimated times:', error);
+                            });
+
+
+
                     } else {
                         clearInterval(interval); // Clear previous interval
                         toastr.error("Driver data not found.");
@@ -462,248 +520,8 @@ License: You must have a valid license purchased only from themeforest(the above
             });
         }
 
-        var popupTemplate = `
-    <div class="popup-card">
-        <div class="card-header" style="display: flex; align-items: center;">
-            <img class="" src="{avatar}" alt="Driver Avatar" style="border-radius:50%;width: 50px; height: 50px;">
-            <h3 style="font-size: 14px; margin-left: 10px; text-align: right; flex-grow: 1;">{name} </h3>
-            <a href="{href}" style="position: absolute;top: 20px;right: 40px;">Live Track</a>
-        </div>
-        <div class="card-body">
-            <p style="font-size: 12px;"><strong>Phone:</strong> {phone}</p>
-            <p style="font-size: 12px;"><strong>Speed:</strong> {speed}</p>
-            <p style="font-size: 12px;"><strong>Time:</strong> {time}</p>
-        </div>
-    </div>
-`;
 
 
-        // function showAll() {
-
-        //     document.getElementById("driver_info").innerHTML = '-'
-        //     // document.getElementById("time_info").innerHTML = '-'
-        //     document.getElementById("position_info").innerHTML = '-'
-        //     clearInterval(interval);
-        //     refreshMap()
-        //     clearMarkers()
-        //     markers = [];
-        //     $.ajax({
-        //         url: "{{ url('all/live/location/') }}",
-        //         method: "GET",
-        //         success: function(dataArray) {
-        //             if (dataArray.length > 0) {
-        //                 dataArray.forEach(function(data) {
-        //                     var marker = new google.maps.Marker({
-        //                         position: {
-        //                             lat: data.latitude,
-        //                             lng: data.longitude
-        //                         },
-        //                         icon: {
-        //                             url: 'data:image/svg+xml,' + encodeURIComponent(svgContent),
-        //                             size: new google.maps.Size(24, 24) // Set the size
-        //                         },
-        //                         map: googleMap,
-        //                     });
-
-        //                     markers.push(marker)
-
-        //                     let online = '<span class="status-dot offline"></span>'
-        //                     if (data.online) {
-        //                         online = '<span class="status-dot online"></span>'
-        //                     }
-        //                     // Replace placeholders in the popup template with data
-        //                     var popupContent = popupTemplate
-        //                         // .replace('{online}', online)
-        //                         .replace('{href}', "{{ url('live/location') }}" + "/" + data.device_id)
-        //                         .replace('{avatar}', data.avatar)
-        //                         .replace('{name}', data.name)
-        //                         .replace('{phone}', data.phone)
-        //                         .replace('{speed}', (data.speed * 1.85).toFixed(1) + " kph")
-        //                         .replace('{time}', data.serverTime)
-        //                         .replace('{address}', data.address);
-
-        //                     // Create a popup for the marker
-        //                     var infowindow = new google.maps.InfoWindow({
-        //                         content: popupContent,
-        //                     });
-
-        //                     // Add a click event to open the popup when the marker is clicked
-        //                     marker.addListener('click', function() {
-        //                         infowindow.open(googleMap, marker);
-        //                     });
-        //                 });
-
-        //                 var bounds = new google.maps.LatLngBounds();
-
-        //                 // Loop through the markers and extend the bounds for each marker's position
-        //                 markers.forEach(function(marker) {
-        //                     bounds.extend(marker.getPosition());
-        //                 });
-
-        //                 // Fit the map to the bounds
-        //                 googleMap.fitBounds(bounds);
-        //             } else {
-        //                 clearInterval(interval); // Clear previous interval
-        //                 console.log("No data found.");
-        //             }
-        //         },
-        //         error: function() {
-        //             clearInterval(interval); // Clear previous interval
-        //             toastr.error("Driver data not found")
-
-        //         }
-        //     });
-        // }
-
-
-        const driverMarkersMap = new Map();
-
-        function showAllLocations() {
-            $(".user-item").removeClass("active");
-            document.getElementById("map").style.height = '85vh'
-            document.getElementById("infoCard").style.display = 'none'
-            firstCall = true
-            showAll()
-            refreshMap();
-            clearMarkers();
-            clearInterval(showInterval)
-            clearInterval(interval);
-            showInterval = setInterval(function() {
-                showAll()
-            }, 5000);
-        }
-
-        function showAll() {
-            document.getElementById("driver_info").innerHTML = '-';
-            document.getElementById("position_info").innerHTML = '-';
-            $.ajax({
-                url: "{{ url('all/live/location/') }}",
-                method: "GET",
-                success: function(dataArray) {
-                    if (dataArray.length > 0) {
-                        dataArray.forEach(function(data) {
-                            // Check if a marker already exists for this driver
-                            if (driverMarkersMap.has(data.device_id)) {
-                                // Update the existing marker's position
-                                const existingMarker = driverMarkersMap.get(data.device_id);
-                                existingMarker.setPosition({
-                                    lat: data.latitude,
-                                    lng: data.longitude
-                                });
-
-                                // Update the content of the info window
-                                const infowindow = existingMarker.infowindow;
-                                const popupContent = getPopupContent(data);
-                                infowindow.setContent(popupContent);
-                            } else {
-                                // Create a new marker for the driver
-                                // const marker = new google.maps.Marker({
-                                //     position: {
-                                //         lat: data.latitude,
-                                //         lng: data.longitude
-                                //     },
-                                //     icon: {
-                                //         url: 'data:image/svg+xml,' + encodeURIComponent(
-                                //             svgContent),
-                                //         size: new google.maps.Size(24, 24)
-                                //     },
-                                //     map: googleMap,
-                                // });
-                                var userImageURL = data.avatar;
-
-                                // Create a custom marker with a circular image
-                                const marker = new google.maps.Marker({
-                                    position: {
-                                        lat: data.latitude,
-                                        lng: data.longitude
-                                    },
-                                    map: googleMap,
-                                    // icon: {
-                                    //     url: userImageURL,
-                                    //     scaledSize: new google.maps.Size(40,
-                                    //     40), // Adjust the size of the circular image
-                                    //     origin: new google.maps.Point(0, 0),
-                                    //     anchor: new google.maps.Point(20,
-                                    //     20), // Center the image as the marker
-                                    //     shape: {
-                                    //         coords: [40, 40, 40], // Circular shape
-                                    //         type: 'circle',
-                                    //     },
-                                    // },
-                                    // icon: {
-                                    //     url: 'data:image/svg+xml;charset=UTF-8,' +
-                                    //         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">' +
-                                    //         '<circle cx="12" cy="12" r="11" fill="black" />' +
-                                    //         '</svg>',
-                                    //     scaledSize: new google.maps.Size(40, 40),
-                                    //     anchor: new google.maps.Point(20, 20),
-                                    // },
-                                    icon: {
-                                        url: userImageURL, // Use the direct URL for the user's circular image
-                                        scaledSize: new google.maps.Size(40, 40),
-                                        anchor: new google.maps.Point(20, 20),
-                                    },
-                                    title: 'User Marker', // Set a title for the marker
-                                });
-
-
-
-                                // Add the new marker to the map
-                                driverMarkersMap.set(data.device_id, marker);
-
-                                // Create a new info window for the marker
-                                const infowindow = new google.maps.InfoWindow({
-                                    content: getPopupContent(data),
-                                });
-
-                                // Attach the info window to the marker
-                                marker.infowindow = infowindow;
-
-                                // Add a click event to open the info window when the marker is clicked
-                                marker.addListener('click', function() {
-                                    infowindow.open(googleMap, marker);
-                                });
-                            }
-                        });
-
-                        var bounds = new google.maps.LatLngBounds();
-
-                        // Loop through the markers and extend the bounds for each marker's position
-                        driverMarkersMap.forEach(function(marker) {
-                            bounds.extend(marker.getPosition());
-                        });
-
-                        // Fit the map to the bounds
-                        if (firstCall) {
-                            firstCall = false
-                            googleMap.fitBounds(bounds);
-                        }
-                    } else {
-                        clearInterval(interval);
-                        console.log("No data found.");
-                    }
-                },
-                error: function() {
-                    clearInterval(interval);
-                    toastr.error("Driver data not found");
-                }
-            });
-        }
-
-        function getPopupContent(data) {
-            let online = '<span class="status-dot offline"></span>';
-            if (data.online) {
-                online = '<span class="status-dot online"></span>';
-            }
-
-            return popupTemplate
-                .replace('{href}', "{{ url('live/location') }}" + "/" + data.device_id)
-                .replace('{avatar}', data.avatar)
-                .replace('{name}', data.name)
-                .replace('{phone}', data.phone)
-                .replace('{speed}', (data.speed * 3.6).toFixed(1) + " kph")
-                .replace('{time}', data.serverTime);
-        }
 
 
         $(document).on('click', '.user-item', function() {
@@ -717,8 +535,10 @@ License: You must have a valid license purchased only from themeforest(the above
             firstCall = true
             var name = '';
             var phone = '';
+
             name = "{{ $trip_details->driver->name }}";
             phone = "{{ $trip_details->driver->phone }}";
+
             // document.getElementById("time_info").innerHTML = '-'
             document.getElementById("position_info").innerHTML = '-'
             var timeInfoDiv = document.getElementById("driver_info");
@@ -753,5 +573,122 @@ License: You must have a valid license purchased only from themeforest(the above
 
             // Clear the markers map
             driverMarkersMap.clear();
+        }
+
+
+
+
+        function calculateDuration(start, end) {
+            return new Promise(function(resolve, reject) {
+                var request = {
+                    origin: start,
+                    destination: end,
+                    travelMode: 'DRIVING'
+                };
+
+                var directionsService = new google.maps.DirectionsService();
+                directionsService.route(request, function(result, status) {
+                    if (status == 'OK') {
+                        var route = result.routes[0];
+                        var duration = route.legs[0].duration.text; // Duration in human-readable format
+                        resolve(duration);
+                    } else {
+                        console.error('Error calculating duration:', status);
+                        reject('Error'); // Pass error message if there's an error
+                    }
+                });
+            });
+        }
+
+        let firstDirection = true
+
+
+        async function calculateEstimatedTime(driverLat, driverLng, stops) {
+            var estimatedTimes = [];
+            for (let i = 0; i < stops.length; i++) {
+                if (stops[i].datetime === null) {
+                    try {
+                        let duration = await calculateDuration(driverLat + ',' + driverLng, stops[i].lat + ',' + stops[
+                            i].long);
+                        let estimatedTime = duration;
+
+                        // Draw route on the map
+                        let request = {
+                            origin: driverLat + ',' + driverLng,
+                            destination: stops[i].lat + ',' + stops[i].long,
+                            travelMode: 'DRIVING'
+                        };
+                        if (firstDirection == true) {
+                            let directionsService = new google.maps.DirectionsService();
+                            directionsService.route(request, function(result, status) {
+                                if (status == 'OK') {
+                                    let directionsRenderer = new google.maps.DirectionsRenderer({
+                                        suppressMarkers: true // This option will suppress the default markers
+                                    });
+                                    directionsRenderer.setMap(
+                                        googleMap); // Assuming 'map' is your Google Map object
+                                    directionsRenderer.setDirections(result);
+                                } else {
+                                    console.error('Error drawing route:', status);
+                                    // Handle error
+                                }
+                            });
+                        }
+
+                        // Add marker for each stop
+                        let marker = new google.maps.Marker({
+                            position: {
+                                lat: parseFloat(stops[i].lat),
+                                lng: parseFloat(stops[i].long)
+                            },
+                            map: googleMap,
+                            title: stops[i].location
+                        });
+
+
+                        let des = ''
+                        if (stops[i].datetime != null) {
+                            if (stops[i].exit_time == null) {
+                                des =
+                                    `<span title="${stops[i].location}" class="text-warning">${stops[i].location.substring(0, 20)}... </span><b>Reached:${stops[i].trip_stop.datetime}</b>`
+                            } else {
+                                des =
+                                    `<span title="${stops[i].location}" class="text-success">${stops[i].location.substring(0, 20)}... </span><b>${stops[i].trip_stop.datetime} / ${stops[i].trip_stop.exit_time}</b>`
+                            }
+                        } else {
+                            des = `<span title="${stops[i].location}">` + stops[i].location
+                                .substring(0, 20) +
+                                `... <b>ETA: ${estimatedTime}</b></span>`
+                        }
+
+
+                        // Add info window for each marker
+                        let infoWindow = new google.maps.InfoWindow({
+                            content: des
+                        });
+                        marker.addListener('click', function() {
+                            infoWindow.open(googleMap, marker);
+                        });
+
+                        estimatedTimes.push({
+                            stop: stops[i].location,
+                            trip_stop: stops[i],
+                            estimatedTime: estimatedTime
+                        });
+                    } catch (error) {
+                        console.error('Error calculating estimated time:', error);
+                        // Handle error
+                    }
+                } else {
+                    estimatedTimes.push({
+                        stop: stops[i].location,
+                        trip_stop: stops[i],
+                        estimatedTime: '-'
+                    });
+                }
+            }
+            firstDirection = false
+
+            return estimatedTimes;
         }
     </script>

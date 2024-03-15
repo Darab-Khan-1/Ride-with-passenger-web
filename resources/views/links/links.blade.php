@@ -37,7 +37,7 @@
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
-                        <h3 class="card-label">{{ __('messages.link') }} ({{ $total }})
+                        <h3 class="card-label">Total Tracking Links ({{ $total }})
                         </h3>
                     </div>
                     <div class="card-toolbar">
@@ -77,104 +77,13 @@
     </div>
     <!--end::Entry-->
 </div>
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content counter-mirror">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">{{ __('messages.edit_link') }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i aria-hidden="true" class="ki ki-close"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form class="form" action="{{ url('/update/link') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="card-body">
-                        <div class="row">
-                            {{-- <div class="form-group col-md-6">
-                                <label>{{__('messages.select_role')}}:</label> 
-                                 <select class="form-control" name="role" id="role">
-                                    <option value="">-- {{__('messages.select_role')}} --</option>
-                                    @foreach ($roles as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach
-                                </select> 
-                            </div>  --}}
-                            <div class="form-group col-md-6">
-                                <label>{{ __('messages.full_name') }}:</label>
-                                <input type="text" name="name" id="name" class="form-control " required>
-                            </div>
-                        </div>
-                    </div>
-            </div>
-            <div class="card-footer counter-mirror">
-                <input type="hidden" name="user_id" id="user_id">
-                <button type="submit" class="btn  mr-2 counter-mirror"
-                    style="background: #ffc500">{{ __('messages.update') }}</button>
-                <button type="reset" class="btn btn-secondary counter-mirror"
-                    data-dismiss="modal">{{ __('messages.cancel') }}</button>
-            </div>
-            </form>
-        </div>
-        {{-- <div class="modal-footer">
-            <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary font-weight-bold">Save changes</button>
-        </div> --}}
-    </div>
-</div>
-{{-- </div> --}}
 
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content counter-mirror">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">{{ __('messages.delete_link_2') }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i aria-hidden="true" class="ki ki-close"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>{{ __('messages.delete_link') }}</p>
-            </div>
-            <div class="modal-footer">
-                <a id="deleteUrl" class="btn btn-primary font-weight-bold">{{ __('messages.yes') }}</a>
-                <button type="button" class="btn btn-light-primary font-weight-bold"
-                    data-dismiss="modal">{{ __('messages.no') }}</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">{{ __('messages.approve_driver') }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i aria-hidden="true" class="ki ki-close"></i>
-                </button>
-            </div>
-            <div class="modal-body counter-mirror">
-                <p>{{ __('messages.approve_driver_con') }}</p>
-            </div>
-            <div class="modal-footer counter-mirror">
-                <a id="approveUrl" class="btn btn-primary font-weight-bold">{{ __('messages.yes') }}</a>
-                <button type="button" class="btn btn-light-primary font-weight-bold"
-                    data-dismiss="modal">{{ __('messages.no') }}</button>
-            </div>
-        </div>
-    </div>
-</div>
 <!--end::Content-->
 @include('includes/footer')
 
 <script type="text/javascript">
-    $(".users-nav").click()
-    $(".link-nav").addClass("menu-item-active");
+    $(".trips-nav").click()
+    $(".sharing-links-nav").addClass("menu-item-active");
 
 
     $(document).on('click', '.delete-user', function() {

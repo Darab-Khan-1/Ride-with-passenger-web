@@ -13,4 +13,8 @@ class Driver extends Model
     public function user(){
         return $this->hasOne(User::class,'id','user_id');
     }
+
+    public function trips(){
+        return $this->hasMany(Trip::class,'user_id','user_id');
+    }
 }
