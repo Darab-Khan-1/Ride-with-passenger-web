@@ -319,14 +319,16 @@ class TripController extends Controller
             $stop->save();
 
             foreach ($stops as $value){
-                $stop = new Stop();
-                $stop->trip_id = $request->trip_id;
-                $stop->location = $value->location;
-                $stop->lat = $value->lat;
-                $stop->long = $value->long;
-                $stop->type = 'stop';
-                $stop->description = $value->description;
-                $stop->save();
+                if($value->datetime == null){
+                    $stop = new Stop();
+                    $stop->trip_id = $request->trip_id;
+                    $stop->location = $value->location;
+                    $stop->lat = $value->lat;
+                    $stop->long = $value->long;
+                    $stop->type = 'stop';
+                    $stop->description = $value->description;
+                    $stop->save();
+                }
             }
             
             return $this->apiJsonResponse(200, "Stop added!", '', "");
