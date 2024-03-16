@@ -84,7 +84,7 @@ class TripController extends Controller
             $data->status = (($trip->status == "pickup" || stripos($trip->status, 'stop') !== false) ? 'stopped' : $trip->status);
             $data->stops = $trip->stops;
             if (isset($trip->trackingLinks[0])) {
-                $data->url = $trip->trackingLink[0]->url;
+                $data->url = $trip->trackingLinks[0]->url;
             }else{
                 $data->url = url('live/share/location', $trip->slug);
             }
@@ -203,7 +203,7 @@ class TripController extends Controller
                 $data->drop_long = $value->drop_long;
                 $data->stops = $value->stops;
                 if (isset($value->trackingLinks[0])) {
-                    $data->url = $value->trackingLink[0]->url;
+                    $data->url = $value->trackingLinks[0]->url;
                 }else{
                     $data->url = url('live/share/location', $value->slug);
                 }
