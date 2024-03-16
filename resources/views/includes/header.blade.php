@@ -446,12 +446,14 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     </li>
                                                 @endcan
                                                 @can('view_trip')
-                                                    <li class="menu-item trips-nav" aria-haspopup="true">
-                                                        <a href="{{ url('trips') }}" class="menu-link">
-                                                            <span
-                                                                class="menu-text counter-mirror">{{ __('messages.available') }}</span>
-                                                        </a>
-                                                    </li>
+                                                    @if (auth()->user()->type != 'customer')
+                                                        <li class="menu-item trips-nav" aria-haspopup="true">
+                                                            <a href="{{ url('trips') }}" class="menu-link">
+                                                                <span
+                                                                    class="menu-text counter-mirror">{{ __('messages.available') }}</span>
+                                                            </a>
+                                                        </li>
+                                                    @endif
                                                     <li class="menu-item active-trips-nav" aria-haspopup="true">
                                                         <a href="{{ url('active/trips') }}" class="menu-link">
                                                             <span
@@ -467,8 +469,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 @endcan
                                                 <li class="menu-item sharing-links-nav" aria-haspopup="true">
                                                     <a href="{{ url('links') }}" class="menu-link">
-                                                        <span
-                                                            class="menu-text counter-mirror">Tracking Links</span>
+                                                        <span class="menu-text counter-mirror">Tracking Links</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -510,37 +511,6 @@ License: You must have a valid license purchased only from themeforest(the above
             </div>
         </div>
     </div>
-    <div class="modal fade" id="syncEventsModal" tabindex="-1" role="dialog" aria-labelledby="syncEventsModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content counter-mirror">
-            <div class="modal-header">
-                <h5 class="modal-title" id="syncEventsModalLabel">Sync Events</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i aria-hidden="true" class="ki ki-close"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group col-md-12">
-                    <label>From:</label>
-                    <input type="date" value="{{ date('Y-m-d', strtotime('now')) }}" id="sync_event_from"
-                        class="form-control " required placeholder="Enter license expiry" />
-                </div>
-                <div class="form-group col-md-12">
-                    <label>To:</label>
-                    <input type="date" id="sync_Event_to" value="{{ date('Y-m-d', strtotime('-1 day')) }}"
-                        class="form-control " required placeholder="Enter license expiry" />
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="sync_events_button"
-                    class="btn btn-primary font-weight-bold">Sync</button>
-                <button type="button" class="btn btn-light-primary font-weight-bold"
-                    data-dismiss="modal">{{ __('messages.no') }}</button>
-            </div>
-        </div>
-    </div>
-</div>
 </body>
 
 </html>

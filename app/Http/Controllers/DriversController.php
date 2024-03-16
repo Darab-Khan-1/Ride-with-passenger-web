@@ -235,8 +235,13 @@ class DriversController extends Controller
             //     $timeDifference = 6;
             // }
             $data['driver'] = Driver::where('device_id', $id)->first();
-            $data['trip'] = Trip::where('user_id', $data['driver']->user_id)->where('status', '!=', 'available')->where('status', '!=', 'completed')->with('stops')->first();
-            $data['slug'] = $data['trip']->slug;
+            $data['trip'] = Trip::where('user_id', $data['driver']->user_id)->where('status', '!=', 'available')->where('status', '!=', 'completed')->with('stops','trackingLinks')->first();
+            // dd($data['trip']);
+            if($data['trip'] != null){
+                $data['slug'] = count($data['trip']->trackingLinks) > 0 ? $data['trip']->trackingLinks[0] : null;
+            }else{
+                $data['slug'] = null;
+            }
             $basePath = url('/');
             if ($data['slug'] != null) {
                 $data['slug'] = $basePath . '/live/share/location/' . $data['slug']->slug;
@@ -354,7 +359,8 @@ class DriversController extends Controller
 
     public function playback($id, $from, $to)
     {
-        $response = $this->DeviceService->playback($id, $from, $to);
+        $response['response'] = $this->DeviceService->playback($id, $from, $to);
+        $response['driver'] = Driver::where('device_id',$id)->first();
         return $response;
     }
     public function customNotification(Request $request, $driverId)

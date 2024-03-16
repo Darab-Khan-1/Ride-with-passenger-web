@@ -257,8 +257,8 @@
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: {
-                lat: 37.7749,
-                lng: -122.4194
+                lat: 31.9539494,
+                lng:  35.910635
             }, // Default center (San Francisco)
             zoom: 12
         });

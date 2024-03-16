@@ -222,7 +222,7 @@ class TripController extends Controller
                 $trip->user_id = null;
             $trip->save();
             $data = [
-                'message' => 'Trip has been ' . $request->status,
+                'message' => $trip->unique_id . ' has been ' . $request->status,
                 'title' => 'Trip Update',
                 'sound' => 'anychange.mp3',
             ];
@@ -284,7 +284,7 @@ class TripController extends Controller
             $trip->status = 'started';
             $trip->save();
             $data = [
-                'message' => 'Trip has been started',
+                'message' => $trip->unique_id . ' has been started',
                 'title' => 'Trip Update',
                 'sound' => 'anychange.mp3',
             ];
@@ -379,7 +379,7 @@ class TripController extends Controller
             $stop->datetime = date('Y-m-d H:i:s', strtotime('now'));
             $stop->save();
             $data = [
-                'message' => 'Passenger picked up!',
+                'message' => $trip->unique_id . " is now at " . strtoupper($stop->type) . ": " . $stop->location,
                 'title' => 'Trip Update',
                 'sound' => 'anychange.mp3',
             ];
@@ -433,7 +433,7 @@ class TripController extends Controller
             }
             $stop->save();
             $data = [
-                'message' => 'Enter to stop',
+                'message' => $trip->unique_id .  ' is now at stop:' . $stop->location ,
                 'title' => 'Trip Update',
                 'sound' => 'anychange.mp3',
             ];
@@ -473,7 +473,7 @@ class TripController extends Controller
             $stop->exit_time = date('Y-m-d H:i:s', strtotime('now'));
             $stop->save();
             $data = [
-                'message' => 'Exit from stop',
+                'message' =>  $trip->unique_id .  ' exited ' . strtoupper($stop->type) . ": " . $stop->location,
                 'title' => 'Trip Update',
                 'sound' => 'anychange.mp3',
             ];
@@ -503,6 +503,7 @@ class TripController extends Controller
             $stop->exit_time =  date('Y-m-d H:i:s', strtotime('now'));
             $stop->save();
             $data = [
+                'message' =>  $trip->unique_id .  ' is ended at: ' . $stop->location,
                 'message' => 'Trip has been ended',
                 'title' => 'Trip Update',
                 'sound' => 'anychange.mp3',

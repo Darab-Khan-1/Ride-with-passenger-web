@@ -105,13 +105,17 @@
     }
 
     .online {
-        background-color: lime;
+        background-color: rgba(0, 94, 255, 0.96);
         /* Set the online status color */
     }
 
     .offline {
         background-color: red;
         /* Set the offline status color */
+    }
+
+    .custom-marker-label {
+        font-size: 10px !important;
     }
 </style>
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> --}}
@@ -125,21 +129,28 @@
     <!--begin::Entry-->
     <div>
         <!--begin::Container-->
-        <div class="card card-custom m-4">
+        <div class="m-5">
             <div class="p-5">
                 <div class="row">
                     <div class="col-md-3 counter-mirror">
-                        <div class="card card-custom " style="height:90vh;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                        <div class="card card-custom mb-2 py-4 " style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                            <div class="card-body py-2">
+                                <button class="btn btn-primary w-100 btn-lg" onclick="showAllLocations()">Show All
+                                    Drivers
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card card-custom "
+                            style="height:1000px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                             <div class="card-body py-2">
                                 <div class="row">
                                     <div class="form-group col-md-12">
-                                        <h3 class="text-center py-2">{{ __('messages.drivers') }}</h3>
-                                        <button class="btn btn-primary w-100"
-                                            onclick="showAllLocations()">{{ __('messages.show_all') }}
-                                        </button>
-                                        <input type="text" id="searchInput" class="form-control mb-2"
-                                            placeholder="{{ __('messages.search_by_name_or_phone_number') }}"
-                                            style="border:none">
+                                        {{-- <h3 class="text-center py-2">{{ __('messages.drivers') }}</h3> --}}
+
+                                        <input type="text" id="searchInput" class="form-control text-center mb-2"
+                                            placeholder="Or search by email or phone"
+                                            style="border: none;border-bottom:2 px solid gray !important;">
                                         <ul class="user-list">
                                             @foreach ($drivers as $value)
                                                 <li id="{{ 'USER' . $value->device_id }}" class="user-item"
@@ -256,6 +267,7 @@
     let interval;
     let showInterval;
     let firstCall;
+    let allLive = null;
     let markers = [];
 
 
@@ -267,7 +279,8 @@
             copyGfGText.select();
             document.execCommand("copy");
 
-            document.querySelector('#share_link_button').value = 'Linked copied';
+            document.querySelector('#share_link_button').value = 'Link copied';
+            toastr.success("Link Copied")
 
         });
 
@@ -295,7 +308,7 @@
             element.addClass("active");
 
             firstCall = true
-            document.getElementById("map").style.height = '60vh'
+            document.getElementById("map").style.height = '850px'
             document.getElementById("infoCard").style.display = 'block'
 
 
@@ -342,8 +355,8 @@
     function initMap() {
         googleMap = new google.maps.Map(document.getElementById('map'), {
             center: {
-                lat: 50.000000,
-                lng: -85.000000
+                lat: 31.9539494,
+                lng: 35.910635
             },
             zoom: 6,
             // mapTypeControl: true, 
@@ -378,38 +391,74 @@
             strokeWeight: 2
         });
     }
-
     // Function to update marker position
-    function updateMarker(lat, lng) {
+    function updateMarker(lat, lng, imageUrl) {
         if (firstCall) {
-            firstCall = false
+            firstCall = false;
             // Reinitialize marker and polyline
-            marker = new google.maps.Marker({
-                map: googleMap,
-                position: {
-                    lat: lat,
-                    lng: lng
-                },
-                icon: {
-                    url: 'data:image/svg+xml,' + encodeURIComponent(svgContent),
-                    size: new google.maps.Size(4, 4) // Set the size
-                }
+            const markerImage = new Image();
+            markerImage.src = imageUrl; // Set the marker image URL
+            markerImage.onload = function() {
+                // Once the image is loaded, create a canvas element to draw the rounded image
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 40; // Set the canvas width
+                canvas.height = 40; // Set the canvas height
+                context.beginPath();
+                context.arc(20, 20, 20, 0, Math.PI * 2); // Create a circle path
+                context.closePath();
+                context.clip(); // Clip the image to the circle path
+                context.drawImage(markerImage, 0, 0, 40, 40); // Draw the image onto the canvas
 
-            });
 
-            polyline = new google.maps.Polyline({
-                map: googleMap,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-            });
+                // Draw a border around the rounded marker image
+                context.strokeStyle = '#198a16cf'; // Set the border color
+                context.lineWidth = 3; // Set the border width
+                context.stroke(); // Draw the border
+                context.drawImage(markerImage, 0, 0, 40,
+                    40); // Draw the image onto the canvas
+
+                const roundedMarkerImage = canvas.toDataURL(); // Convert the canvas content to a data URL
+
+                marker = new google.maps.Marker({
+                    map: googleMap,
+                    position: {
+                        lat: lat,
+                        lng: lng
+                    },
+                    icon: {
+                        url: roundedMarkerImage,
+                        scaledSize: new google.maps.Size(40, 40),
+                    }
+                });
+
+                polyline = new google.maps.Polyline({
+                    map: googleMap,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                });
+
+                // Extend the bounds to include the marker's position
+                bounds.extend(marker.getPosition());
+
+                // Fit the map to the updated bounds
+                googleMap.fitBounds(bounds);
+            };
         } else {
             marker.setPosition({
                 lat,
                 lng
             }, 14);
+
+            // Extend the bounds to include the marker's position
+            bounds.extend(marker.getPosition());
+
+            // Fit the map to the updated bounds
+            googleMap.fitBounds(bounds);
         }
     }
+
 
     // Function to start live tracking
     function startLiveTracking(driver) {
@@ -422,6 +471,11 @@
         $.ajax({
             url: "{{ url('/live/location/') }}" + "/" + driver,
             method: "GET",
+            beforeSend: function() {
+                if (allLive != null) {
+                    clearInterval(allLive)
+                }
+            },
             success: function(response) {
                 let data = response['position']
                 if (data && data.latitude && data.longitude) {
@@ -437,15 +491,16 @@
                     table += "<tr><td>Speed: </td><td>" + (data.speed * 3.6).toFixed(1) +
                         " kph</td></tr>";
                     table += "<tr><td>Time: </td><td>" + data.serverTime + "</td></tr>";
-                    table +=
-                        '<tr><td><button id="share_link_button"  class="btn share_link_button  font-weight-bolder" style="background: #ffc500">Share link</td><td><input type="text" id="sharedLink" class="form-control form-control-solid" style="width:455px" placeholder="Share link" value="' +
-                        response['slug'] + '" disabled /></td></tr>'
-                    // table += "<tr><td>Address: </td><td style='font-size:14px;'>" + data.address + "</td></tr>";
+                    if (response['slug'] != '' && response['trip'] != null) {
+                        table +=
+                            '<tr><td><button id="share_link_button"  class="btn share_link_button  font-weight-bolder" style="background: #ffc500">Copy</td><td><input type="text" id="sharedLink" class="form-control form-control-solid" style="width:455px" placeholder="Share link" value="' +
+                            response['slug'] + '" disabled /></td></tr>'
+                    }
                     table += "</table>";
 
                     positionInfoDiv.innerHTML = table;
                     // timeInfoDiv.textContent = data.serverTime;
-                    updateMarker(data.latitude, data.longitude);
+                    updateMarker(data.latitude, data.longitude, response['driver'].avatar);
                     googleMap.setCenter(marker.getPosition());
                     const path = polyline.getPath();
                     path.push(new google.maps.LatLng(data.latitude, data.longitude));
@@ -457,23 +512,29 @@
                     // Example usage
                     var driverLat = data.latitude; // Driver's latitude
                     var driverLng = data.longitude; // Driver's longitude
-                    var stops = response.trip.stops
+                    if (response.trip != null) {
+                        var stops = response.trip.stops
 
-                    calculateEstimatedTime(driverLat, driverLng, stops)
-                        .then(function(estimatedTimes) {
-                            // console.log('Estimated times:', estimatedTimes);
-                            let html = ''
-                            if (estimatedTimes.length > 0) {
-                                estimatedTimes.forEach((element,index) => {
-                                    html += `<span class="col-md-3 px-2">${element.stop.substring(0,25)}...ETA ${element.estimatedTime}</span>`
-                                })
-                                $("#estimated_times").show()
-                                $("#times_all").html(html)
-                            }
-                        })
-                        .catch(function(error) {
-                            console.error('Error calculating estimated times:', error);
-                        });
+                        calculateEstimatedTime(driverLat, driverLng, stops)
+                            .then(function(estimatedTimes) {
+                                // console.log('Estimated times:', estimatedTimes);
+                                let html = ''
+                                if (estimatedTimes.length > 0) {
+                                    estimatedTimes.forEach((element, index) => {
+                                        html +=
+                                            `<span class="col-md-3 px-2">${element.stop.substring(0,25)}...<b class="text-success">ETA ${element.estimatedTime}</b></span>`
+                                    })
+                                    $("#estimated_times").show()
+                                    $("#times_all").html(html)
+                                }
+                            })
+                            .catch(function(error) {
+                                console.error('Error calculating estimated times:', error);
+                            });
+                    } else {
+                        $("#estimated_times").hide()
+                        $("#times_all").html('')
+                    }
 
                 } else {
                     clearInterval(interval); // Clear previous interval
@@ -510,7 +571,7 @@
 
     function showAllLocations() {
         $(".user-item").removeClass("active");
-        document.getElementById("map").style.height = '85vh'
+        document.getElementById("map").style.height = '1030px'
         document.getElementById("infoCard").style.display = 'none'
         firstCall = true
         showAll()
@@ -518,6 +579,11 @@
         clearMarkers();
         clearInterval(showInterval)
         clearInterval(interval);
+
+        // allLive = setInterval(function() {
+        //     showAll()
+        // }, 5000); 
+
 
     }
 
@@ -529,6 +595,7 @@
             method: "GET",
             success: function(dataArray) {
                 if (dataArray.length > 0) {
+                    var bounds = new google.maps.LatLngBounds();
                     dataArray.forEach(function(data) {
                         // Check if a marker already exists for this driver
                         if (driverMarkersMap.has(data.device_id)) {
@@ -546,112 +613,80 @@
                         } else {
                             // Create a new marker for the driver
                             var userImageURL = data.avatar;
-                            //  marker = new google.maps.Marker({
-                            //     position: {
-                            //         lat: data.latitude,
-                            //         lng: data.longitude
-                            //     },
-                            //     icon: {
-                            //         url: 'data:image/svg+xml,' + encodeURIComponent(
-                            //             svgContent),
-                            //         size: new google.maps.Size(4, 4)
-                            //     },
-
-
-                            //     map: googleMap,
-                            // });
-                            // userImageURL = `<svg xmlns="http://www.w3.org/2000/svg"
-                            //         xmlns:xlink="http://www.w3.org/1999/xlink">
-                            //     <image width="80" height="80"
-                            //         xlink:href="` + userImageURL + `" />
-                            //     </svg>`
-
-                            // userImageURL = `<div class="driver-map-icon" style="border-radius:50% !important">
-                            //             <img src="http://localhost:8000/assets/media/users/blank.png" alt="Profile Image" class="user-avatar">
-                            //                         </div>`
 
                             const shape = {
                                 coords: [1, 1, 1, 20, 18, 20, 18, 1],
                                 type: "poly",
                             };
-                            console.log(userImageURL);
-                            // var markerSize = 30; // Size of the marker icon
 
                             // Create the round marker icon
-                            // var roundMarkerIcon = createRoundMarkerIcon(userImageURL, markerSize);
+                            const markerImage = new Image();
+                            markerImage.src = data.avatar; // Set the marker image URL
+                            markerImage.onload = function() {
+                                // Once the image is loaded, create a canvas element to draw the rounded image
+                                const canvas = document.createElement('canvas');
+                                const context = canvas.getContext('2d');
+                                canvas.width = 40; // Set the canvas width
+                                canvas.height = 40; // Set the canvas height
+                                context.beginPath();
+                                context.arc(20, 20, 20, 0, Math.PI * 2); // Create a circle path
+                                context.closePath();
+                                context.clip(); // Clip the image to the circle path
+                                context.drawImage(markerImage, 0, 0, 40,
+                                    40); // Draw the image onto the canvas
 
-                            // Create the marker using the round marker icon
-                            const marker = new google.maps.Marker({
-                                position: {
-                                    lat: data.latitude,
-                                    lng: data.longitude
-                                },
-                                map: googleMap,
-                                icon: {
-                                    // url: 'data:image/svg+xml,' + encodeURIComponent(svgContent),
-                                    url: data.avatar,
-                                    scaledSize: new google.maps.Size(40, 40),
-                                },
-                                label: {
-                                    // text: `<img src="${userImageURL}" width="20" height="20">`, // Label text from the data
-                                    text: `-`, // Label text from the data
-                                    className: 'badge badge-sm badge-warning  custom-marker-label', // Custom class name for the label
-                                },
-                                // labelContent: `<img src="${userImageURL}" width="20" height="20">`, // HTML content for the label
-                                // labelClass: 'custom-marker-label', // Custom class name for the label
+                                // Draw a border around the rounded marker image
+                                context.strokeStyle = '#198a16cf'; // Set the border color
+                                context.lineWidth = 3; // Set the border width
+                                context.stroke(); // Draw the border
+                                context.drawImage(markerImage, 0, 0, 40,
+                                    40); // Draw the image onto the canvas
 
-                                // title: 'User Marker', // Set a title for the marker
+                                const roundedMarkerImage = canvas
+                                    .toDataURL(); // Convert the canvas content to a data URL
 
-                                // icon: {
-                                //     url: userImageURL,
-                                //     scaledSize: new google.maps.Size(40,
-                                //     40), // Adjust the size of the circular image
-                                //     origin: new google.maps.Point(0, 0),
-                                //     anchor: new google.maps.Point(20,
-                                //     20), // Center the image as the marker
-                                // },
-                                // icon: {
-                                //     url: 'data:image/svg+xml;charset=UTF-8,' +
-                                //         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">' +
-                                //         '<circle cx="12" cy="12" r="11" fill="black" />' +
-                                //         '</svg>',
-                                //     scaledSize: new google.maps.Size(40, 40),
-                                //     anchor: new google.maps.Point(20, 20),
-                                // },
-                            });
+                                // Create the marker with the rounded image
+                                const marker = new google.maps.Marker({
+                                    position: {
+                                        lat: data.latitude,
+                                        lng: data.longitude
+                                    },
+                                    map: googleMap,
+                                    icon: {
+                                        url: roundedMarkerImage,
+                                        scaledSize: new google.maps.Size(40, 40),
+                                    },
 
+                                    label: {
+                                        text: (data.speed * 3.6).toFixed(1) + " km/h",
+                                        className: 'badge badge-sm badge-warning ml-10 mb-10 custom-marker-label', // Custom class name for the label
+                                    },
+                                });
+                                // Add the new marker to the map
+                                driverMarkersMap.set(data.device_id, marker);
 
+                                // Create a new info window for the marker
+                                const infowindow = new google.maps.InfoWindow({
+                                    content: getPopupContent(data),
+                                });
 
-                            // Add the new marker to the map
-                            driverMarkersMap.set(data.device_id, marker);
+                                // Attach the info window to the marker
+                                marker.infowindow = infowindow;
 
-                            // Create a new info window for the marker
-                            const infowindow = new google.maps.InfoWindow({
-                                content: getPopupContent(data),
-                            });
+                                // Add a click event to open the info window when the marker is clicked
+                                marker.addListener('click', function() {
+                                    infowindow.open(googleMap, marker);
+                                });
 
-                            // Attach the info window to the marker
-                            marker.infowindow = infowindow;
+                                // Extend the bounds to include the marker's position
+                                bounds.extend(marker.getPosition());
 
-                            // Add a click event to open the info window when the marker is clicked
-                            marker.addListener('click', function() {
-                                infowindow.open(googleMap, marker);
-                            });
+                                // Fit the map to the updated bounds
+                                googleMap.fitBounds(bounds);
+                            };
                         }
                     });
 
-                    var bounds = new google.maps.LatLngBounds();
-
-                    // Loop through the markers and extend the bounds for each marker's position
-                    driverMarkersMap.forEach(function(marker) {
-                        bounds.extend(marker.getPosition());
-                    });
-
-                    // Fit the map to the bounds
-                    if (firstCall) {
-                        firstCall = false
-                        googleMap.fitBounds(bounds);
-                    }
                 } else {
                     clearInterval(interval);
                     console.log("No data found.");
@@ -710,7 +745,7 @@
         $(this).addClass("active");
         clearMarkers()
 
-        document.getElementById("map").style.height = '60vh'
+        document.getElementById("map").style.height = '850px'
         document.getElementById("infoCard").style.display = 'block'
         clearInterval(showInterval);
         firstCall = true

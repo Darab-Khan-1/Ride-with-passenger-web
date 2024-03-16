@@ -52,8 +52,8 @@
         style="">
         <h4 class="font-weight-bold m-0">Trip Details</h4>
         <div class="navigation-icons">
-            <img src="assets/media/svg/icons/Navigation/Angle-left.svg" id="previousBtn" class="navigation-icon">
-            <img src="assets/media/svg/icons/Navigation/Angle-right.svg" id="nextBtn" class="navigation-icon">
+            <img src="{{ asset('assets/media/svg/icons/Navigation/Angle-left.svg') }}" id="previousBtn" class="navigation-icon">
+            <img src="{{ asset('assets/media/svg/icons/Navigation/Angle-right.svg') }}" id="nextBtn" class="navigation-icon">
         </div>
         <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
             <i class="ki ki-close icon-xs text-muted"></i>
@@ -153,57 +153,14 @@
     <script src="{{ asset('/assets/plugins/custom/datatables/datatables.bundle.js?v=7.0.5') }}"></script>
     <!--end::Page Vendors-->
     <!--begin::Page Scripts(used by this page)-->
+
     <script src="{{ asset('assets/js/pages/widgets.js?v=7.0.5') }}"></script>
+
+    {{-- <script src="{{ asset('assets/js/pages/features/cards/tools.js?v=7.0.5') }}"></script> --}}
 
     <script>
         $(document).ready(function() {
             $('.select2').select2();
-
-            $("#sync_events_button").on('click', function() {
-
-                var formData = {
-                    from: $('#sync_event_from').val(),
-                    to: $('#sync_Event_to').val()
-                };
-
-
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                // Send AJAX request
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ url('/sync/events') }}',
-                    data: formData,
-                    beforeSend:function(){
-                        $("#syncEventsModal").modal('hide')
-                        $("#openSyncModal").html(`<div class="spinner"></div>`)
-                        $("#openSyncModal").attr('disabled','')
-                        $("#openSyncModal").removeClass('btn-warning')
-                        $("#openSyncModal").addClass('btn-secondary')
-                    },
-                    success: function(response) {
-                        // Handle success response
-
-                        $("#openSyncModal").html(`Sync Events`)
-                        $("#openSyncModal").removeAttr('disabled')
-                        $("#openSyncModal").removeClass('btn-secondary')
-                        $("#openSyncModal").addClass('btn-warning')
-
-                        if (response.response == 'success') {
-                            toastr.success('Events synced successfully');
-                        } else {
-                            toastr.error('Not allowed');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error response
-                        console.error('AJAX request failed:', error);
-                    }
-                });
-            })
         });
     </script>
     <!--end::Page Scripts-->
