@@ -235,11 +235,11 @@ class DriversController extends Controller
             //     $timeDifference = 6;
             // }
             $data['driver'] = Driver::where('device_id', $id)->first();
-            $data['trip'] = Trip::where('user_id', $data['driver']->user_id)->where('status', '!=', 'available')->where('status', '!=', 'completed')->with('stops','trackingLinks')->first();
+            $data['trip'] = Trip::where('user_id', $data['driver']->user_id)->where('status', '!=', 'available')->where('status', '!=', 'completed')->with('stops', 'trackingLinks')->first();
             // dd($data['trip']);
-            if($data['trip'] != null){
+            if ($data['trip'] != null) {
                 $data['slug'] = count($data['trip']->trackingLinks) > 0 ? $data['trip']->trackingLinks[0] : null;
-            }else{
+            } else {
                 $data['slug'] = null;
             }
             $basePath = url('/');
@@ -308,13 +308,13 @@ class DriversController extends Controller
         }
     }
 
-    public function liveGroup(Request $request, $slug = null,$id)
+    public function liveGroup(Request $request, $slug = null, $id)
     {
-        if($id == 'null'){
+        if ($id == 'null') {
             return view('not_started');
         }
         $this->adminLogin();
-        $link = TrackingLink::where('slug', $slug)->with('trips', 'trips.driver','trips.stops')->first();
+        $link = TrackingLink::where('slug', $slug)->with('trips', 'trips.driver', 'trips.stops')->first();
         // dd($link);
         if (isset($link->trips[0])) {
             if ($id != null) {
@@ -322,9 +322,8 @@ class DriversController extends Controller
             } else {
                 $trip_details = $link->trips[0];
             }
-            if ($trip_details->status == 'available') {
-                // dd($trip_details);
-                // return redirect()->with('error', 'Trip Not started Yet');
+            if ($trip_details == null) {
+                return view('expired');
             }
             $data['driver'] = $trip_details->driver;
             if ($request->ajax()) {
@@ -360,7 +359,7 @@ class DriversController extends Controller
     public function playback($id, $from, $to)
     {
         $response['response'] = $this->DeviceService->playback($id, $from, $to);
-        $response['driver'] = Driver::where('device_id',$id)->first();
+        $response['driver'] = Driver::where('device_id', $id)->first();
         return $response;
     }
     public function customNotification(Request $request, $driverId)
