@@ -148,7 +148,7 @@ class TripController extends Controller
     public function all(Request $request)
     {
         try {
-            $trips = Trip::where('user_id', $request->user()->id)->whereNull('started_at')->with('stops', 'attributes')->get();
+            $trips = Trip::where('user_id', $request->user()->id)->whereNull('started_at')->where('status','available')->with('stops', 'attributes')->get();
             $response = [];
             foreach ($trips as $value) {
                 $data = new stdClass();
