@@ -146,8 +146,10 @@
                                     <div class="text-dark font-weight-bolder my-2">
                                         <div class="row">
                                             <div class="col-md-1">
-										<img alt="Logo" src="{{ asset('assets/ridewithpassngers.png') }}" class="" height="75" width="150" style="border-radius: 0.82rem" />
-                                                
+                                                <img alt="Logo" src="{{ asset('assets/ridewithpassngers.png') }}"
+                                                    class="" height="75" width="150"
+                                                    style="border-radius: 0.82rem" />
+
                                             </div>
                                             <div class="col-md-11">
                                                 <div class="row">
@@ -156,15 +158,17 @@
                                                         <div class="col-md-2 p-3 text-center  font-weight-bolder @if ($trip->status == 'available') bg-secondary text-white @else bg-secondary text-dark @endif  m-1"
                                                             style="    border-radius: 25px;">
                                                             <a class=" @if ($trip->status == 'available') text-dark @else text-dark @endif"
-                                                                @if ($trip->status == 'available') href="javascript:void(0)" onclick="toastr.error('Trip not started yet!')"
+                                                                @if ($trip->status == 'available' || $trip->status == 'completed') href="javascript:void(0)" onclick="toastr.error('Trip not available to track!')"
                                                                 @else
                                                                 href="{{ url('live/track/trip/' . $link->slug . '/' . $trip->id) }}" @endif>
                                                                 {{ date('d M h:i a', strtotime($trip->pickup_date)) }}
                                                                 @if ($trip->status == 'available')
                                                                     <span class="badge badge-danger">NOT
                                                                         STARTED</span>
+                                                                @elseif($trip->status == 'completed')
+                                                                    <span class="badge badge-success">COMPLETED</span>
                                                                 @else
-                                                                    <span class="badge badge-success">STARTED</span>
+                                                                    <span class="badge badge-warning">STARTED</span>
                                                                 @endif <br>
                                                                 {{ $trip->unique_id }} - {{ $trip->event_name }}
 
