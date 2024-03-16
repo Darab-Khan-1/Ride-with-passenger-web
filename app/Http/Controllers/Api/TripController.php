@@ -148,7 +148,7 @@ class TripController extends Controller
     public function all(Request $request)
     {
         try {
-            $trips = Trip::where('user_id', $request->user()->id)->whereNull('started_at')->where('status','available')->with('stops', 'attributes')->get();
+            $trips = Trip::where('user_id', $request->user()->id)->whereNull('started_at')->where('status', 'available')->with('stops', 'attributes')->get();
             $response = [];
             foreach ($trips as $value) {
                 $data = new stdClass();
@@ -303,11 +303,9 @@ class TripController extends Controller
             return (new ErrorResource($validationErrors))->response()->setStatusCode(400);
         }
         try {
-            // $trip = Trip::find($request->trip_id);
+            $stops = Stop::where('trip_id', $request->trip_id)->get();
 
-            $stops = Stop::where('trip_id',$request->trip_id)->get();
-
-            Stop::where('trip_id',$request->trip_id)->whereNull('datetime')->delete();
+            Stop::where('trip_id', $request->trip_id)->whereNull('datetime')->delete();
 
             $stop = new Stop();
             $stop->trip_id = $request->trip_id;
@@ -316,10 +314,13 @@ class TripController extends Controller
             $stop->long = $request->long;
             $stop->type = 'stop';
             $stop->description = $request->description;
+            $stop->datetime = date('Y-m-d H:i:s', strtotime('now'));
             $stop->save();
 
-            foreach ($stops as $value){
-                if($value->datetime == null){
+            $new_stop_id = $stop->id;
+
+            foreach ($stops as $value) {
+                if ($value->datetime == null) {
                     $stop = new Stop();
                     $stop->trip_id = $request->trip_id;
                     $stop->location = $value->location;
@@ -330,7 +331,20 @@ class TripController extends Controller
                     $stop->save();
                 }
             }
-            
+
+            $trip = Trip::where('id', $request->trip_id)->with('stops')->first();
+            foreach ($trip->stops as $key => $value) {
+                if ($new_stop_id == $value->id) {
+                    if (($key + 1) ==  count($trip->stops)) {
+                        $trip->status = 'destination';
+                    } else {
+                        $trip->status = 'stop ' . ($key + 1);
+                    }
+                    $trip->save();
+                    break;
+                }
+            }
+
             return $this->apiJsonResponse(200, "Stop added!", '', "");
         } catch (\Throwable $e) {
             return $this->apiJsonResponse(400, "Something went wrong", '', $e->getMessage());
@@ -415,7 +429,7 @@ class TripController extends Controller
                     if (($key + 1) ==  count($trip->stops)) {
                         $trip->status = 'destination';
                     } else {
-                        $trip->status = 'stop ' . ($key);
+                        $trip->status = 'stop ' . ($key + 1);
                     }
                     $trip->save();
                     break;
@@ -433,7 +447,7 @@ class TripController extends Controller
             }
             $stop->save();
             $data = [
-                'message' => $trip->unique_id .  ' is now at stop:' . $stop->location ,
+                'message' => $trip->unique_id .  ' is now at stop:' . $stop->location,
                 'title' => 'Trip Update',
                 'sound' => 'anychange.mp3',
             ];
