@@ -93,6 +93,39 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="syncEventsModal" tabindex="-1" role="dialog" aria-labelledby="syncEventsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content counter-mirror">
+            <div class="modal-header">
+                <h5 class="modal-title" id="syncEventsModalLabel">Sync Events</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group col-md-12">
+                    <label>From:</label>
+                    <input type="date" value="{{ date('Y-m-d', strtotime('-1 day')) }}" id="sync_event_from"
+                        class="form-control " required placeholder="Enter license expiry" />
+                </div>
+                <div class="form-group col-md-12">
+                    <label>To:</label>
+                    <input type="date" id="sync_Event_to" value="{{ date('Y-m-d', strtotime('now')) }}"
+                        class="form-control " required placeholder="Enter license expiry" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="sync_events_button" class="btn btn-primary font-weight-bold">Sync</button>
+                <button type="button" class="btn btn-light-primary font-weight-bold"
+                    data-dismiss="modal">{{ __('messages.no') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!--end::Content-->
 @include('includes/footer')
 
@@ -382,16 +415,16 @@
 
 
 
-    function copyToClipboard(elementId) {
-        var element = document.getElementById(elementId);
-        navigator.clipboard.writeText(element.innerText)
-            .then(() => {
-                toastr.success("Text copied to clipboard");
-            })
-            .catch(err => {
-                console.error('Failed to copy text: ', err);
-            });
-    }
+        function copyToClipboard(elementId) {
+            var element = document.getElementById(elementId);
+            navigator.clipboard.writeText(element.innerText)
+                .then(() => {
+                    toastr.success("Text copied to clipboard");
+                })
+                .catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+        }
 
 
 
@@ -429,11 +462,11 @@
             $('#panel').empty();
 
             // Create HTML for table
-            var tableHTML = '<table class="table">';
+            var tableHTML = '<table class="table text-center">';
             tableHTML += '<tr><th>Field</th><th>Value</th></tr>';
             for (var key in rowData) {
                 if (rowData.hasOwnProperty(key)) {
-                    tableHTML += '<tr><td>' + key + '</td><td>' + (rowData[key] ? rowData[key] : 'N/A') +
+                    tableHTML += '<tr><td>' + (key.replace(/_/g, " ")).toUpperCase() + '</td><td>' + (rowData[key] ? rowData[key] : 'N/A') +
                         '</td></tr>';
                 }
             }
@@ -524,4 +557,51 @@
             return null;
         }
     });
+
+
+    $("#sync_events_button").on('click', function() {
+
+        var formData = {
+            from: $('#sync_event_from').val(),
+            to: $('#sync_Event_to').val()
+        };
+
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        // Send AJAX request
+        $.ajax({
+            type: 'POST',
+            url: '{{ url('/sync/events') }}',
+            data: formData,
+            beforeSend: function() {
+                $("#syncEventsModal").modal('hide')
+                $("#openSyncModal").html(`<div class="spinner"></div>`)
+                $("#openSyncModal").attr('disabled', '')
+                $("#openSyncModal").removeClass('btn-warning')
+                $("#openSyncModal").addClass('btn-dark')
+            },
+            success: function(response) {
+                // Handle success response
+
+                $("#openSyncModal").html(`Sync Events`)
+                $("#openSyncModal").removeAttr('disabled')
+                $("#openSyncModal").removeClass('btn-dark')
+                $("#openSyncModal").addClass('btn-warning')
+
+                if (response.response == 'success') {
+                    toastr.success('Events synced successfully');
+                } else {
+                    toastr.error('Not allowed');
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle error response
+                console.error('AJAX request failed:', error);
+            }
+        });
+    })
 </script>

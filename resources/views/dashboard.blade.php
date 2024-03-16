@@ -1,4 +1,3 @@
-
 @include('includes/header')
 <!--begin::Content-->
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -25,72 +24,76 @@
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
-                        <h3 class="card-label counter-mirror">{{__('messages.dashboard')}}
+                        <h3 class="card-label counter-mirror">{{ __('messages.dashboard') }}
                             {{-- <span class="d-block text-muted pt-2 font-size-sm">Companies made easy</span> --}}
                         </h3>
                     </div>
                 </div>
 
-                <div class="card-body flex-wrap border-0 pt-6 pb-0 "
-                    style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                @if (auth()->user()->type != 'customer')
+                    <div class="card-body flex-wrap border-0 pt-6 pb-0 "
+                        style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
 
-                    <div class="row gy-5 g-xl-10">
-                        <div class="col-xl-5 mb-xl-10">
-                            <div class="card mb-12 h-md-100" dir="ltr"
-                                style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                                <div class="card-body d-flex flex-column flex-center">
-                                    <div class="mb-2 counter-mirror">
-                                        <p class="m-5 " style="font-weight: bold;font-size: 17px;">
-                                            {{__('messages.users')}}</p>
-                                        <div class="py-18 text-left" >
-                                            <div id="driverChart"></div>
-                                            <h3>{{__('messages.total_user')}}: {{ $data['drivers'] }}</h3>
+                        <div class="row gy-5 g-xl-10">
+                            <div class="col-xl-5 mb-xl-10">
+                                <div class="card mb-12 h-md-100" dir="ltr"
+                                    style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                                    <div class="card-body d-flex flex-column flex-center">
+                                        <div class="mb-2 counter-mirror">
+                                            <p class="m-5 " style="font-weight: bold;font-size: 17px;">
+                                                {{ __('messages.users') }}</p>
+                                            <div class="py-18 text-left">
+                                                <div id="driverChart"></div>
+                                                <h3>{{ __('messages.total_user') }}: {{ $data['drivers'] }}</h3>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-xl-5 mb-xl-10">
-                            <div class="card mb-12 h-md-100" dir="ltr"
-                                style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                                <div class="card-body d-flex flex-column flex-center">
-                                    <div class="mb-2 counter-mirror">
-                                        <p class="m-5 " style="font-weight: bold;font-size: 17px;">
-                                            {{__('messages.trips')}}</p>
-                                        <div class="py-18 text-left">
-                                            <div id="tripChart"></div>
-                                            <h3 >{{__('messages.total_trips')}}: {{ $data['trips'] }}</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-5 mb-xl-10">
-                            <div class="card mb-12 h-md-100" dir="ltr"
-                                style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                                <div class="card-body d-flex flex-column flex-center counter-mirror">
-                                    <div class="mb-2 ">
-                                        <p class="m-5" style="font-weight: bold;font-size: 17px;">
-                                            {{__('messages.roles')}}</p>
-                                        <div class="py-18 text-left">
-                                            <div id="roleChart"></div>
-                                            <h3>{{__('messages.total_roles')}}: {{ count($data['roles']) }}</h3>
-                                        </div>
-                                    </div>
+                @endif
+                <div class="col-xl-5 mb-xl-10">
+                    <div class="card mb-12 h-md-100" dir="ltr"
+                        style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                        <div class="card-body d-flex flex-column flex-center">
+                            <div class="mb-2 counter-mirror">
+                                <p class="m-5 " style="font-weight: bold;font-size: 17px;">
+                                    {{ __('messages.trips') }}</p>
+                                <div class="py-18 text-left">
+                                    <div id="tripChart"></div>
+                                    <h3>{{ __('messages.total_trips') }}: {{ $data['trips'] }}</h3>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                {{-- <div class="card-footer">
-                </div> --}}
+                @if (auth()->user()->type != 'customer')
+                    <div class="col-xl-5 mb-xl-10">
+                        <div class="card mb-12 h-md-100" dir="ltr"
+                            style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                            <div class="card-body d-flex flex-column flex-center counter-mirror">
+                                <div class="mb-2 ">
+                                    <p class="m-5" style="font-weight: bold;font-size: 17px;">
+                                        {{ __('messages.roles') }}</p>
+                                    <div class="py-18 text-left">
+                                        <div id="roleChart"></div>
+                                        <h3>{{ __('messages.total_roles') }}: {{ count($data['roles']) }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
-
         </div>
-        <!--end::Container-->
+
+        {{-- <div class="card-footer">
+                </div> --}}
     </div>
-    <!--end::Entry-->
+
+</div>
+<!--end::Container-->
+</div>
+<!--end::Entry-->
 </div>
 
 @include('includes/footer')
@@ -108,24 +111,24 @@
             type: "donut",
         },
         responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
-            },
-            legend: {
-              position: 'bottom'
+            breakpoint: 480,
+            options: {
+                chart: {
+                    width: 200
+                },
+                legend: {
+                    position: 'bottom'
+                }
             }
-          }
         }],
         colors: ['#3699FF', "#FFA800"],
 
         labels: [
             '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data.drivers +
-            ' {{__("messages.drivers")}}</span></div>',
+            ' {{ __('messages.drivers') }}</span></div>',
             '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data
             .employees +
-            ' {{__("messages.employees")}}</span></div>',
+            ' {{ __('messages.employees') }}</span></div>',
         ],
         tooltip: {
             // your tooltip options here
@@ -144,30 +147,30 @@
             type: "donut",
         },
         responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
-            },
-            legend: {
-              position: 'bottom'
+            breakpoint: 480,
+            options: {
+                chart: {
+                    width: 200
+                },
+                legend: {
+                    position: 'bottom'
+                }
             }
-          }
         }],
         colors: ["#F64E60", '#3699FF', "#FFA800", "#1BC5BD"],
 
         labels: [
             '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data
             .incomplete +
-            ' {{__("messages.incomplete")}}</span></div>',
+            ' {{ __('messages.incomplete') }}</span></div>',
             '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data
             .available +
-            ' {{__("messages.available")}}</span></div>',
+            ' {{ __('messages.available') }}</span></div>',
             '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data.active +
-            ' {{__("messages.active")}}</span></div>',
+            ' {{ __('messages.active') }}</span></div>',
             '<div class="d-inline-block"><span class="fs-5 bold-20 d-inline-block w-100 ">' + data
             .completed +
-            ' {{__("messages.completed")}}</span></div>',
+            ' {{ __('messages.completed') }}</span></div>',
         ],
         tooltip: {
             // your tooltip options here
@@ -209,15 +212,15 @@
             type: "donut",
         },
         responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
-            },
-            legend: {
-              position: 'bottom'
+            breakpoint: 480,
+            options: {
+                chart: {
+                    width: 200
+                },
+                legend: {
+                    position: 'bottom'
+                }
             }
-          }
         }],
         colors: colors,
 

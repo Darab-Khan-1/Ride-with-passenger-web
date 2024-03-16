@@ -139,6 +139,11 @@
                                                 <span></span>
                                                 {{ __('messages.update') }}
                                             </label>
+                                            <label class="checkbox checkbox-info">
+                                                <input type="checkbox" name="update_active_trip" />
+                                                <span></span>
+                                                Update Active Trip
+                                            </label>
                                             <label class="checkbox checkbox-danger">
                                                 <input type="checkbox" name="delete_trip" />
                                                 <span></span>
@@ -314,6 +319,11 @@
                                                 <input type="checkbox" name="update_trip" id="update_trip" />
                                                 <span></span>
                                                 {{ __('messages.update') }}
+                                            </label>
+                                            <label class="checkbox checkbox-info">
+                                                <input type="checkbox" name="update_active_trip" id="update_active_trip" />
+                                                <span></span>
+                                                Update Active Trip
                                             </label>
                                             <label class="checkbox checkbox-danger">
                                                 <input type="checkbox" name="delete_trip" id="delete_trip" />

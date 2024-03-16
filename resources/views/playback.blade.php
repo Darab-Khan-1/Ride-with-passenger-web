@@ -83,26 +83,14 @@
         display: inline-block;
     }
 
-    .status-dot {
-        position: absolute;
-        top: 8px;
-        left: 8px;
-        width: 10px;
-        /* Adjust the size as needed */
-        height: 10px;
-        /* Adjust the size as needed */
-        border-radius: 50%;
+
+    .custom-marker-label{
+        width: 70px;
+        height: 30px;
+        font-size: 10px;
     }
 
-    .online {
-        background-color: lime;
-        /* Set the online status color */
-    }
 
-    .offline {
-        background-color: red;
-        /* Set the offline status color */
-    }
 </style>
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> --}}
 
@@ -121,12 +109,13 @@
                     <div class="col-md-3">
                         <div class="card card-custom " style="height:80vh;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                             <div class="card-body py-2">
-                                <div class="row"> 
+                                <div class="row">
                                     <div class="form-group col-md-12 counter-mirror">
-                                        <h3 class="text-center py-2">{{__('messages.drivers')}}</h3>
+                                        <h3 class="text-center py-2">{{ __('messages.drivers') }}</h3>
                                         {{-- <button class="btn btn-primary w-100" onclick="showAll()">Show All</button> --}}
                                         <input type="text" id="searchInput" class="form-control mb-2"
-                                            placeholder="{{__('messages.search_by_name_or_phone_number')}}" style="border:none">
+                                            placeholder="{{ __('messages.search_by_name_or_phone_number') }}"
+                                            style="border:none">
                                         <ul class="user-list">
                                             @foreach ($drivers as $value)
                                                 <li id="{{ 'USER' . $value->device_id }}"
@@ -147,21 +136,28 @@
                                                         </div>
                                                         <div class="col-md-2">
                                                             <div class="dropdown dropdown-inline">
-                                                                <a href="#" class="btn btn-clean btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <a href="#"
+                                                                    class="btn btn-clean btn-hover-light-primary btn-sm btn-icon"
+                                                                    data-toggle="dropdown" aria-haspopup="true"
+                                                                    aria-expanded="false">
                                                                     <i class="ki ki-bold-more-hor"></i>
                                                                 </a>
-                                                                <div class="dropdown-menu dropdown-menu-md dropdown-menu-right" style="">
+                                                                <div class="dropdown-menu dropdown-menu-md dropdown-menu-right"
+                                                                    style="">
                                                                     <!--begin::Naviigation-->
                                                                     <ul class="navi">
                                                                         @foreach ($value->trips as $trip)
-                                                                        <li class="navi-item">
-                                                                            <a href="{{ url('playback/index',$trip->id) }}" class="navi-link">
-                                                                                <span class="navi-icon">
-                                                                                    <img src="{{ asset('assets/media/svg/icons/Navigation/Route.svg') }}"/>
-                                                                                </span>
-                                                                                <span class="navi-text">{{ $trip->unique_id . ' - ' . $trip->event_name }}</span>
-                                                                            </a>
-                                                                        </li>
+                                                                            <li class="navi-item">
+                                                                                <a href="{{ url('playback/index', $trip->id) }}"
+                                                                                    class="navi-link">
+                                                                                    <span class="navi-icon">
+                                                                                        <img
+                                                                                            src="{{ asset('assets/media/svg/icons/Navigation/Route.svg') }}" />
+                                                                                    </span>
+                                                                                    <span
+                                                                                        class="navi-text">{{ $trip->unique_id . ' - ' . $trip->event_name }}</span>
+                                                                                </a>
+                                                                            </li>
                                                                         @endforeach
                                                                     </ul>
                                                                     <!--end::Naviigation-->
@@ -203,7 +199,8 @@
                                         value="{{ isset($service->id) ? date('Y-m-d H:i:s', strtotime($service->completed_at)) : date('Y-m-d H:i:s', strtotime('now')) }}">
 
                                     <button class="m-1 btn btn-primary text-light" id="fetchAndPlayButton"
-                                        style="width: 130px;" onclick="fetchPositionsAndPlay()">&nbsp;{{__('messages.search')}}</button>
+                                        style="width: 130px;"
+                                        onclick="fetchPositionsAndPlay()">&nbsp;{{ __('messages.search') }}</button>
                                     <span style="padding-top: 15px;"><i style="display: none" id="spinner"
                                             class="fas fa-spinner fa-spin"></i></span>
                                     <div class="col-md-1">
@@ -214,6 +211,9 @@
                                             <option value="150" selected>&times;3</option>
                                             <option value="70">&times;4</option>
                                             <option value="30">&times;5</option>
+                                            <option value="15">&times;10</option>
+                                            <option value="10">&times;15</option>
+                                            <option value="1">&times;20</option>
                                         </select>
                                     </div>
                                     <button class="m-1 btn btn-warning" id="backwardButton" style="display: none"
@@ -481,7 +481,8 @@
                         flags.push(flag)
                     }
                     $("#speed").html("<strong>Speed: </strong>" + (trips[currentPosition]['speed'] * 3.6)
-                        .toFixed(1) + " kph")
+                        .toFixed(1) + " kmh")
+                        $('.custom-marker-label').html((trips[currentPosition]['speed'] * 3.6).toFixed(1) + 'km/h')
                     // $("#address").html("<strong>Adress: </strong>" + trips[currentPosition]['address'])
                     $("#time").html("<strong>Time: </strong>" + trips[currentPosition]['updatedTime'])
                     currentPosition++;
@@ -641,8 +642,8 @@
             method: "GET",
             success: function(data) {
                 document.getElementById("spinner").style.display = "none";
-                if (data.latlong.length > 0) {
-                    trips = data.latlong
+                if (data.response.latlong.length > 0) {
+                    trips = data.response.latlong
                     console.log(data);
                     document.getElementById('playback_speed').style.display = "block";
                     document.getElementById('playButton').style.display = "block";
@@ -650,12 +651,64 @@
                     document.getElementById('backwardButton').style.display = "block";
                     document.getElementById('fastForwardButton').style.display = "block";
                     document.getElementById('fetchAndPlayButton').disabled = false;
-                    positions = latlongs(data.latlong)
-                    marker.setPosition(positions[0]);
+                    positions = latlongs(data.response.latlong)
+
+
+
+
+                    const markerImage = new Image();
+                    markerImage.src = data.driver.avatar; // Set the marker image URL
+                    markerImage.onload = function() {
+                        // Once the image is loaded, create a canvas element to draw the rounded image
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.width = 40; // Set the canvas width
+                        canvas.height = 40; // Set the canvas height
+                        context.beginPath();
+                        context.arc(20, 20, 20, 0, Math.PI * 2); // Create a circle path
+                        context.closePath();
+                        context.clip(); // Clip the image to the circle path
+                        context.drawImage(markerImage, 0, 0, 40, 40); // Draw the image onto the canvas
+
+
+                        // Draw a border around the rounded marker image
+                        context.strokeStyle = '#198a16cf'; // Set the border color
+                        context.lineWidth = 3; // Set the border width
+                        context.stroke(); // Draw the border
+                        context.drawImage(markerImage, 0, 0, 40,
+                            40); // Draw the image onto the canvas
+
+                        const roundedMarkerImage = canvas
+                            .toDataURL(); // Convert the canvas content to a data URL
+
+                            // console.log(data.response.latlong.latitude);
+                        marker = new google.maps.Marker({
+                            map: googleMap,
+                            position: {
+                                lat: data.response.latlong[0].latitude,
+                                lng: data.response.latlong[0].longitude
+                            },
+                            icon: {
+                                url: roundedMarkerImage,
+                                scaledSize: new google.maps.Size(40, 40),
+                            },
+
+                            label: {
+                                        text: "0.0 km/h",
+                                        className: 'badge badge-sm badge-warning ml-10 mb-10 custom-marker-label', // Custom class name for the label
+                                    },
+                        });
+
+                    }
+
+
+
+
+                    // marker.setPosition(positions[0]);
                     googleMap.setCenter(positions[0]);
                     googleMap.setZoom(17);
                     panToLocation(positions[0]);
-                    stops = data.stops
+                    stops = data.response.stops
                     addStops()
                 } else {
                     document.getElementById('fetchAndPlayButton').disabled = false;

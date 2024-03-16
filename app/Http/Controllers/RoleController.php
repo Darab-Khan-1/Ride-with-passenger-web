@@ -32,6 +32,7 @@ class RoleController extends Controller
 
         // Permission::create(['name' => 'create_trip']);
         // Permission::create(['name' => 'update_trip']);
+        Permission::create(['name' => 'update_active_trip']);
         // Permission::create(['name' => 'view_trip']);
         // Permission::create(['name' => 'delete_trip']);
 
@@ -49,10 +50,10 @@ class RoleController extends Controller
         // Permission::create(['name' => 'playback']);
 
 
-        Permission::create(['name' => 'create_customer']);
-        Permission::create(['name' => 'update_customer']);
-        Permission::create(['name' => 'view_customer']);
-        Permission::create(['name' => 'delete_customer']);
+        // Permission::create(['name' => 'create_customer']);
+        // Permission::create(['name' => 'update_customer']);
+        // Permission::create(['name' => 'view_customer']);
+        // Permission::create(['name' => 'delete_customer']);
 
 
     }

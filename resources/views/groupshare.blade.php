@@ -15,7 +15,7 @@
     <link href="{{ asset('assets/plugins/custom/prismjs/prismjs.bundle.css?v=7.0.5') }}" rel="stylesheet"
         type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css?v=7.0.5') }}" rel="stylesheet" type="text/css" />
-    <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
+    <link rel="shortcut icon" href="{{ asset('assets/ridewithpassngers.png') }}" />
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase.js"></script>
@@ -142,20 +142,24 @@
                                     </div>
                                 @endif
                                 <div class="col-xl-12">
-                                    {{-- <div class="card card-custom  gutter-b" --}}
-                                        {{-- style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;"> --}}
-                                        {{-- <div class="card-body"> --}}
-                                            <div class="text-dark font-weight-bolder my-2">
+
+                                    <div class="text-dark font-weight-bolder my-2">
+                                        <div class="row">
+                                            <div class="col-md-1">
+										<img alt="Logo" src="{{ asset('assets/ridewithpassngers.png') }}" class="" height="75" width="150" style="border-radius: 0.82rem" />
+                                                
+                                            </div>
+                                            <div class="col-md-11">
                                                 <div class="row">
 
                                                     @foreach ($link->trips as $trip)
-                                                        <div class="col-md-2 p-3 text-center  font-weight-bolder @if ($trip->status == 'available') bg-secondary text-white @else bg-secondary text-dark @endif mx-auto m-1"
+                                                        <div class="col-md-2 p-3 text-center  font-weight-bolder @if ($trip->status == 'available') bg-secondary text-white @else bg-secondary text-dark @endif  m-1"
                                                             style="    border-radius: 25px;">
                                                             <a class=" @if ($trip->status == 'available') text-dark @else text-dark @endif"
                                                                 @if ($trip->status == 'available') href="javascript:void(0)" onclick="toastr.error('Trip not started yet!')"
                                                                 @else
                                                                 href="{{ url('live/track/trip/' . $link->slug . '/' . $trip->id) }}" @endif>
-                                                                {{ date("d M h:i a",strtotime($trip->pickup_date)) }}
+                                                                {{ date('d M h:i a', strtotime($trip->pickup_date)) }}
                                                                 @if ($trip->status == 'available')
                                                                     <span class="badge badge-danger">NOT
                                                                         STARTED</span>
@@ -168,8 +172,9 @@
                                                         </div>
                                                     @endforeach
                                                 </div>
-                                            {{-- </div>
-                                        </div> --}}
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
 
@@ -286,7 +291,6 @@
                 document.getElementById("infoCard").style.display = 'block'
                 var name = '';
                 var phone = '';
-
                 name = "{{ $trip_details->driver->name }}";
                 phone = "{{ $trip_details->driver->phone }}";
 
@@ -366,37 +370,73 @@
         }
 
         // Function to update marker position
-        function updateMarker(lat, lng) {
+        function updateMarker(lat, lng, imageUrl) {
             if (firstCall) {
-                firstCall = false
+                firstCall = false;
                 // Reinitialize marker and polyline
-                marker = new google.maps.Marker({
-                    map: googleMap,
-                    position: {
-                        lat: lat,
-                        lng: lng
-                    },
-                    icon: {
-                        url: 'data:image/svg+xml,' + encodeURIComponent(svgContent),
-                        size: new google.maps.Size(24, 24) // Set the size
-                    }
+                const markerImage = new Image();
+                markerImage.src = imageUrl; // Set the marker image URL
+                markerImage.onload = function() {
+                    // Once the image is loaded, create a canvas element to draw the rounded image
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.width = 40; // Set the canvas width
+                    canvas.height = 40; // Set the canvas height
+                    context.beginPath();
+                    context.arc(20, 20, 20, 0, Math.PI * 2); // Create a circle path
+                    context.closePath();
+                    context.clip(); // Clip the image to the circle path
+                    context.drawImage(markerImage, 0, 0, 40, 40); // Draw the image onto the canvas
 
-                });
 
-                googleMap.setZoom(16)
-                polyline = new google.maps.Polyline({
-                    map: googleMap,
-                    strokeColor: '#FF0000',
-                    strokeOpacity: 1.0,
-                    strokeWeight: 2
-                });
+                    // Draw a border around the rounded marker image
+                    context.strokeStyle = '#198a16cf'; // Set the border color
+                    context.lineWidth = 3; // Set the border width
+                    context.stroke(); // Draw the border
+                    context.drawImage(markerImage, 0, 0, 40,
+                        40); // Draw the image onto the canvas
+
+                    const roundedMarkerImage = canvas.toDataURL(); // Convert the canvas content to a data URL
+
+                    marker = new google.maps.Marker({
+                        map: googleMap,
+                        position: {
+                            lat: lat,
+                            lng: lng
+                        },
+                        icon: {
+                            url: roundedMarkerImage,
+                            scaledSize: new google.maps.Size(40, 40),
+                        }
+                    });
+
+                    polyline = new google.maps.Polyline({
+                        map: googleMap,
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 1.0,
+                        strokeWeight: 2
+                    });
+
+                    // Extend the bounds to include the marker's position
+                    bounds.extend(marker.getPosition());
+
+                    // Fit the map to the updated bounds
+                    googleMap.fitBounds(bounds);
+                };
             } else {
                 marker.setPosition({
                     lat,
                     lng
                 }, 14);
+
+                // Extend the bounds to include the marker's position
+                bounds.extend(marker.getPosition());
+
+                // Fit the map to the updated bounds
+                googleMap.fitBounds(bounds);
             }
         }
+
 
         // Function to start live tracking
         function startLiveTracking(driver) {
@@ -441,7 +481,8 @@
                         //     if (data.hasOwnProperty(key)) {
                         //     }
                         // }
-                        table += "<tr><td colspan='2'><b>Customer Company:</b>" + (response['trip'].customer_company) +
+                        table += "<tr><td colspan='2'><b>Customer Company:</b>" + (response['trip']
+                                .customer_company) +
                             "</td></tr>";
                         table += "<tr><td><b>Customer Name:</b>" + (response['trip'].customer_name) +
                             " </td><td><b>Customer Phone:</b>" + (response['trip'].customer_phone) +
@@ -459,7 +500,7 @@
 
                         tripInfoDiv.innerHTML = table;
                         // timeInfoDiv.textContent = data.serverTime;
-                        updateMarker(data.latitude, data.longitude);
+                        updateMarker(data.latitude, data.longitude, response['driver'].avatar);
                         googleMap.setCenter(marker.getPosition());
                         const path = polyline.getPath();
                         path.push(new google.maps.LatLng(data.latitude, data.longitude));

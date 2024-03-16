@@ -76,6 +76,7 @@
                                     <label>Select trips:</label>
                                     <ul>
                                         @foreach ($trips as $trip)
+                                        @if($trip->driver != null)
                                             <li class="my-9 px-5 ">
                                                 {{-- <label for="trip_{{ $trip->id }}">
                                                     {{ $trip->unique_id }} - {{ $trip->pickup_date  }} -  {{ $trip->event_name }}
@@ -104,6 +105,7 @@
 
                                                 </div>
                                             </li>
+                                            @endif
                                         @endforeach
                                     </ul>
                                 </div>

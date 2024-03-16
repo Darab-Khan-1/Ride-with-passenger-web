@@ -16,7 +16,7 @@
         <div class="card">
             <div class="card-header flex-wrap border-0 pt-6 pb-0 row">
                 <div class="card-title col-md-4">
-                    <h2>{{ __('messages.create_customer') }}</h2>
+                    <h2>Edit Customer</h2>
                 </div>
                 <div class="col-md-6">
                 </div>
@@ -263,8 +263,8 @@
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: {
-                lat: 37.7749,
-                lng: -122.4194
+                lat: 31.9539494,
+                lng:  35.910635
             }, // Default center (San Francisco)
             zoom: 12
         });
