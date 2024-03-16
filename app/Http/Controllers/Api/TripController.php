@@ -61,7 +61,7 @@ class TripController extends Controller
     public function ongoing(Request $request)
     {
         try {
-            $trip = Trip::where('user_id', $request->user()->id)->whereNotNull('started_at')->whereNull('completed_at')->with('stops', 'attributes')->first();
+            $trip = Trip::where('user_id', $request->user()->id)->whereNotNull('started_at')->whereNull('completed_at')->with('trackingLinks', 'stops', 'attributes')->first();
             if ($trip == null) {
                 return $this->apiJsonResponse(200, "No ongoing trip found!", '', "");
             }
@@ -83,7 +83,11 @@ class TripController extends Controller
             $data->drop_long = $trip->drop_long;
             $data->status = (($trip->status == "pickup" || stripos($trip->status, 'stop') !== false) ? 'stopped' : $trip->status);
             $data->stops = $trip->stops;
-            $data->url = url('live/share/location', $trip->slug);
+            if (isset($trip->trackingLinks[0])) {
+                $data->url = $trip->trackingLink[0]->url;
+            }else{
+                $data->url = url('live/share/location', $trip->slug);
+            }
             $data->attributes = $trip->attributes;
             $data->current_stop = 0;
             if ($trip->status == 'pickup') {
@@ -179,7 +183,7 @@ class TripController extends Controller
     public function my(Request $request)
     {
         try {
-            $trips = Trip::where('user_id', $request->user()->id)->whereNull('started_at')->where('status', 'accepted')->with('stops', 'attributes')->get();
+            $trips = Trip::where('user_id', $request->user()->id)->whereNull('started_at')->where('status', 'accepted')->with('trackingLinks','stops', 'attributes')->get();
             $response = [];
             foreach ($trips as $value) {
                 $data = new stdClass();
@@ -198,7 +202,11 @@ class TripController extends Controller
                 $data->drop_lat = $value->drop_lat;
                 $data->drop_long = $value->drop_long;
                 $data->stops = $value->stops;
-                $data->url = url('live/share/location', $value->slug);
+                if (isset($value->trackingLinks[0])) {
+                    $data->url = $value->trackingLink[0]->url;
+                }else{
+                    $data->url = url('live/share/location', $value->slug);
+                }
                 $data->attributes = $value->attributes;
                 array_push($response, $data);
             }
