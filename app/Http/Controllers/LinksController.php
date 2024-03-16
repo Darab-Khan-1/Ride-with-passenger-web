@@ -22,7 +22,7 @@ class LinksController extends Controller
 
     public function add()
     {
-        $trips = Trip::whereIn('status', ['available', 'active'])->with('driver')->get();
+        $trips = Trip::whereNotIn('status', ['completed', 'available','rejected'])->whereNotNull('status')->with('driver')->get();
         // dd($trips);
         return view('links.create', compact('trips'));
     }
@@ -43,7 +43,7 @@ class LinksController extends Controller
 
     public function edit($id)
     {
-        $trips = Trip::whereIn('status', ['available', 'active'])->get();
+        $trips = Trip::whereNotIn('status', ['completed', 'available','rejected'])->whereNotNull('status')->with('driver')->get();
         $link = TrackingLink::find($id);
         return view('links.edit', compact('trips','link'));
     }
