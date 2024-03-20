@@ -151,7 +151,7 @@
                                                     style="border-radius: 0.82rem" />
 
                                             </div>
-                                            <div class="col-md-11">
+                                            <div class="col-md-9">
                                                 <div class="row">
 
                                                     @foreach ($link->trips as $trip)
@@ -176,6 +176,11 @@
                                                         </div>
                                                     @endforeach
                                                 </div>
+                                            </div>
+                                            <div class="col-md-2" style="      position: fixed;right: 0;background-color: #7e00ff63;border-radius: 10px;z-index: 999;height: 200px;overflow: auto;">
+                                                @if($advertisement != null)
+                                                {!! $advertisement->value !!}
+                                                @endif
                                             </div>
                                         </div>
 
@@ -623,7 +628,7 @@
 
 
 
-        function        (start, end) {
+        function calculateDuration(start, end) {
             return new Promise(function(resolve, reject) {
                 var request = {
                     origin: start,

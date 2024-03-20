@@ -257,8 +257,16 @@ License: You must have a valid license purchased only from themeforest(the above
                             <!--begin::Topbar-->
                             <div class="topbar bg-primary">
                                 <div class="topbar-item">
+                                    <a class="topbar-item" href="{{ url('/advertisement') }}">
+                                        <div class="btn btn-icon btn-hover-transparent-white w-auto d-flex align-items-center btn-lg px-2 bg-warning"
+                                            id="kt_quick_user_toggle">
+                                            <div class="d-flex flex-column text-right pr-3">
+                                                <span
+                                                    class="text-dark opacity-50 font-weight-bold font-size-sm d-none d-md-inline counter-mirror">Advertisement</span>
+                                            </div>
+                                        </div>
+                                    </a>
                                     <a class="topbar-item" href="{{ url('/profile/personal') }}">
-
                                         <div class="btn btn-icon btn-hover-transparent-white w-auto d-flex align-items-center btn-lg px-2"
                                             id="kt_quick_user_toggle">
                                             <div class="d-flex flex-column text-right pr-3">

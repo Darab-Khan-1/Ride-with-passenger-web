@@ -17,6 +17,7 @@ use GuzzleHttp\RedirectMiddleware;
 use App\Services\NotificationService;
 use PDO;
 use App\Helpers\Curl;
+use App\Models\Setting;
 use App\Models\TrackingLink;
 use stdClass;
 use Config;
@@ -314,6 +315,8 @@ class DriversController extends Controller
             return view('not_started');
         }
         $this->adminLogin();
+
+
         $link = TrackingLink::where('slug', $slug)->with('trips', 'trips.driver', 'trips.stops')->first();
         // dd($link);
         if (isset($link->trips[0])) {
@@ -339,7 +342,8 @@ class DriversController extends Controller
                 return $data;
             }
             // $id = $slug;
-            return view('groupshare', compact('id', 'trip_details', 'link'));
+            $advertisement = Setting::where('name','advertisement')->first();
+            return view('groupshare', compact('id', 'trip_details', 'link','advertisement'));
         } else {
             return view('expired');
         }

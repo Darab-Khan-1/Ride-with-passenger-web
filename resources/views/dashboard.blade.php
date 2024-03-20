@@ -35,7 +35,7 @@
                         style="box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
 
                         <div class="row gy-5 g-xl-10">
-                            <div class="col-xl-5 mb-xl-10">
+                            <div class="col-xl-4 mb-xl-10">
                                 <div class="card mb-12 h-md-100" dir="ltr"
                                     style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
                                     <div class="card-body d-flex flex-column flex-center">
@@ -50,39 +50,42 @@
                                     </div>
                                 </div>
                             </div>
-                @endif
-                <div class="col-xl-5 mb-xl-10">
-                    <div class="card mb-12 h-md-100" dir="ltr"
-                        style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                        <div class="card-body d-flex flex-column flex-center">
-                            <div class="mb-2 counter-mirror">
-                                <p class="m-5 " style="font-weight: bold;font-size: 17px;">
-                                    {{ __('messages.trips') }}</p>
-                                <div class="py-18 text-left">
-                                    <div id="tripChart"></div>
-                                    <h3>{{ __('messages.total_trips') }}: {{ $data['trips'] }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @if (auth()->user()->type != 'customer')
-                    <div class="col-xl-5 mb-xl-10">
-                        <div class="card mb-12 h-md-100" dir="ltr"
-                            style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
-                            <div class="card-body d-flex flex-column flex-center counter-mirror">
-                                <div class="mb-2 ">
-                                    <p class="m-5" style="font-weight: bold;font-size: 17px;">
-                                        {{ __('messages.roles') }}</p>
-                                    <div class="py-18 text-left">
-                                        <div id="roleChart"></div>
-                                        <h3>{{ __('messages.total_roles') }}: {{ count($data['roles']) }}</h3>
+
+                            <div class="col-xl-4 mb-xl-10">
+                                <div class="card mb-12 h-md-100" dir="ltr"
+                                    style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                                    <div class="card-body d-flex flex-column flex-center">
+                                        <div class="mb-2 counter-mirror">
+                                            <p class="m-5 " style="font-weight: bold;font-size: 17px;">
+                                                {{ __('messages.trips') }}</p>
+                                            <div class="py-18 text-left">
+                                                <div id="tripChart"></div>
+                                                <h3>{{ __('messages.total_trips') }}: {{ $data['trips'] }}</h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            @if (auth()->user()->type != 'customer')
+                                <div class="col-xl-4 mb-xl-10">
+                                    <div class="card mb-12 h-md-100" dir="ltr"
+                                        style="height: 450px;box-shadow: inset 1px 1px 10px 1px #c9c9c9;">
+                                        <div class="card-body d-flex flex-column flex-center counter-mirror">
+                                            <div class="mb-2 ">
+                                                <p class="m-5" style="font-weight: bold;font-size: 17px;">
+                                                    {{ __('messages.roles') }}</p>
+                                                <div class="py-18 text-left">
+                                                    <div id="roleChart"></div>
+                                                    <h3>{{ __('messages.total_roles') }}: {{ count($data['roles']) }}</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
-                    </div>
                 @endif
+               
             </div>
         </div>
 
