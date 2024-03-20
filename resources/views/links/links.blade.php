@@ -152,6 +152,32 @@
                     return html 
                 }
             } ,{
+                data:'trips',
+                title : "Trips",
+                render:function(data,type,row){
+                    html = '<span class="text-danger font-weight-bold">NO TRIP<>'
+                    if(data.length > 0){
+                        html = ''
+                        data.forEach(element => {
+                            html += `<b>${element.unique_id} - ${element.event_name}</b><br>`
+                        });
+                    }
+                    return html
+                }
+            } ,{
+                data:'active',
+                title : "Status",
+                render:function(data,type,row){
+                    html = ''
+                    let url = "{{ url('change/link/status') }}" + "/" + row.id
+                    if(data){
+                        html += `<a title="Click to disable" href="${url}" class="btn btn-success">ACTIVE</a>`
+                    }else{
+                        html += `<a title="Click to enable" href="${url}" class="btn btn-danger">DISABLED</a>`
+                    }
+                    return html
+                }
+            },{
                 data: "user_id",
                 title: '{{ __('messages.action') }}',
                 width: 150,

@@ -623,7 +623,7 @@
 
 
 
-        function calculateDuration(start, end) {
+        function        (start, end) {
             return new Promise(function(resolve, reject) {
                 var request = {
                     origin: start,

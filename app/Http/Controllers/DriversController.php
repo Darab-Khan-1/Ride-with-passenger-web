@@ -299,7 +299,7 @@ class DriversController extends Controller
         $this->adminLogin();
         $link = TrackingLink::where('slug', $slug)->with('trips', 'trips.driver')->first();
         // dd($link);
-        if (isset($link->trips[0])) {
+        if (isset($link->trips[0]) && $link->active) {
             $trip_details = $link->trips[0];
             return redirect('live/track/trip/' . $slug . '/' . $trip_details->id);
             // return view('groupshare', compact('id', 'trip_details', 'link'));

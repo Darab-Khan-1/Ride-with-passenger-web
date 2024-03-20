@@ -118,56 +118,50 @@
                                             style="border:none">
                                         <ul class="user-list">
                                             @foreach ($drivers as $value)
-                                                <li id="{{ 'USER' . $value->device_id }}"
-                                                    class="user-item {{ isset($service->id) && $service->driver->device_id == $value->device_id ? 'active' : '' }}"
-                                                    data-name="{{ $value->name }}" device_id="{{ $value->device_id }}"
-                                                    data-phone="{{ $value->phone }}">
-                                                    <div class="user-profile">
-                                                        {{-- <span
-                                                            class="status-dot {{ $value->online === 1 ? 'online' : 'offline' }}"></span> --}}
-                                                        <img src="{{ $value->avatar }}" alt="Profile Image"
-                                                            class="user-avatar">
+                                            <li id="{{ 'USER' . $value->device_id }}"
+                                                class="user-item {{ isset($service->id) && $service->driver->device_id == $value->device_id ? 'active' : '' }}"
+                                                data-name="{{ $value->name }}" device_id="{{ $value->device_id }}" data-phone="{{ $value->phone }}">
+                                                <div class="user-profile">
+                                                    {{-- <span class="status-dot {{ $value->online === 1 ? 'online' : 'offline' }}"></span> --}}
+                                                    <img src="{{ $value->avatar }}" alt="Profile Image" class="user-avatar">
+                                                </div>
+                                                <div class="user-details row">
+                                                    <div class="col-md-10">
+                                                        <p class="user-name">{{ $value->name }}</p>
+                                                        <p class="user-number">{{ $value->phone }}</p>
                                                     </div>
-                                                    <div class="user-details row">
-                                                        <div class="col-md-10">
-                                                            <p class="user-name">{{ $value->name }}</p>
-                                                            <p class="user-number">{{ $value->phone }}</p>
-
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <div class="dropdown dropdown-inline">
-                                                                <a href="#"
-                                                                    class="btn btn-clean btn-hover-light-primary btn-sm btn-icon"
-                                                                    data-toggle="dropdown" aria-haspopup="true"
-                                                                    aria-expanded="false">
-                                                                    <i class="ki ki-bold-more-hor"></i>
-                                                                </a>
-                                                                <div class="dropdown-menu dropdown-menu-md dropdown-menu-right"
-                                                                    style="">
-                                                                    <!--begin::Naviigation-->
-                                                                    <ul class="navi">
-                                                                        @foreach ($value->trips as $trip)
-                                                                            <li class="navi-item">
-                                                                                <a href="{{ url('playback/index', $trip->id) }}"
-                                                                                    class="navi-link">
-                                                                                    <span class="navi-icon">
-                                                                                        <img
-                                                                                            src="{{ asset('assets/media/svg/icons/Navigation/Route.svg') }}" />
-                                                                                    </span>
-                                                                                    <span
-                                                                                        class="navi-text">{{ $trip->unique_id . ' - ' . $trip->event_name }}</span>
-                                                                                </a>
-                                                                            </li>
-                                                                        @endforeach
-                                                                    </ul>
-                                                                    <!--end::Naviigation-->
-                                                                </div>
+                                                    <div class="col-md-2">
+                                                        <div class="dropdown dropdown-inline">
+                                                            <a href="#" class="btn btn-clean btn-hover-light-primary btn-sm btn-icon"
+                                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <i class="ki ki-bold-more-hor"></i>
+                                                            </a>
+                                                            <div class="dropdown-menu dropdown-menu-md dropdown-menu-right" style="">
+                                                                <!--begin::Naviigation-->
+                                                                <ul class="navi">
+                                                                    <!-- Add search input -->
+                                                                    <li class="navi-item">
+                                                                        <input type="text" class="form-control trip-search" placeholder="Search trips">
+                                                                    </li>
+                                                                    @foreach ($value->trips as $trip)
+                                                                        <li class="navi-item trip-item" style="display: none;">
+                                                                            <a href="{{ url('playback/index', $trip->id) }}" class="navi-link">
+                                                                                <span class="navi-icon">
+                                                                                    <img src="{{ asset('assets/media/svg/icons/Navigation/Route.svg') }}" />
+                                                                                </span>
+                                                                                <span class="navi-text">{{ $trip->unique_id . ' - ' . $trip->event_name }}</span>
+                                                                            </a>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                                <!--end::Naviigation-->
                                                             </div>
-
                                                         </div>
                                                     </div>
-                                                </li>
-                                            @endforeach
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                        
 
 
                                         </ul>
@@ -261,7 +255,7 @@
 <!--end::Content-->
 @include('includes/footer')
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCgMkgjHVW3WL4GD4M6FdLar-tjlIT8aU"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}"></script>
 
 <script>
     $(".map-nav").click()
@@ -729,4 +723,23 @@
     }
 
     initializeMap();
+
+
+// Show all trip items by default
+$('.trip-item').show();
+
+// Add event listener for search input
+$('.trip-search').on('input', function() {
+    var searchTerm = $(this).val().toLowerCase();
+    $(this).closest('.dropdown-menu').find('.trip-item').each(function() {
+        var tripText = $(this).find('.navi-text').text().toLowerCase();
+        if (tripText.includes(searchTerm)) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+});
+
+
 </script>

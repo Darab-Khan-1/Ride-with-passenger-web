@@ -67,4 +67,16 @@ class LinksController extends Controller
         return redirect('links')->with('success','Link deleted');
     }
 
+    public function status($id)
+    {
+        $link = TrackingLink::find($id);
+        if($link->active){
+            $link->active = 0;
+        }else{
+            $link->active = 1;
+        }
+        $link->save();
+        return redirect('links')->with('success','Status updated');
+    }
+
 }
