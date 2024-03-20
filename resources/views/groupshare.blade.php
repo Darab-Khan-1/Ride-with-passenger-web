@@ -109,6 +109,18 @@
         .offline {
             background-color: red;
         }
+
+        #advertisement {
+            position: fixed;
+            right: 0;
+            background-color: #7e00ff63;
+            border-radius: 10px;
+            z-index: 999;
+            max-height: 200px;
+            overflow: auto;
+            width: 100px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -177,9 +189,11 @@
                                                     @endforeach
                                                 </div>
                                             </div>
-                                            <div class="col-md-2" style="      position: fixed;right: 0;background-color: #7e00ff63;border-radius: 10px;z-index: 999;height: 200px;overflow: auto;">
-                                                @if($advertisement != null)
-                                                {!! $advertisement->value !!}
+                                            <div class="col-md-2">
+                                                @if ($advertisement != null)
+                                                    <div id='advertisement'>
+                                                        {!! $advertisement->value !!}
+                                                    </div>
                                                 @endif
                                             </div>
                                         </div>
