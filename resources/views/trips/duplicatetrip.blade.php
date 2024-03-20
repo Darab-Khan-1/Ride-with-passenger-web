@@ -36,7 +36,7 @@
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <h3>{{ __('messages.duplicate_trip') }}</h3>
                 </div>
-                <form action="{{ url('trip/create') }}" method="POST" onsubmit="return validateForm()">
+                <form action="{{ url('trip/create') }}" id="form" method="POST" onsubmit="return validateForm()">
                     @csrf
                     <div class="card-body p-5" style="overflow: auto;">
                         <div class="row">
@@ -117,6 +117,12 @@
                                     placeholder="{{ __('messages.Enter_value_here') }}" />
                             </div>
                             <div class="form-group col-md-6">
+                                <label>{{ __('messages.reminder_time') }}:</label>
+                                <input type="number" name="reminder_time" id="reminder_time" required class="form-control "
+                                    value="{{ $trip->reminder_time ? $trip->reminder_time : 15 }}"
+                                    placeholder="{{ __('messages.enter_value_here') }}" />
+                            </div>
+                            <div class="form-group col-md-6">
                                 <label>{{ __('messages.event_description') }}:</label>
                                 <textarea class="form-control " required name="description" cols="30" rows="5">{{ $trip->description }}</textarea>
                             </div>
@@ -130,8 +136,7 @@
                                     @if ($attribute->visible_to_driver == 1)
                                         <div class="col-md-1">
                                             <label for="driver">{{ __('messages.driver_value') }}</label><br>
-                                            <input type="checkbox"
-                                                class="driver-visible-checkbox"
+                                            <input type="checkbox" class="driver-visible-checkbox"
                                                 value="{{ $attribute->visible_to_driver }}" checked />
                                             <input type="hidden" name="drivers[]" value="0">
                                         </div>
@@ -139,8 +144,7 @@
                                     @if ($attribute->visible_to_driver == 0)
                                         <div class="col-md-1">
                                             <label for="driver">{{ __('messages.driver_value') }}</label><br>
-                                            <input type="checkbox"
-                                                class="driver-visible-checkbox"
+                                            <input type="checkbox" class="driver-visible-checkbox"
                                                 value="{{ $attribute->visible_to_driver }}" />
                                             <input type="hidden" name="driver_value[]" value="0">
                                         </div>
@@ -180,7 +184,8 @@
                         <input type="hidden" name="drop_long" id="drop_long" value="{{ $trip->drop_long }}">
                         <input type="hidden" name="trip_id" value="{{ $trip->id }}">
                         <input type="hidden" name="event_id" value="{{ $trip->event_id }}">
-                        <button type="submit" class="btn btn-primary mr-2">{{ __('messages.submit') }}</button>
+                        <button type="button" id="submit_button"
+                            class="btn btn-primary mr-2">{{ __('messages.submit') }}</button>
                         <a href="{{ url('/trips') }}" class="btn btn-secondary"
                             data-dismiss="modal">{{ __('messages.cancel') }}</a>
                     </div>
@@ -257,6 +262,31 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content counter-mirror">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirm Duplicate
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to duplicate this trip?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary font-weight-bold" form="form" >{{ __('messages.yes') }}</button>
+                <button type="button" class="btn btn-light-primary font-weight-bold"
+                    data-dismiss="modal">{{ __('messages.no') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!--end::Content-->
 @include('includes/footer')
 
@@ -315,13 +345,17 @@
 
     function validateForm() {
         var fieldValue = document.getElementById('pickup_location').value;
-
         if (!fieldValue) {
             toastr.warning('Pickup Location is required!');
             return false;
         }
         return true;
     }
+
+    document.querySelector('#submit_button').addEventListener('click', function() {
+        $('#confirmModal').modal('show');
+    });
+
 
     document.querySelector('.start-end-location').addEventListener('click', function() {
         $('#formModal').modal('show');

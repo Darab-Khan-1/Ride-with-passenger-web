@@ -254,7 +254,7 @@
 <!--end::Content-->
 @include('includes/footer')
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCgMkgjHVW3WL4GD4M6FdLar-tjlIT8aU"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}"></script>
 
 <script>
     $(".map-nav").click()
@@ -562,7 +562,7 @@
             <p style="font-size: 12px;"><strong>Time:</strong> {time}</p>
         </div>
     </div>
-`;
+    `;
 
 
 
@@ -813,6 +813,63 @@
     }
 
     // Function to calculate the estimated time to reach each stop from the driver's position
+    // async function calculateEstimatedTime(driverLat, driverLng, stops) {
+    //     var estimatedTimes = [];
+
+    //     for (let i = 0; i < stops.length; i++) {
+    //         if (stops[i].datetime === null) {
+    //             try {
+    //                 let duration = await calculateDuration(driverLat + ',' + driverLng, stops[i].lat + ',' + stops[
+    //                     i].long);
+    //                 estimatedTimes.push({
+    //                     stop: stops[i].location,
+    //                     estimatedTime: duration
+    //                 });
+    //             } catch (error) {
+    //                 console.error('Error calculating estimated time:', error);
+    //                 // Handle error
+    //             }
+    //         }
+    //     }
+
+    //     return estimatedTimes;
+    // }
+
+
+    let directionsService;
+    let directionsRenderer;
+
+    // Initialize the Directions Service and Renderer
+    function initializeDirections() {
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer();
+    }
+
+    // Add directions for a given route segment
+    async function addDirections(start, end) {
+        const request = {
+            origin: start,
+            destination: end,
+            travelMode: 'DRIVING'
+        };
+
+        directionsService.route(request, function(response, status) {
+            if (status === 'OK') {
+                directionsRenderer.setDirections(response);
+                directionsRenderer.setMap(googleMap); // Assuming 'map' is your Google Map object
+            } else {
+                console.error('Error adding directions:', status);
+                // Handle error
+            }
+        });
+    }
+
+    // Remove directions from the map
+    function removeDirections() {
+        directionsRenderer.setMap(null);
+    }
+
+    // Calculate estimated time including directions
     async function calculateEstimatedTime(driverLat, driverLng, stops) {
         var estimatedTimes = [];
 
@@ -821,6 +878,12 @@
                 try {
                     let duration = await calculateDuration(driverLat + ',' + driverLng, stops[i].lat + ',' + stops[
                         i].long);
+                    let start = new google.maps.LatLng(driverLat, driverLng);
+                    let end = new google.maps.LatLng(stops[i].lat, stops[i].long);
+
+                    // Add directions for this route segment
+                    await addDirections(start, end);
+
                     estimatedTimes.push({
                         stop: stops[i].location,
                         estimatedTime: duration
@@ -834,4 +897,14 @@
 
         return estimatedTimes;
     }
+
+    // Usage example:
+    initializeDirections();
+    calculateEstimatedTime(driverLat, driverLng, stops)
+        .then(estimatedTimes => {
+            console.log('Estimated Times:', estimatedTimes);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 </script>

@@ -79,6 +79,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('/register/link', [LinksController::class, 'create']);
     Route::post('/update/link', [LinksController::class, 'update']);
     Route::get('/delete/link/{id}', [LinksController::class, 'delete']);
+    Route::get('/change/link/status/{id}', [LinksController::class, 'status']);
     
 
     Route::get('live/location/{device_id}', [DriversController::class, 'live']);
