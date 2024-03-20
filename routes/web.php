@@ -14,9 +14,7 @@ use App\Http\Controllers\LinksController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TripsController;
 use App\Http\Controllers\NotificationController;
-
-
-
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +37,10 @@ Route::get('/live/track/trip/{slug}/{id}', [DriversController::class, 'liveGroup
 Route::get('/web', [RegistrationController::class, 'web']);
 Route::get('live/share/location/{slug}', [DriversController::class, 'liveshare']);
 Route::group(['middleware' => 'admin'], function () {
+
+    Route::get('/advertisement', [SettingsController::class, 'advertisementIndex']);
+    Route::post('/advertisement/save', [SettingsController::class, 'saveAdvertisement']);
+
     Route::post('/save/token', [RegistrationController::class, 'saveToken'])->name('save.token');
     Route::get('/profile/personal', [RegistrationController::class, 'profile']);
     Route::post('profile/password/update', [RegistrationController::class, 'updatePassword']);

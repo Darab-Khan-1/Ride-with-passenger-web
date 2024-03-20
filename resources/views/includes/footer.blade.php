@@ -156,6 +156,7 @@
 
     <script src="{{ asset('assets/js/pages/widgets.js?v=7.0.5') }}"></script>
 
+    <script src="{{ asset('assets/plugins/custom/ckeditor/ckeditor-classic.bundle.js?v=7.0.5') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/features/cards/tools.js?v=7.0.5') }}"></script> --}}
 
     <script>
