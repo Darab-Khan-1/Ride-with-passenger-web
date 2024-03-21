@@ -120,7 +120,7 @@
             overflow: auto;
             width: 100px;
             text-align: center;
-        }
+        }   
     </style>
 </head>
 
